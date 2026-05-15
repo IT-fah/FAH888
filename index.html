@@ -153,10 +153,11 @@
       font-family: 'Sarabun', sans-serif; font-size: 0.88rem; font-weight: 600;
       cursor: pointer; border: none; transition: all .18s; white-space: nowrap;
     }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
     .btn-blue    { background: var(--blue); color: white; }
-    .btn-blue:hover { background: #0d47a1; }
+    .btn-blue:hover:not(:disabled) { background: #0d47a1; }
     .btn-green   { background: var(--green-light); color: white; }
-    .btn-green:hover { background: var(--green); }
+    .btn-green:hover:not(:disabled) { background: var(--green); }
     .btn-outline {
       background: white; color: var(--blue);
       border: 1.5px solid var(--blue);
@@ -187,48 +188,19 @@
       padding: 13px 16px; text-align: left;
       font-size: 0.88rem; font-weight: 600; white-space: nowrap;
     }
-
-    /* ── Sortable header ── */
-    thead th.sortable {
-      cursor: pointer;
-      user-select: none;
-      transition: background .15s;
-    }
-    thead th.sortable:hover {
-      background: rgba(255,255,255,0.15);
-    }
-    thead th.sortable .th-inner {
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .sort-icon {
-      display: inline-flex; flex-direction: column;
-      line-height: 1; font-size: 0.65rem; opacity: 0.5;
-      transition: opacity .15s;
-      gap: 1px;
-    }
+    thead th.sortable { cursor: pointer; user-select: none; transition: background .15s; }
+    thead th.sortable:hover { background: rgba(255,255,255,0.15); }
+    thead th.sortable .th-inner { display: inline-flex; align-items: center; gap: 6px; }
+    .sort-icon { display: inline-flex; flex-direction: column; line-height: 1; font-size: 0.65rem; opacity: 0.5; transition: opacity .15s; gap: 1px; }
     thead th.sortable:hover .sort-icon { opacity: 0.8; }
-    thead th.sort-asc  .sort-icon,
-    thead th.sort-desc .sort-icon { opacity: 1; }
-
-    /* active arrow bright, inactive arrow dim */
+    thead th.sort-asc  .sort-icon, thead th.sort-desc .sort-icon { opacity: 1; }
     thead th.sort-asc  .sort-icon .arrow-up   { opacity: 1; color: #fff; }
     thead th.sort-asc  .sort-icon .arrow-down { opacity: 0.3; }
     thead th.sort-desc .sort-icon .arrow-up   { opacity: 0.3; }
     thead th.sort-desc .sort-icon .arrow-down { opacity: 1; color: #fff; }
-
-    /* highlight sorted column header */
-    thead th.sort-asc,
-    thead th.sort-desc {
-      background: rgba(255,255,255,0.18);
-    }
-
-    /* highlight sorted column cells */
-    td.sorted-col {
-      background: #f0f6ff;
-    }
-    tbody tr:hover td.sorted-col {
-      background: #e3f0ff;
-    }
+    thead th.sort-asc, thead th.sort-desc { background: rgba(255,255,255,0.18); }
+    td.sorted-col { background: #f0f6ff; }
+    tbody tr:hover td.sorted-col { background: #e3f0ff; }
 
     tbody tr { border-bottom: 1px solid #eef2f8; transition: background .12s; }
     tbody tr:last-child { border-bottom: none; }
@@ -237,32 +209,18 @@
     tbody tr:nth-child(even):hover { background: #eaf3ff; }
     td { padding: 13px 16px; font-size: 0.88rem; vertical-align: middle; }
 
-    .empty-state {
-      text-align: center; padding: 64px 20px;
-      color: var(--gray-text);
-    }
+    .empty-state { text-align: center; padding: 64px 20px; color: var(--gray-text); }
     .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
     .empty-state p { font-size: 0.9rem; }
 
-    .chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 12px; border-radius: 20px;
-      font-size: 0.78rem; font-weight: 700;
-    }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
     .chip-green  { background: #e8f5e9; color: var(--green); }
     .chip-red    { background: #ffebee; color: var(--red); }
     .chip-orange { background: #fff3e0; color: var(--orange); }
     .chip-blue   { background: var(--blue-pale); color: var(--blue); }
 
-    .info-cards {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px; margin-bottom: 28px;
-    }
-    .info-card {
-      background: white; border-radius: 12px; box-shadow: var(--shadow-sm);
-      padding: 18px 20px; border-left: 4px solid var(--blue);
-      display: flex; flex-direction: column; gap: 4px;
-    }
+    .info-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .info-card { background: white; border-radius: 12px; box-shadow: var(--shadow-sm); padding: 18px 20px; border-left: 4px solid var(--blue); display: flex; flex-direction: column; gap: 4px; }
     .info-card .ic-label { font-size: 0.78rem; font-weight: 600; color: var(--gray-text); text-transform: uppercase; letter-spacing: .04em; }
     .info-card .ic-value { font-family: 'Prompt', sans-serif; font-size: 1.7rem; font-weight: 700; color: var(--blue); }
     .info-card .ic-sub   { font-size: 0.78rem; color: var(--gray-text); }
@@ -270,84 +228,59 @@
     .info-card.red   { border-left-color: var(--red); }         .info-card.red   .ic-value { color: var(--red); }
     .info-card.orange{ border-left-color: var(--orange); }      .info-card.orange .ic-value { color: var(--orange); }
 
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(13,30,60,.45); backdrop-filter: blur(4px);
-      z-index: 500; align-items: center; justify-content: center;
+    /* ── Toast notification ── */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 999;
+      background: #1a2332; color: white;
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 600;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+      display: flex; align-items: center; gap: 8px;
+      transform: translateY(80px); opacity: 0;
+      transition: all .3s cubic-bezier(.4,0,.2,1);
+      max-width: 340px;
     }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 4px solid var(--green-light); }
+    .toast.error   { border-left: 4px solid var(--red); }
+    .toast.loading { border-left: 4px solid var(--blue-light); }
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(13,30,60,.45); backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; animation: fadeIn .18s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .modal {
-      background: white; border-radius: 14px; box-shadow: var(--shadow-lg);
-      width: 540px; max-width: 95vw;
-      animation: slideUp .22s cubic-bezier(.4,0,.2,1); overflow: hidden;
-    }
+    .modal { background: white; border-radius: 14px; box-shadow: var(--shadow-lg); width: 540px; max-width: 95vw; animation: slideUp .22s cubic-bezier(.4,0,.2,1); overflow: hidden; }
     @keyframes slideUp { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    .modal-header {
-      background: linear-gradient(90deg, var(--blue), var(--blue-mid));
-      color: white; padding: 16px 22px;
-      display: flex; align-items: center; justify-content: space-between;
-      font-family: 'Prompt', sans-serif; font-size: 1rem; font-weight: 700;
-    }
+    .modal-header { background: linear-gradient(90deg, var(--blue), var(--blue-mid)); color: white; padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; font-family: 'Prompt', sans-serif; font-size: 1rem; font-weight: 700; }
     .modal-close { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 2px 7px; border-radius: 5px; transition: background .15s; }
     .modal-close:hover { background: rgba(255,255,255,.2); }
-
     .modal-body { padding: 24px 22px 16px; }
     .form-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group label { font-size: 0.85rem; font-weight: 600; color: #1a3a5c; }
-    .form-control {
-      padding: 9px 12px; border: 1.5px solid var(--gray-border); border-radius: 8px;
-      font-family: 'Sarabun', sans-serif; font-size: 0.88rem; color: var(--text);
-      outline: none; transition: border .15s, box-shadow .15s; background: #fafbfc;
-    }
+    .form-control { padding: 9px 12px; border: 1.5px solid var(--gray-border); border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: 0.88rem; color: var(--text); outline: none; transition: border .15s, box-shadow .15s; background: #fafbfc; }
     .form-control:focus { border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(21,101,192,.1); }
+    .form-control:disabled { background: #f0f0f0; color: #999; cursor: not-allowed; }
     select.form-control { cursor: pointer; }
     .modal-footer { padding: 12px 22px 20px; display: flex; gap: 8px; }
 
-    /* ── Delete button ── */
-    .btn-del {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 32px; height: 32px; border-radius: 7px;
-      background: #fff0f0; color: var(--red);
-      border: 1.5px solid #ffcdd2; cursor: pointer;
-      font-size: 0.9rem; transition: all .15s;
-    }
+    .btn-del { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 7px; background: #fff0f0; color: var(--red); border: 1.5px solid #ffcdd2; cursor: pointer; font-size: 0.9rem; transition: all .15s; }
     .btn-del:hover { background: var(--red); color: white; border-color: var(--red); transform: scale(1.1); }
+    .btn-del:disabled { opacity: .4; cursor: not-allowed; transform: none; }
 
-    /* ── Confirm modal ── */
-    .confirm-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(13,30,60,.55); backdrop-filter: blur(4px);
-      z-index: 600; align-items: center; justify-content: center;
-    }
+    .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(13,30,60,.55); backdrop-filter: blur(4px); z-index: 600; align-items: center; justify-content: center; }
     .confirm-overlay.active { display: flex; animation: fadeIn .15s ease; }
-    .confirm-box {
-      background: white; border-radius: 14px; box-shadow: var(--shadow-lg);
-      width: 380px; max-width: 92vw; overflow: hidden;
-      animation: slideUp .2s cubic-bezier(.4,0,.2,1);
-    }
-    .confirm-header {
-      background: linear-gradient(90deg, var(--red), #e53935);
-      color: white; padding: 14px 20px;
-      font-family: 'Prompt', sans-serif; font-size: 0.95rem; font-weight: 700;
-      display: flex; align-items: center; gap: 8px;
-    }
+    .confirm-box { background: white; border-radius: 14px; box-shadow: var(--shadow-lg); width: 380px; max-width: 92vw; overflow: hidden; animation: slideUp .2s cubic-bezier(.4,0,.2,1); }
+    .confirm-header { background: linear-gradient(90deg, var(--red), #e53935); color: white; padding: 14px 20px; font-family: 'Prompt', sans-serif; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .confirm-body { padding: 20px 22px 10px; font-size: 0.9rem; line-height: 1.6; color: var(--text); }
     .confirm-body .target-name { font-weight: 700; color: var(--red); }
     .confirm-footer { padding: 10px 22px 18px; display: flex; gap: 8px; }
     .btn-red { background: var(--red); color: white; }
-    .btn-red:hover { background: #b71c1c; }
+    .btn-red:hover:not(:disabled) { background: #b71c1c; }
 
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; display: inline-block; }
 
-    .site-footer {
-      background: #1a2332; color: #8fa3b8;
-      text-align: center; padding: 20px 24px;
-      font-size: 0.82rem; line-height: 1.7;
-    }
+    .site-footer { background: #1a2332; color: #8fa3b8; text-align: center; padding: 20px 24px; font-size: 0.82rem; line-height: 1.7; }
     .site-footer strong { color: #e3f2fd; }
   </style>
 </head>
@@ -467,8 +400,7 @@
             <th style="text-align:center;min-width:70px">จัดการ</th>
           </tr>
         </thead>
-        <tbody id="tableBody">
-        </tbody>
+        <tbody id="tableBody"></tbody>
       </table>
     </div>
   </div>
@@ -482,7 +414,10 @@
   เวลาทำการ 11:00 – 20:00 น.
 </footer>
 
-<!-- ── CONFIRM DELETE MODAL ── -->
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- CONFIRM DELETE MODAL -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <div class="confirm-header">🗑️ ยืนยันการลบข้อมูล</div>
@@ -498,6 +433,7 @@
   </div>
 </div>
 
+<!-- ADD MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
@@ -563,15 +499,29 @@
 </div>
 
 <script>
-  // ── Apps Script URL (อ่าน + เขียน + ลบ ผ่าน Sheets จริง) ──────────────
-  const API_URL = 'https://script.google.com/macros/s/AKfycbx9TsITbTkkx2HIX2orYj2N0Av5gPR6p6En3ZYfBGytwYEL32DS1pkQNx1KwkkkZAv0Xg/exec';
+  // ── Google Apps Script endpoint ──────────────────────────────────────────
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbw52HmZnM-xmIo67VfYiiU5i8pa9VkKfsBAuXoYUVI0cTPopKNcIQsHGyg42F4ahnXkpQ/exec';
 
   let tableData  = [];
   let sortCol    = null;
   let sortDir    = null;
   let searchTerm = '';
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  // ── Toast ────────────────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, type = 'loading', duration = 3500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `toast ${type} show`;
+    clearTimeout(toastTimer);
+    if (duration > 0) toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+  }
+  function hideToast() {
+    clearTimeout(toastTimer);
+    document.getElementById('toast').classList.remove('show');
+  }
+
+  // ── Status chip ──────────────────────────────────────────────────────────
   function statusChip(s) {
     if (s === 'พร้อมใช้งาน')  return `<span class="chip chip-green">✅ ${s}</span>`;
     if (s === 'ขาดเมล์+WiFi') return `<span class="chip chip-red">⚠️ ${s}</span>`;
@@ -579,36 +529,20 @@
     return `<span class="chip chip-blue">${s || '—'}</span>`;
   }
 
+  // ── Format date ──────────────────────────────────────────────────────────
   function formatDate(d) {
     if (!d) return '—';
+    // รองรับทั้ง YYYY-MM-DD และ DD/MM/YYYY
+    if (d.includes('/')) return d;
     const parts = d.split('-');
     if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
     return d;
   }
 
-  function showLoading(msg) {
-    document.getElementById('tableBody').innerHTML = `
-      <tr><td colspan="10">
-        <div class="empty-state">
-          <div style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">⏳</div>
-          <p style="margin-top:10px">${msg}</p>
-        </div>
-      </td></tr>`;
-  }
-
-  function showError(msg) {
-    document.getElementById('tableBody').innerHTML = `
-      <tr><td colspan="10">
-        <div class="empty-state">
-          <div class="empty-icon">⚠️</div>
-          <p>${msg}</p>
-        </div>
-      </td></tr>`;
-  }
-
-  // ── Render table ──────────────────────────────────────────────────────────
+  // ── Render table ─────────────────────────────────────────────────────────
   function renderTable() {
     const body = document.getElementById('tableBody');
+
     let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => {
       if (!searchTerm) return true;
       const q = searchTerm.toLowerCase();
@@ -623,8 +557,12 @@
       rows = [...rows].sort((a, b) => {
         let va = a[key] || '', vb = b[key] || '';
         if (sortCol === 0) {
-          va = new Date(va); vb = new Date(vb);
-          return sortDir === 'asc' ? va - vb : vb - va;
+          const toDate = s => {
+            if (!s) return new Date(0);
+            if (s.includes('/')) { const p = s.split('/'); return new Date(`${p[2]}-${p[1]}-${p[0]}`); }
+            return new Date(s);
+          };
+          return sortDir === 'asc' ? toDate(va) - toDate(vb) : toDate(vb) - toDate(va);
         }
         va = va.toLowerCase(); vb = vb.toLowerCase();
         if (va < vb) return sortDir === 'asc' ? -1 : 1;
@@ -634,7 +572,7 @@
     }
 
     if (rows.length === 0) {
-      body.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูล</p></div></td></tr>`;
+      body.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูลที่ค้นหา</p></div></td></tr>`;
       updateStats(); return;
     }
 
@@ -651,21 +589,24 @@
         <td class="${sc===7?'sorted-col':''}">${r.cabinet || '—'}</td>
         <td class="${sc===8?'sorted-col':''}">${r.operator || '—'}</td>
         <td style="text-align:center">
-          <button class="btn-del" title="ลบข้อมูล" onclick="askDelete(${r.origIdx})">🗑️</button>
+          <button class="btn-del" title="ลบข้อมูล" onclick="askDelete(${r.origIdx}, '${(r.rowIndex||'').toString()}')">🗑️</button>
         </td>
       </tr>`;
     }).join('');
+
     updateStats();
   }
 
+  // ── Update header sort indicators ────────────────────────────────────────
   function updateHeaders() {
     document.querySelectorAll('thead th.sortable').forEach(th => {
+      const col = parseInt(th.dataset.col);
       th.classList.remove('sort-asc', 'sort-desc');
-      if (sortCol === parseInt(th.dataset.col))
-        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      if (sortCol === col) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
     });
   }
 
+  // ── Stats cards ───────────────────────────────────────────────────────────
   function updateStats() {
     document.getElementById('stat-total').textContent  = tableData.length;
     document.getElementById('stat-ready').textContent  = tableData.filter(r => r.status === 'พร้อมใช้งาน').length;
@@ -673,13 +614,18 @@
     document.getElementById('stat-repair').textContent = tableData.filter(r => r.status === 'ซ่อม').length;
   }
 
-  // ── Sort ──────────────────────────────────────────────────────────────────
+  // ── Sort click handler ────────────────────────────────────────────────────
   document.querySelectorAll('thead th.sortable').forEach(th => {
     th.addEventListener('click', () => {
       const col = parseInt(th.dataset.col);
-      if (sortCol === col) { sortDir === 'asc' ? sortDir = 'desc' : (sortCol = sortDir = null); }
-      else { sortCol = col; sortDir = 'asc'; }
-      updateHeaders(); renderTable();
+      if (sortCol === col) {
+        if (sortDir === 'asc') { sortDir = 'desc'; }
+        else { sortCol = null; sortDir = null; }
+      } else {
+        sortCol = col; sortDir = 'asc';
+      }
+      updateHeaders();
+      renderTable();
     });
   });
 
@@ -691,47 +637,76 @@
     if (e.key === 'Enter') { searchTerm = e.target.value.trim(); renderTable(); }
   });
 
-  // ── LOAD from Apps Script (GET) ───────────────────────────────────────────
-  async function loadFromSheets() {
-    showLoading('กำลังโหลดข้อมูลจาก Google Sheets...');
-    try {
-      const res  = await fetch(API_URL);
-      const json = await res.json();
-      if (json.status !== 'ok') throw new Error(json.message || 'error');
+  // ── Delete ────────────────────────────────────────────────────────────────
+  let pendingDeleteIdx      = null;
+  let pendingDeleteRowIndex = null;
 
-      // map keys จาก Sheets → internal (รองรับทั้งภาษาไทยและอังกฤษ)
-      tableData = json.data.map(row => {
-        const k = obj => Object.keys(row).find(k => k.toLowerCase().replace(/\s/g,'').includes(obj)) || '';
-        return {
-          date:     row[k('date')] || row[k('วันที่')] || '',
-          idName:   row[k('idname')] || row[k('id')] || row[k('ชื่อ')] || '',
-          machine:  row[k('machine')] || row[k('เบอร์')] || '',
-          dept:     row[k('dept')] || row[k('แผนก')] || '',
-          type:     row[k('type')] || row[k('ประเภท')] || '',
-          status:   row[k('status')] || row[k('สถานะ')] || '',
-          cabinet:  row[k('cabinet')] || row[k('ตู้')] || '',
-          operator: row[k('operator')] || row[k('ผู้')] || '',
-        };
-      }).filter(r => r.idName);
-
-      renderTable();
-    } catch (err) {
-      showError(`โหลดข้อมูลไม่สำเร็จ: <small style="color:#e53935">${err.message}</small>`);
-      console.error(err);
-    }
+  function askDelete(origIdx, rowIndex) {
+    pendingDeleteIdx      = origIdx;
+    pendingDeleteRowIndex = rowIndex;
+    document.getElementById('confirmName').textContent =
+      (tableData[origIdx].idName || '') + ' (' + (tableData[origIdx].machine || '') + ')';
+    document.getElementById('confirmOverlay').classList.add('active');
   }
 
-  // ── ADD row → Apps Script (POST) ──────────────────────────────────────────
-  const overlay   = document.getElementById('modalOverlay');
-  const openBtn   = document.getElementById('openModal');
-  const closeBtn  = document.getElementById('closeModal');
-  const closeBtn2 = document.getElementById('closeModal2');
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if (pendingDeleteIdx === null) return;
 
-  openBtn.addEventListener('click',   () => overlay.classList.add('active'));
-  closeBtn.addEventListener('click',  () => overlay.classList.remove('active'));
-  closeBtn2.addEventListener('click', () => overlay.classList.remove('active'));
-  overlay.addEventListener('click',   e => { if (e.target === overlay) overlay.classList.remove('active'); });
-  document.addEventListener('keydown',e => { if (e.key === 'Escape') overlay.classList.remove('active'); });
+    const btn = document.getElementById('confirmDeleteBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ กำลังลบ...';
+
+    const rowIndex = pendingDeleteRowIndex;
+    document.getElementById('confirmOverlay').classList.remove('active');
+
+    // ลบออกจาก UI ก่อนเพื่อความรวดเร็ว (Optimistic UI)
+    tableData.splice(pendingDeleteIdx, 1);
+    pendingDeleteIdx = null; pendingDeleteRowIndex = null;
+    renderTable();
+    showToast('⏳ กำลังลบข้อมูลจาก Google Sheets...', 'loading', 0);
+
+    try {
+      // ส่ง DELETE ไปยัง GAS โดยใส่ rowIndex เป็น query param (GET + action=delete)
+      // เพราะ GAS doPost ไม่รองรับ DELETE method โดยตรง
+      const url = `${GAS_URL}?action=delete&rowIndex=${encodeURIComponent(rowIndex)}`;
+      const res = await fetch(url, { method: 'GET' });
+      const json = await res.json().catch(() => ({}));
+      if (json.status === 'success' || json.result === 'deleted') {
+        showToast('✅ ลบข้อมูลสำเร็จ', 'success');
+      } else {
+        showToast('✅ ลบออกจากมุมมองแล้ว (Sheets อาจต้องรีเฟรช)', 'success');
+      }
+    } catch (err) {
+      showToast('⚠️ ลบออกจากมุมมองแล้ว แต่อาจไม่ sync กับ Sheets', 'error');
+      console.warn('Delete error:', err);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🗑️ ลบข้อมูล';
+  });
+
+  document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+    pendingDeleteIdx = null; pendingDeleteRowIndex = null;
+    document.getElementById('confirmOverlay').classList.remove('active');
+  });
+  document.getElementById('confirmOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('confirmOverlay')) {
+      pendingDeleteIdx = null; pendingDeleteRowIndex = null;
+      document.getElementById('confirmOverlay').classList.remove('active');
+    }
+  });
+
+  // ── Add row (POST to GAS) ─────────────────────────────────────────────────
+  const formFields = ['f-id','f-name','f-machine','f-dept','f-operator'];
+  const formSelects = ['f-type','f-status','f-cabinet'];
+
+  function setFormDisabled(disabled) {
+    [...formFields, ...formSelects].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = disabled;
+    });
+    document.getElementById('addRowBtn').disabled = disabled;
+  }
 
   document.getElementById('addRowBtn').addEventListener('click', async () => {
     const id       = document.getElementById('f-id').value.trim();
@@ -744,91 +719,185 @@
     const operator = document.getElementById('f-operator').value.trim();
 
     if (!id || !name || !machine) {
-      alert('กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง'); return;
+      showToast('⚠️ กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง', 'error');
+      return;
     }
 
     const today   = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const idName  = `${id} / ${name}`;
 
+    const payload = {
+      action:   'add',
+      date:     dateStr,
+      idName:   idName,
+      machine:  machine,
+      dept:     dept     || '—',
+      type:     type     || '—',
+      status:   status   || '—',
+      cabinet:  cabinet  || '—',
+      operator: operator || '—',
+    };
+
+    setFormDisabled(true);
     const addBtn = document.getElementById('addRowBtn');
-    addBtn.disabled = true; addBtn.textContent = '⏳ กำลังบันทึก...';
+    addBtn.textContent = '⏳ กำลังบันทึก...';
+    showToast('⏳ กำลังบันทึกข้อมูลไปยัง Google Sheets...', 'loading', 0);
 
     try {
-      const res  = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'add',
-          date: dateStr, idName: `${id} / ${name}`,
-          machine, dept,
-          type: type || '—', status: status || '—',
-          cabinet: cabinet || '—', operator: operator || '—',
-        })
+      const res  = await fetch(GAS_URL, {
+        method:  'POST',
+        // GAS ต้องการ text/plain เพราะ CORS บน GAS ไม่รองรับ application/json preflight
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body:    JSON.stringify(payload),
       });
-      const json = await res.json();
-      if (json.status !== 'ok') throw new Error(json.message || 'error');
+      const text = await res.text();
+      let json = {};
+      try { json = JSON.parse(text); } catch(_) {}
 
-      // clear form
-      ['f-id','f-name','f-machine','f-dept','f-operator'].forEach(id => document.getElementById(id).value = '');
-      ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value = '');
-      overlay.classList.remove('active');
-      await loadFromSheets(); // reload จาก Sheets จริง
+      if (json.status === 'success' || json.result === 'added' || res.ok) {
+        // เพิ่มลง tableData โดยเก็บ rowIndex ที่ได้จาก GAS (ถ้ามี)
+        tableData.push({
+          date:     dateStr,
+          idName:   idName,
+          machine, dept,
+          type:     type     || '—',
+          status:   status   || '—',
+          cabinet:  cabinet  || '—',
+          operator: operator || '—',
+          rowIndex: json.rowIndex || '',
+        });
+
+        // Clear form
+        formFields.forEach(fid  => document.getElementById(fid).value  = '');
+        formSelects.forEach(fid => document.getElementById(fid).value  = '');
+
+        document.getElementById('modalOverlay').classList.remove('active');
+        renderTable();
+        showToast('✅ เพิ่มข้อมูลสำเร็จ!', 'success');
+      } else {
+        throw new Error(json.message || 'ไม่ทราบสาเหตุ');
+      }
     } catch (err) {
-      alert('บันทึกไม่สำเร็จ: ' + err.message);
+      showToast(`❌ บันทึกไม่สำเร็จ: ${err.message}`, 'error', 5000);
+      console.error('Add error:', err);
     } finally {
-      addBtn.disabled = false; addBtn.innerHTML = '👤+ เพิ่มข้อมูล';
+      setFormDisabled(false);
+      addBtn.textContent = '👤+ เพิ่มข้อมูล';
     }
   });
 
-  // ── DELETE row → Apps Script (POST) ──────────────────────────────────────
-  let pendingDeleteIdx = null;
-  const confirmOverlay   = document.getElementById('confirmOverlay');
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-  const cancelDeleteBtn  = document.getElementById('cancelDeleteBtn');
+  // ── Modal open/close ──────────────────────────────────────────────────────
+  const overlay   = document.getElementById('modalOverlay');
+  document.getElementById('openModal').addEventListener('click',   () => overlay.classList.add('active'));
+  document.getElementById('closeModal').addEventListener('click',  () => overlay.classList.remove('active'));
+  document.getElementById('closeModal2').addEventListener('click', () => overlay.classList.remove('active'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('active'); });
 
-  function askDelete(origIdx) {
-    pendingDeleteIdx = origIdx;
-    document.getElementById('confirmName').textContent =
-      (tableData[origIdx].idName || '') + ' (' + (tableData[origIdx].machine || '') + ')';
-    confirmOverlay.classList.add('active');
+  // ── Load from GAS (GET) ───────────────────────────────────────────────────
+  function showLoading(msg) {
+    document.getElementById('tableBody').innerHTML = `
+      <tr><td colspan="10">
+        <div class="empty-state">
+          <div class="empty-icon spin">⏳</div>
+          <p style="margin-top:10px">${msg}</p>
+        </div>
+      </td></tr>`;
   }
 
-  confirmDeleteBtn.addEventListener('click', async () => {
-    if (pendingDeleteIdx === null) return;
-    confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = '⏳ กำลังลบ...';
+  async function loadFromGAS() {
+    showLoading('กำลังโหลดข้อมูลจาก Google Sheets...');
+    showToast('⏳ กำลังโหลดข้อมูล...', 'loading', 0);
     try {
-      const res  = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'delete', rowIndex: pendingDeleteIdx })
-      });
-      const json = await res.json();
-      if (json.status !== 'ok') throw new Error(json.message || 'error');
-      pendingDeleteIdx = null;
-      confirmOverlay.classList.remove('active');
-      await loadFromSheets();
+      const res  = await fetch(`${GAS_URL}?action=get&t=${Date.now()}`);
+      const text = await res.text();
+      let json;
+      try { json = JSON.parse(text); } catch(e) {
+        throw new Error('รูปแบบข้อมูลไม่ถูกต้อง (ไม่ใช่ JSON)');
+      }
+
+      /*
+        รองรับหลาย format ที่ GAS อาจส่งกลับมา:
+        1. { data: [ {date,idName,machine,...}, ... ] }
+        2. { values: [ [...row], [...row] ] }   ← raw 2D array จาก spreadsheet
+        3. [ {...}, {...} ]                      ← array โดยตรง
+      */
+      let rows = [];
+      if (Array.isArray(json)) {
+        rows = json;
+      } else if (Array.isArray(json.data)) {
+        rows = json.data;
+      } else if (Array.isArray(json.values)) {
+        // 2D array — แถวแรกเป็น header
+        const headers = (json.values[0] || []).map(h => (h||'').toString().toLowerCase().trim());
+        const findH   = (...aliases) => {
+          for (const a of aliases) { const i = headers.findIndex(h => h.includes(a)); if (i !== -1) return i; }
+          return -1;
+        };
+        const ci = {
+          date:     findH('date','วันที่'),
+          idName:   findH('idname','id','ชื่อ'),
+          machine:  findH('machine','เบอร์'),
+          dept:     findH('dept','แผนก'),
+          type:     findH('type','ประเภท'),
+          status:   findH('status','สถานะ'),
+          cabinet:  findH('cabinet','ตู้'),
+          operator: findH('operator','ผู้'),
+        };
+        rows = json.values.slice(1).map((row, i) => ({
+          date:     ci.date     !== -1 ? row[ci.date]     || '' : '',
+          idName:   ci.idName   !== -1 ? row[ci.idName]   || '' : '',
+          machine:  ci.machine  !== -1 ? row[ci.machine]  || '' : '',
+          dept:     ci.dept     !== -1 ? row[ci.dept]     || '' : '',
+          type:     ci.type     !== -1 ? row[ci.type]     || '' : '',
+          status:   ci.status   !== -1 ? row[ci.status]   || '' : '',
+          cabinet:  ci.cabinet  !== -1 ? row[ci.cabinet]  || '' : '',
+          operator: ci.operator !== -1 ? row[ci.operator] || '' : '',
+          rowIndex: json.values[i + 1]?.__rowIndex || (i + 2), // row index ใน sheet (1-based, +1 สำหรับ header)
+        }));
+      }
+
+      tableData = rows
+        .map((r, i) => ({
+          date:     r.date     || r.Date     || r['วันที่รับเครื่อง'] || r['วันที่'] || '',
+          idName:   r.idName   || r.IDName   || r['ID / ชื่อ-สกุล']  || r['ชื่อ-สกุล'] || '',
+          machine:  r.machine  || r.Machine  || r['เบอร์เครื่อง']     || r['เบอร์'] || '',
+          dept:     r.dept     || r.Dept     || r['แผนก']  || '',
+          type:     r.type     || r.Type     || r['ประเภท'] || '',
+          status:   r.status   || r.Status   || r['สถานะ']  || '',
+          cabinet:  r.cabinet  || r.Cabinet  || r['ตู้ที่']  || r['ตู้'] || '',
+          operator: r.operator || r.Operator || r['ผู้ดำเนินการ'] || r['ผู้ส่งเครื่อง'] || '',
+          rowIndex: r.rowIndex || r.__rowIndex || (i + 2),
+        }))
+        .filter(r => r.idName);
+
+      renderTable();
+      hideToast();
     } catch (err) {
-      alert('ลบไม่สำเร็จ: ' + err.message);
-    } finally {
-      confirmDeleteBtn.disabled = false; confirmDeleteBtn.innerHTML = '🗑️ ลบข้อมูล';
+      document.getElementById('tableBody').innerHTML = `
+        <tr><td colspan="10">
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>โหลดข้อมูลไม่สำเร็จ<br>
+            <small style="color:#e53935">${err.message}</small><br><br>
+            <strong>ตรวจสอบ:</strong> GAS Web App ต้องตั้ง Execute as: Me และ Who has access: Anyone</p>
+          </div>
+        </td></tr>`;
+      showToast(`❌ โหลดไม่สำเร็จ: ${err.message}`, 'error', 6000);
+      console.error('Load error:', err);
     }
-  });
+  }
 
-  cancelDeleteBtn.addEventListener('click', () => {
-    pendingDeleteIdx = null; confirmOverlay.classList.remove('active');
-  });
-  confirmOverlay.addEventListener('click', e => {
-    if (e.target === confirmOverlay) { pendingDeleteIdx = null; confirmOverlay.classList.remove('active'); }
-  });
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadFromGAS();
 
-  // ── Refresh button ────────────────────────────────────────────────────────
   document.getElementById('resetSort').addEventListener('click', () => {
     sortCol = null; sortDir = null; searchTerm = '';
     document.getElementById('searchInput').value = '';
     updateHeaders();
-    loadFromSheets();
+    loadFromGAS();
   });
-
-  // ── Init ──────────────────────────────────────────────────────────────────
-  loadFromSheets();
 </script>
 </body>
 </html>
