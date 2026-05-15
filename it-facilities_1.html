@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT Facilities Dept. — หน้าแรก</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Prompt:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #1565c0;
+      --blue-mid:   #1976d2;
+      --blue-light: #42a5f5;
+      --blue-pale:  #e3f2fd;
+      --green:      #2e7d32;
+      --green-light:#43a047;
+      --orange:     #e65100;
+      --red:        #c62828;
+      --gray-bg:    #f5f7fa;
+      --gray-card:  #ffffff;
+      --gray-border:#dde3ec;
+      --gray-text:  #546e7a;
+      --text:       #1a2332;
+      --shadow-sm:  0 1px 6px rgba(21,101,192,.10);
+      --shadow-md:  0 4px 20px rgba(21,101,192,.13);
+      --shadow-lg:  0 8px 40px rgba(21,101,192,.18);
+    }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: var(--gray-bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .sites-topnav {
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 64px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .sites-topnav .site-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--blue); letter-spacing: .01em;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sites-topnav .site-title .icon-wrap {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 1.05rem;
+    }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-link {
+      padding: 7px 16px; border-radius: 20px;
+      font-size: 0.88rem; font-weight: 600; color: var(--gray-text);
+      cursor: pointer; transition: all .18s; text-decoration: none;
+      border: none; background: none;
+    }
+    .nav-link:hover { background: var(--blue-pale); color: var(--blue); }
+    .nav-link.active { background: var(--blue-pale); color: var(--blue); }
+
+    .hero {
+      background: linear-gradient(135deg, #0d47a1 0%, #1565c0 40%, #1976d2 70%, #42a5f5 100%);
+      padding: 56px 40px 52px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-logo {
+      width: 90px; height: 90px; border-radius: 20px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 2.4rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .hero h1 {
+      font-family: 'Prompt', sans-serif;
+      font-size: 2rem; font-weight: 800;
+      color: #ffffff; margin-bottom: 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .hero .hero-sub {
+      font-size: 1rem; color: rgba(255,255,255,0.82);
+      font-weight: 400; position: relative;
+    }
+    .hero-badges {
+      display: flex; justify-content: center; gap: 10px;
+      margin-top: 18px; flex-wrap: wrap; position: relative;
+    }
+    .hero-badge {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white; padding: 5px 16px; border-radius: 20px;
+      font-size: 0.82rem; font-weight: 600;
+    }
+
+    .contact-bar {
+      background: white;
+      border-bottom: 2px solid var(--blue-pale);
+      display: flex; align-items: center; justify-content: center;
+      gap: 32px; padding: 14px 32px; flex-wrap: wrap;
+    }
+    .contact-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.88rem; color: var(--text);
+    }
+    .contact-item .ci-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+    }
+    .ci-blue   { background: #e3f2fd; color: var(--blue); }
+    .ci-green  { background: #e8f5e9; color: var(--green); }
+    .ci-orange { background: #fff3e0; color: var(--orange); }
+    .contact-item strong { font-weight: 700; }
+    .divider { width: 1px; height: 28px; background: #e0e0e0; }
+
+    .main-content { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    .section-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 1.05rem; font-weight: 700; color: var(--blue);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 2px;
+      background: linear-gradient(to right, var(--blue-pale), transparent);
+      margin-left: 8px;
+    }
+
+    .data-toolbar {
+      background: white; border-radius: 12px; box-shadow: var(--shadow-sm);
+      padding: 14px 20px; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 8px;
+      font-family: 'Sarabun', sans-serif; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .18s; white-space: nowrap;
+    }
+    .btn-blue    { background: var(--blue); color: white; }
+    .btn-blue:hover { background: #0d47a1; }
+    .btn-green   { background: var(--green-light); color: white; }
+    .btn-green:hover { background: var(--green); }
+    .btn-outline {
+      background: white; color: var(--blue);
+      border: 1.5px solid var(--blue);
+    }
+    .btn-outline:hover { background: var(--blue-pale); }
+    .btn-gray    { background: #f0f0f0; color: #555; border: 1px solid #ddd; }
+    .btn-gray:hover { background: #e0e0e0; }
+
+    .search-box {
+      display: flex; align-items: center; gap: 8px; margin-left: auto;
+    }
+    .search-input {
+      padding: 8px 14px; border-radius: 8px;
+      border: 1.5px solid var(--gray-border);
+      font-family: 'Sarabun', sans-serif; font-size: 0.88rem;
+      outline: none; transition: border .15s; min-width: 180px; background: #fafbfc;
+    }
+    .search-input:focus { border-color: var(--blue); background: white; }
+
+    .table-card {
+      background: white; border-radius: 12px;
+      box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 750px; }
+    thead { background: linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 100%); color: white; }
+    thead th {
+      padding: 13px 16px; text-align: left;
+      font-size: 0.88rem; font-weight: 600; white-space: nowrap;
+    }
+
+    /* ── Sortable header ── */
+    thead th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background .15s;
+    }
+    thead th.sortable:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    thead th.sortable .th-inner {
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .sort-icon {
+      display: inline-flex; flex-direction: column;
+      line-height: 1; font-size: 0.65rem; opacity: 0.5;
+      transition: opacity .15s;
+      gap: 1px;
+    }
+    thead th.sortable:hover .sort-icon { opacity: 0.8; }
+    thead th.sort-asc  .sort-icon,
+    thead th.sort-desc .sort-icon { opacity: 1; }
+
+    /* active arrow bright, inactive arrow dim */
+    thead th.sort-asc  .sort-icon .arrow-up   { opacity: 1; color: #fff; }
+    thead th.sort-asc  .sort-icon .arrow-down { opacity: 0.3; }
+    thead th.sort-desc .sort-icon .arrow-up   { opacity: 0.3; }
+    thead th.sort-desc .sort-icon .arrow-down { opacity: 1; color: #fff; }
+
+    /* highlight sorted column header */
+    thead th.sort-asc,
+    thead th.sort-desc {
+      background: rgba(255,255,255,0.18);
+    }
+
+    /* highlight sorted column cells */
+    td.sorted-col {
+      background: #f0f6ff;
+    }
+    tbody tr:hover td.sorted-col {
+      background: #e3f0ff;
+    }
+
+    tbody tr { border-bottom: 1px solid #eef2f8; transition: background .12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f0f6ff; }
+    tbody tr:nth-child(even) { background: #fafbfd; }
+    tbody tr:nth-child(even):hover { background: #eaf3ff; }
+    td { padding: 13px 16px; font-size: 0.88rem; vertical-align: middle; }
+
+    .empty-state {
+      text-align: center; padding: 64px 20px;
+      color: var(--gray-text);
+    }
+    .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
+    .empty-state p { font-size: 0.9rem; }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 12px; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700;
+    }
+    .chip-green  { background: #e8f5e9; color: var(--green); }
+    .chip-red    { background: #ffebee; color: var(--red); }
+    .chip-orange { background: #fff3e0; color: var(--orange); }
+    .chip-blue   { background: var(--blue-pale); color: var(--blue); }
+
+    .info-cards {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .info-card {
+      background: white; border-radius: 12px; box-shadow: var(--shadow-sm);
+      padding: 18px 20px; border-left: 4px solid var(--blue);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .info-card .ic-label { font-size: 0.78rem; font-weight: 600; color: var(--gray-text); text-transform: uppercase; letter-spacing: .04em; }
+    .info-card .ic-value { font-family: 'Prompt', sans-serif; font-size: 1.7rem; font-weight: 700; color: var(--blue); }
+    .info-card .ic-sub   { font-size: 0.78rem; color: var(--gray-text); }
+    .info-card.green { border-left-color: var(--green-light); } .info-card.green .ic-value { color: var(--green); }
+    .info-card.red   { border-left-color: var(--red); }         .info-card.red   .ic-value { color: var(--red); }
+    .info-card.orange{ border-left-color: var(--orange); }      .info-card.orange .ic-value { color: var(--orange); }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(13,30,60,.45); backdrop-filter: blur(4px);
+      z-index: 500; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; animation: fadeIn .18s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: white; border-radius: 14px; box-shadow: var(--shadow-lg);
+      width: 540px; max-width: 95vw;
+      animation: slideUp .22s cubic-bezier(.4,0,.2,1); overflow: hidden;
+    }
+    @keyframes slideUp { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .modal-header {
+      background: linear-gradient(90deg, var(--blue), var(--blue-mid));
+      color: white; padding: 16px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'Prompt', sans-serif; font-size: 1rem; font-weight: 700;
+    }
+    .modal-close { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 2px 7px; border-radius: 5px; transition: background .15s; }
+    .modal-close:hover { background: rgba(255,255,255,.2); }
+
+    .modal-body { padding: 24px 22px 16px; }
+    .form-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 0.85rem; font-weight: 600; color: #1a3a5c; }
+    .form-control {
+      padding: 9px 12px; border: 1.5px solid var(--gray-border); border-radius: 8px;
+      font-family: 'Sarabun', sans-serif; font-size: 0.88rem; color: var(--text);
+      outline: none; transition: border .15s, box-shadow .15s; background: #fafbfc;
+    }
+    .form-control:focus { border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(21,101,192,.1); }
+    select.form-control { cursor: pointer; }
+    .modal-footer { padding: 12px 22px 20px; display: flex; gap: 8px; }
+
+    /* ── Delete button ── */
+    .btn-del {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 7px;
+      background: #fff0f0; color: var(--red);
+      border: 1.5px solid #ffcdd2; cursor: pointer;
+      font-size: 0.9rem; transition: all .15s;
+    }
+    .btn-del:hover { background: var(--red); color: white; border-color: var(--red); transform: scale(1.1); }
+
+    /* ── Confirm modal ── */
+    .confirm-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(13,30,60,.55); backdrop-filter: blur(4px);
+      z-index: 600; align-items: center; justify-content: center;
+    }
+    .confirm-overlay.active { display: flex; animation: fadeIn .15s ease; }
+    .confirm-box {
+      background: white; border-radius: 14px; box-shadow: var(--shadow-lg);
+      width: 380px; max-width: 92vw; overflow: hidden;
+      animation: slideUp .2s cubic-bezier(.4,0,.2,1);
+    }
+    .confirm-header {
+      background: linear-gradient(90deg, var(--red), #e53935);
+      color: white; padding: 14px 20px;
+      font-family: 'Prompt', sans-serif; font-size: 0.95rem; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .confirm-body { padding: 20px 22px 10px; font-size: 0.9rem; line-height: 1.6; color: var(--text); }
+    .confirm-body .target-name { font-weight: 700; color: var(--red); }
+    .confirm-footer { padding: 10px 22px 18px; display: flex; gap: 8px; }
+    .btn-red { background: var(--red); color: white; }
+    .btn-red:hover { background: #b71c1c; }
+
+    .site-footer {
+      background: #1a2332; color: #8fa3b8;
+      text-align: center; padding: 20px 24px;
+      font-size: 0.82rem; line-height: 1.7;
+    }
+    .site-footer strong { color: #e3f2fd; }
+  </style>
+</head>
+<body>
+
+<nav class="sites-topnav">
+  <div class="site-title">
+    <div class="icon-wrap">💻</div>
+    IT Facilities Dept.
+  </div>
+  <div class="nav-links">
+    <a class="nav-link active">หน้าแรก</a>
+    <a class="nav-link">ส่งเครื่อง</a>
+    <a class="nav-link">ประวัติ</a>
+    <a class="nav-link">รายงาน</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-logo">💻</div>
+  <h1>IT Facilities Department</h1>
+  <p class="hero-sub">ระบบจัดการและติดตามเครื่องพนักงาน</p>
+  <div class="hero-badges">
+    <span class="hero-badge">📦 ส่งเครื่อง</span>
+    <span class="hero-badge">🔧 ซ่อมบำรุง</span>
+    <span class="hero-badge">📊 รายงานสถิติ</span>
+    <span class="hero-badge">📋 ประวัติการใช้งาน</span>
+  </div>
+</div>
+
+<div class="contact-bar">
+  <div class="contact-item">
+    <div class="ci-icon ci-blue">📞</div>
+    <span><strong>Tel :</strong> 02-017-7777 Ext. 7442</span>
+    <span style="color:#999;font-size:0.8rem">(office hours)</span>
+  </div>
+  <div class="divider"></div>
+  <div class="contact-item">
+    <div class="ci-icon ci-green">📱</div>
+    <span><strong>Hotline :</strong> 083-989-0894, 083-989-1551</span>
+  </div>
+  <div class="divider"></div>
+  <div class="contact-item">
+    <div class="ci-icon ci-orange">🕐</div>
+    <span><strong>เวลาทำการ :</strong> 11:00 – 20:00 น.</span>
+  </div>
+</div>
+
+<div class="main-content">
+
+  <div class="section-title">📊 ภาพรวมระบบ</div>
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="ic-label">เครื่องทั้งหมด</div>
+      <div class="ic-value" id="stat-total">—</div>
+      <div class="ic-sub">รายการในระบบ</div>
+    </div>
+    <div class="info-card green">
+      <div class="ic-label">พร้อมใช้งาน</div>
+      <div class="ic-value" id="stat-ready">—</div>
+      <div class="ic-sub">สถานะปกติ</div>
+    </div>
+    <div class="info-card red">
+      <div class="ic-label">ขาดเมล์ / WiFi</div>
+      <div class="ic-value" id="stat-issue">—</div>
+      <div class="ic-sub">ต้องดำเนินการ</div>
+    </div>
+    <div class="info-card orange">
+      <div class="ic-label">ส่งซ่อม</div>
+      <div class="ic-value" id="stat-repair">—</div>
+      <div class="ic-sub">อยู่ระหว่างซ่อม</div>
+    </div>
+  </div>
+
+  <div class="section-title">📋 รายการส่งเครื่องพนักงาน</div>
+
+  <div class="data-toolbar">
+    <button class="btn btn-outline">👥 ข้อมูลทั้งหมด</button>
+    <button class="btn btn-green" id="openModal">👤+ เพิ่มข้อมูล</button>
+    <button class="btn btn-gray" id="resetSort">🔄 รีเซ็ตการเรียง</button>
+    <div class="search-box">
+      <input class="search-input" id="searchInput" type="text" placeholder="ค้นหาชื่อ / ID / เบอร์เครื่อง..."/>
+      <button class="btn btn-blue" id="searchBtn">🔍 ค้นหา</button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-scroll">
+      <table id="mainTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="sortable" data-col="0" data-type="date">
+              <span class="th-inner">วันที่รับเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th class="sortable" data-col="1" data-type="string">
+              <span class="th-inner">ID / ชื่อ-สกุล <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th class="sortable" data-col="2" data-type="string">
+              <span class="th-inner">เบอร์เครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th class="sortable" data-col="3" data-type="string">
+              <span class="th-inner">แผนก <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th class="sortable" data-col="4" data-type="string">
+              <span class="th-inner">ประเภท <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th class="sortable" data-col="5" data-type="string">
+              <span class="th-inner">สถานะ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th class="sortable" data-col="6" data-type="string">
+              <span class="th-inner">ตู้ที่ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th class="sortable" data-col="7" data-type="string">
+              <span class="th-inner">ผู้ดำเนินการ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+            </th>
+            <th style="text-align:center;min-width:70px">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <strong>IT Facilities Department</strong><br>
+  Tel : 02-017-7777 Ext. 7442 &nbsp;|&nbsp;
+  Hotline : 083-989-0894, 083-989-1551<br>
+  เวลาทำการ 11:00 – 20:00 น.
+</footer>
+
+<!-- ── CONFIRM DELETE MODAL ── -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-header">🗑️ ยืนยันการลบข้อมูล</div>
+    <div class="confirm-body">
+      คุณต้องการลบข้อมูลของ<br>
+      <span class="target-name" id="confirmName"></span><br>
+      ออกจากระบบ? การดำเนินการนี้ไม่สามารถย้อนกลับได้
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-red" id="confirmDeleteBtn">🗑️ ลบข้อมูล</button>
+      <button class="btn btn-gray" id="cancelDeleteBtn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span>➕ เพิ่มข้อมูลส่งเครื่องพนักงาน</span>
+      <button class="modal-close" id="closeModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>ID พนักงาน</label>
+          <input class="form-control" id="f-id" type="text" placeholder=""/>
+        </div>
+        <div class="form-group">
+          <label>เบอร์เครื่อง</label>
+          <input class="form-control" id="f-machine" type="text" placeholder=""/>
+        </div>
+        <div class="form-group">
+          <label>ชื่อ – สกุล</label>
+          <input class="form-control" id="f-name" type="text" placeholder=""/>
+        </div>
+        <div class="form-group">
+          <label>แผนก</label>
+          <input class="form-control" id="f-dept" type="text" placeholder=""/>
+        </div>
+        <div class="form-group">
+          <label>ประเภทเครื่อง</label>
+          <select class="form-control" id="f-type">
+            <option value="">-- เลือกประเภทเครื่อง --</option>
+            <option>NB (Notebook)</option>
+            <option>PC (Desktop)</option>
+            <option>Tablet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>สถานะ</label>
+          <select class="form-control" id="f-status">
+            <option value="">-- เลือกสถานะ --</option>
+            <option>พร้อมใช้งาน</option>
+            <option>ขาดเมล์+WiFi</option>
+            <option>ซ่อม</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ตู้ที่</label>
+          <select class="form-control" id="f-cabinet">
+            <option value="">-- เลือกตู้ --</option>
+            <option>ตู้ที่1</option>
+            <option>ตู้ที่2</option>
+            <option>ตู้ที่3</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ผู้ส่งเครื่อง</label>
+          <input class="form-control" id="f-operator" type="text" placeholder=""/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-green" id="addRowBtn">👤+ เพิ่มข้อมูล</button>
+      <button class="btn btn-gray" id="closeModal2">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Sample data ──────────────────────────────────────────────────────────
+  let tableData = [
+    { date:'2025-03-10', idName:'E001 / สมชาย ใจดี',       machine:'NB-0042', dept:'IT',       type:'NB (Notebook)', status:'พร้อมใช้งาน',  cabinet:'ตู้ที่1', operator:'นายเอ' },
+    { date:'2025-01-05', idName:'E002 / สมหญิง รักสวย',   machine:'NB-0017', dept:'HR',       type:'NB (Notebook)', status:'ขาดเมล์+WiFi', cabinet:'ตู้ที่2', operator:'นายบี' },
+    { date:'2025-06-20', idName:'E003 / วิชัย แก้วมณี',    machine:'PC-0055', dept:'Finance',  type:'PC (Desktop)',  status:'ซ่อม',          cabinet:'ตู้ที่3', operator:'นายซี' },
+    { date:'2024-11-30', idName:'E004 / ปราณี สุขใส',      machine:'TB-0008', dept:'Marketing',type:'Tablet',        status:'พร้อมใช้งาน',  cabinet:'ตู้ที่1', operator:'นายเอ' },
+    { date:'2025-08-14', idName:'E005 / กิตติ มีสุข',      machine:'NB-0031', dept:'Sales',    type:'NB (Notebook)', status:'ขาดเมล์+WiFi', cabinet:'ตู้ที่2', operator:'นายดี' },
+    { date:'2024-07-22', idName:'E006 / อนุชา ทองดี',      machine:'PC-0019', dept:'IT',       type:'PC (Desktop)',  status:'พร้อมใช้งาน',  cabinet:'ตู้ที่3', operator:'นายบี' },
+    { date:'2025-02-18', idName:'E007 / ลลิตา ฟ้าใส',      machine:'NB-0066', dept:'Admin',    type:'NB (Notebook)', status:'ซ่อม',          cabinet:'ตู้ที่1', operator:'นายซี' },
+    { date:'2025-05-03', idName:'E008 / ธนพล สมบูรณ์',     machine:'TB-0022', dept:'HR',       type:'Tablet',        status:'พร้อมใช้งาน',  cabinet:'ตู้ที่2', operator:'นายเอ' },
+  ];
+
+  let sortCol  = null;   // currently sorted column index
+  let sortDir  = null;   // 'asc' | 'desc'
+  let searchTerm = '';
+
+  // ── Status chip helper ───────────────────────────────────────────────────
+  function statusChip(s) {
+    if (s === 'พร้อมใช้งาน')  return `<span class="chip chip-green">✅ ${s}</span>`;
+    if (s === 'ขาดเมล์+WiFi') return `<span class="chip chip-red">⚠️ ${s}</span>`;
+    if (s === 'ซ่อม')          return `<span class="chip chip-orange">🔧 ${s}</span>`;
+    return `<span class="chip chip-blue">${s}</span>`;
+  }
+
+  // ── Render table ─────────────────────────────────────────────────────────
+  function renderTable() {
+    const body = document.getElementById('tableBody');
+
+    // filter — keep original index for deletion
+    let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => {
+      if (!searchTerm) return true;
+      const q = searchTerm.toLowerCase();
+      return r.idName.toLowerCase().includes(q) ||
+             r.machine.toLowerCase().includes(q) ||
+             r.dept.toLowerCase().includes(q);
+    });
+
+    // sort
+    if (sortCol !== null) {
+      const cols = ['date','idName','machine','dept','type','status','cabinet','operator'];
+      const key  = cols[sortCol];
+      rows = [...rows].sort((a, b) => {
+        let va = a[key], vb = b[key];
+        if (sortCol === 0) {
+          va = new Date(va); vb = new Date(vb);
+          return sortDir === 'asc' ? va - vb : vb - va;
+        }
+        va = va.toLowerCase(); vb = vb.toLowerCase();
+        if (va < vb) return sortDir === 'asc' ? -1 : 1;
+        if (va > vb) return sortDir === 'asc' ?  1 : -1;
+        return 0;
+      });
+    }
+
+    if (rows.length === 0) {
+      body.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูลที่ค้นหา</p></div></td></tr>`;
+      return;
+    }
+
+    body.innerHTML = rows.map((r, i) => {
+      const sc = sortCol !== null ? sortCol + 1 : -1;
+      return `<tr>
+        <td>${i + 1}</td>
+        <td class="${sc===1?'sorted-col':''}">${formatDate(r.date)}</td>
+        <td class="${sc===2?'sorted-col':''}">${r.idName}</td>
+        <td class="${sc===3?'sorted-col':''}">${r.machine}</td>
+        <td class="${sc===4?'sorted-col':''}">${r.dept}</td>
+        <td class="${sc===5?'sorted-col':''}">${r.type}</td>
+        <td class="${sc===6?'sorted-col':''}">${statusChip(r.status)}</td>
+        <td class="${sc===7?'sorted-col':''}">${r.cabinet}</td>
+        <td class="${sc===8?'sorted-col':''}">${r.operator}</td>
+        <td style="text-align:center">
+          <button class="btn-del" title="ลบข้อมูล" onclick="askDelete(${r.origIdx})">🗑️</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    updateStats();
+  }
+
+  function formatDate(d) {
+    const [y, m, day] = d.split('-');
+    return `${day}/${m}/${y}`;
+  }
+
+  // ── Update header sort indicators ────────────────────────────────────────
+  function updateHeaders() {
+    document.querySelectorAll('thead th.sortable').forEach(th => {
+      const col = parseInt(th.dataset.col);
+      th.classList.remove('sort-asc', 'sort-desc');
+      if (sortCol === col) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    });
+  }
+
+  // ── Stats cards ───────────────────────────────────────────────────────────
+  function updateStats() {
+    const total  = tableData.length;
+    const ready  = tableData.filter(r => r.status === 'พร้อมใช้งาน').length;
+    const issue  = tableData.filter(r => r.status === 'ขาดเมล์+WiFi').length;
+    const repair = tableData.filter(r => r.status === 'ซ่อม').length;
+    document.getElementById('stat-total').textContent  = total;
+    document.getElementById('stat-ready').textContent  = ready;
+    document.getElementById('stat-issue').textContent  = issue;
+    document.getElementById('stat-repair').textContent = repair;
+  }
+
+  // ── Sort click handler ────────────────────────────────────────────────────
+  document.querySelectorAll('thead th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = parseInt(th.dataset.col);
+      if (sortCol === col) {
+        // cycle: asc → desc → none
+        if (sortDir === 'asc')  { sortDir = 'desc'; }
+        else                    { sortCol = null; sortDir = null; }
+      } else {
+        sortCol = col;
+        sortDir = 'asc';
+      }
+      updateHeaders();
+      renderTable();
+    });
+  });
+
+  // ── Reset sort ────────────────────────────────────────────────────────────
+  document.getElementById('resetSort').addEventListener('click', () => {
+    sortCol = null; sortDir = null; searchTerm = '';
+    document.getElementById('searchInput').value = '';
+    updateHeaders();
+    renderTable();
+  });
+
+  // ── Search ────────────────────────────────────────────────────────────────
+  document.getElementById('searchBtn').addEventListener('click', () => {
+    searchTerm = document.getElementById('searchInput').value.trim();
+    renderTable();
+  });
+  document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { searchTerm = e.target.value.trim(); renderTable(); }
+  });
+
+  // ── Delete ────────────────────────────────────────────────────────────────
+  let pendingDeleteIdx = null;
+  const confirmOverlay   = document.getElementById('confirmOverlay');
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  const cancelDeleteBtn  = document.getElementById('cancelDeleteBtn');
+
+  function askDelete(origIdx) {
+    pendingDeleteIdx = origIdx;
+    document.getElementById('confirmName').textContent = tableData[origIdx].idName + ' (' + tableData[origIdx].machine + ')';
+    confirmOverlay.classList.add('active');
+  }
+
+  confirmDeleteBtn.addEventListener('click', () => {
+    if (pendingDeleteIdx !== null) {
+      tableData.splice(pendingDeleteIdx, 1);
+      pendingDeleteIdx = null;
+      confirmOverlay.classList.remove('active');
+      renderTable();
+    }
+  });
+
+  cancelDeleteBtn.addEventListener('click', () => {
+    pendingDeleteIdx = null;
+    confirmOverlay.classList.remove('active');
+  });
+  confirmOverlay.addEventListener('click', e => {
+    if (e.target === confirmOverlay) { pendingDeleteIdx = null; confirmOverlay.classList.remove('active'); }
+  });
+
+  // ── Add row from modal ────────────────────────────────────────────────────
+  document.getElementById('addRowBtn').addEventListener('click', () => {
+    const id       = document.getElementById('f-id').value.trim();
+    const name     = document.getElementById('f-name').value.trim();
+    const machine  = document.getElementById('f-machine').value.trim();
+    const dept     = document.getElementById('f-dept').value.trim();
+    const type     = document.getElementById('f-type').value;
+    const status   = document.getElementById('f-status').value;
+    const cabinet  = document.getElementById('f-cabinet').value;
+    const operator = document.getElementById('f-operator').value.trim();
+
+    if (!id || !name || !machine) {
+      alert('กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง');
+      return;
+    }
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    tableData.push({
+      date: dateStr,
+      idName: `${id} / ${name}`,
+      machine, dept,
+      type: type || '—',
+      status: status || '—',
+      cabinet: cabinet || '—',
+      operator: operator || '—',
+    });
+
+    // clear form
+    ['f-id','f-name','f-machine','f-dept','f-operator'].forEach(id => document.getElementById(id).value = '');
+    ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value = '');
+
+    overlay.classList.remove('active');
+    renderTable();
+  });
+
+  // ── Modal open/close ──────────────────────────────────────────────────────
+  const overlay   = document.getElementById('modalOverlay');
+  const openBtn   = document.getElementById('openModal');
+  const closeBtn  = document.getElementById('closeModal');
+  const closeBtn2 = document.getElementById('closeModal2');
+
+  openBtn.addEventListener('click',   () => overlay.classList.add('active'));
+  closeBtn.addEventListener('click',  () => overlay.classList.remove('active'));
+  closeBtn2.addEventListener('click', () => overlay.classList.remove('active'));
+  overlay.addEventListener('click',   e => { if (e.target === overlay) overlay.classList.remove('active'); });
+  document.addEventListener('keydown',e => { if (e.key === 'Escape') overlay.classList.remove('active'); });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  renderTable();
+</script>
+</body>
+</html>
