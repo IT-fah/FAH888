@@ -563,43 +563,65 @@
 </div>
 
 <script>
-  // ── Google Sheets config ─────────────────────────────────────────────────
-  const SHEET_ID   = '1IXhGembXdq8sDDNTjqolRD3MSUk7mvlN90o0TGJ8ZQ0';
-  const SHEET_NAME = 'Sheet1'; // เปลี่ยนถ้าชื่อ tab ไม่ใช่ Sheet1
+  // ── Apps Script URL (อ่าน + เขียน + ลบ ผ่าน Sheets จริง) ──────────────
+  const API_URL = 'https://script.google.com/macros/s/AKfycbx9TsITbTkkx2HIX2orYj2N0Av5gPR6p6En3ZYfBGytwYEL32DS1pkQNx1KwkkkZAv0Xg/exec';
 
-  let tableData = [];
-
-  let sortCol  = null;   // currently sorted column index
-  let sortDir  = null;   // 'asc' | 'desc'
+  let tableData  = [];
+  let sortCol    = null;
+  let sortDir    = null;
   let searchTerm = '';
 
-  // ── Status chip helper ───────────────────────────────────────────────────
+  // ── Helpers ───────────────────────────────────────────────────────────────
   function statusChip(s) {
     if (s === 'พร้อมใช้งาน')  return `<span class="chip chip-green">✅ ${s}</span>`;
     if (s === 'ขาดเมล์+WiFi') return `<span class="chip chip-red">⚠️ ${s}</span>`;
     if (s === 'ซ่อม')          return `<span class="chip chip-orange">🔧 ${s}</span>`;
-    return `<span class="chip chip-blue">${s}</span>`;
+    return `<span class="chip chip-blue">${s || '—'}</span>`;
   }
 
-  // ── Render table ─────────────────────────────────────────────────────────
+  function formatDate(d) {
+    if (!d) return '—';
+    const parts = d.split('-');
+    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    return d;
+  }
+
+  function showLoading(msg) {
+    document.getElementById('tableBody').innerHTML = `
+      <tr><td colspan="10">
+        <div class="empty-state">
+          <div style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">⏳</div>
+          <p style="margin-top:10px">${msg}</p>
+        </div>
+      </td></tr>`;
+  }
+
+  function showError(msg) {
+    document.getElementById('tableBody').innerHTML = `
+      <tr><td colspan="10">
+        <div class="empty-state">
+          <div class="empty-icon">⚠️</div>
+          <p>${msg}</p>
+        </div>
+      </td></tr>`;
+  }
+
+  // ── Render table ──────────────────────────────────────────────────────────
   function renderTable() {
     const body = document.getElementById('tableBody');
-
-    // filter — keep original index for deletion
     let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => {
       if (!searchTerm) return true;
       const q = searchTerm.toLowerCase();
-      return r.idName.toLowerCase().includes(q) ||
-             r.machine.toLowerCase().includes(q) ||
-             r.dept.toLowerCase().includes(q);
+      return (r.idName  || '').toLowerCase().includes(q) ||
+             (r.machine || '').toLowerCase().includes(q) ||
+             (r.dept    || '').toLowerCase().includes(q);
     });
 
-    // sort
     if (sortCol !== null) {
       const cols = ['date','idName','machine','dept','type','status','cabinet','operator'];
       const key  = cols[sortCol];
       rows = [...rows].sort((a, b) => {
-        let va = a[key], vb = b[key];
+        let va = a[key] || '', vb = b[key] || '';
         if (sortCol === 0) {
           va = new Date(va); vb = new Date(vb);
           return sortDir === 'asc' ? va - vb : vb - va;
@@ -612,8 +634,8 @@
     }
 
     if (rows.length === 0) {
-      body.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูลที่ค้นหา</p></div></td></tr>`;
-      return;
+      body.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูล</p></div></td></tr>`;
+      updateStats(); return;
     }
 
     body.innerHTML = rows.map((r, i) => {
@@ -621,140 +643,85 @@
       return `<tr>
         <td>${i + 1}</td>
         <td class="${sc===1?'sorted-col':''}">${formatDate(r.date)}</td>
-        <td class="${sc===2?'sorted-col':''}">${r.idName}</td>
-        <td class="${sc===3?'sorted-col':''}">${r.machine}</td>
-        <td class="${sc===4?'sorted-col':''}">${r.dept}</td>
-        <td class="${sc===5?'sorted-col':''}">${r.type}</td>
+        <td class="${sc===2?'sorted-col':''}">${r.idName || '—'}</td>
+        <td class="${sc===3?'sorted-col':''}">${r.machine || '—'}</td>
+        <td class="${sc===4?'sorted-col':''}">${r.dept || '—'}</td>
+        <td class="${sc===5?'sorted-col':''}">${r.type || '—'}</td>
         <td class="${sc===6?'sorted-col':''}">${statusChip(r.status)}</td>
-        <td class="${sc===7?'sorted-col':''}">${r.cabinet}</td>
-        <td class="${sc===8?'sorted-col':''}">${r.operator}</td>
+        <td class="${sc===7?'sorted-col':''}">${r.cabinet || '—'}</td>
+        <td class="${sc===8?'sorted-col':''}">${r.operator || '—'}</td>
         <td style="text-align:center">
           <button class="btn-del" title="ลบข้อมูล" onclick="askDelete(${r.origIdx})">🗑️</button>
         </td>
       </tr>`;
     }).join('');
-
     updateStats();
   }
 
-  function formatDate(d) {
-    const [y, m, day] = d.split('-');
-    return `${day}/${m}/${y}`;
-  }
-
-  // ── Update header sort indicators ────────────────────────────────────────
   function updateHeaders() {
     document.querySelectorAll('thead th.sortable').forEach(th => {
-      const col = parseInt(th.dataset.col);
       th.classList.remove('sort-asc', 'sort-desc');
-      if (sortCol === col) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      if (sortCol === parseInt(th.dataset.col))
+        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
     });
   }
 
-  // ── Stats cards ───────────────────────────────────────────────────────────
   function updateStats() {
-    const total  = tableData.length;
-    const ready  = tableData.filter(r => r.status === 'พร้อมใช้งาน').length;
-    const issue  = tableData.filter(r => r.status === 'ขาดเมล์+WiFi').length;
-    const repair = tableData.filter(r => r.status === 'ซ่อม').length;
-    document.getElementById('stat-total').textContent  = total;
-    document.getElementById('stat-ready').textContent  = ready;
-    document.getElementById('stat-issue').textContent  = issue;
-    document.getElementById('stat-repair').textContent = repair;
+    document.getElementById('stat-total').textContent  = tableData.length;
+    document.getElementById('stat-ready').textContent  = tableData.filter(r => r.status === 'พร้อมใช้งาน').length;
+    document.getElementById('stat-issue').textContent  = tableData.filter(r => r.status === 'ขาดเมล์+WiFi').length;
+    document.getElementById('stat-repair').textContent = tableData.filter(r => r.status === 'ซ่อม').length;
   }
 
-  // ── Sort click handler ────────────────────────────────────────────────────
+  // ── Sort ──────────────────────────────────────────────────────────────────
   document.querySelectorAll('thead th.sortable').forEach(th => {
     th.addEventListener('click', () => {
       const col = parseInt(th.dataset.col);
-      if (sortCol === col) {
-        // cycle: asc → desc → none
-        if (sortDir === 'asc')  { sortDir = 'desc'; }
-        else                    { sortCol = null; sortDir = null; }
-      } else {
-        sortCol = col;
-        sortDir = 'asc';
-      }
-      updateHeaders();
-      renderTable();
+      if (sortCol === col) { sortDir === 'asc' ? sortDir = 'desc' : (sortCol = sortDir = null); }
+      else { sortCol = col; sortDir = 'asc'; }
+      updateHeaders(); renderTable();
     });
   });
 
   // ── Search ────────────────────────────────────────────────────────────────
   document.getElementById('searchBtn').addEventListener('click', () => {
-    searchTerm = document.getElementById('searchInput').value.trim();
-    renderTable();
+    searchTerm = document.getElementById('searchInput').value.trim(); renderTable();
   });
   document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') { searchTerm = e.target.value.trim(); renderTable(); }
   });
 
-  // ── Delete ────────────────────────────────────────────────────────────────
-  let pendingDeleteIdx = null;
-  const confirmOverlay   = document.getElementById('confirmOverlay');
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-  const cancelDeleteBtn  = document.getElementById('cancelDeleteBtn');
+  // ── LOAD from Apps Script (GET) ───────────────────────────────────────────
+  async function loadFromSheets() {
+    showLoading('กำลังโหลดข้อมูลจาก Google Sheets...');
+    try {
+      const res  = await fetch(API_URL);
+      const json = await res.json();
+      if (json.status !== 'ok') throw new Error(json.message || 'error');
 
-  function askDelete(origIdx) {
-    pendingDeleteIdx = origIdx;
-    document.getElementById('confirmName').textContent = tableData[origIdx].idName + ' (' + tableData[origIdx].machine + ')';
-    confirmOverlay.classList.add('active');
+      // map keys จาก Sheets → internal (รองรับทั้งภาษาไทยและอังกฤษ)
+      tableData = json.data.map(row => {
+        const k = obj => Object.keys(row).find(k => k.toLowerCase().replace(/\s/g,'').includes(obj)) || '';
+        return {
+          date:     row[k('date')] || row[k('วันที่')] || '',
+          idName:   row[k('idname')] || row[k('id')] || row[k('ชื่อ')] || '',
+          machine:  row[k('machine')] || row[k('เบอร์')] || '',
+          dept:     row[k('dept')] || row[k('แผนก')] || '',
+          type:     row[k('type')] || row[k('ประเภท')] || '',
+          status:   row[k('status')] || row[k('สถานะ')] || '',
+          cabinet:  row[k('cabinet')] || row[k('ตู้')] || '',
+          operator: row[k('operator')] || row[k('ผู้')] || '',
+        };
+      }).filter(r => r.idName);
+
+      renderTable();
+    } catch (err) {
+      showError(`โหลดข้อมูลไม่สำเร็จ: <small style="color:#e53935">${err.message}</small>`);
+      console.error(err);
+    }
   }
 
-  confirmDeleteBtn.addEventListener('click', () => {
-    if (pendingDeleteIdx !== null) {
-      tableData.splice(pendingDeleteIdx, 1);
-      pendingDeleteIdx = null;
-      confirmOverlay.classList.remove('active');
-      renderTable();
-    }
-  });
-
-  cancelDeleteBtn.addEventListener('click', () => {
-    pendingDeleteIdx = null;
-    confirmOverlay.classList.remove('active');
-  });
-  confirmOverlay.addEventListener('click', e => {
-    if (e.target === confirmOverlay) { pendingDeleteIdx = null; confirmOverlay.classList.remove('active'); }
-  });
-
-  // ── Add row from modal ────────────────────────────────────────────────────
-  document.getElementById('addRowBtn').addEventListener('click', () => {
-    const id       = document.getElementById('f-id').value.trim();
-    const name     = document.getElementById('f-name').value.trim();
-    const machine  = document.getElementById('f-machine').value.trim();
-    const dept     = document.getElementById('f-dept').value.trim();
-    const type     = document.getElementById('f-type').value;
-    const status   = document.getElementById('f-status').value;
-    const cabinet  = document.getElementById('f-cabinet').value;
-    const operator = document.getElementById('f-operator').value.trim();
-
-    if (!id || !name || !machine) {
-      alert('กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง');
-      return;
-    }
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-
-    tableData.push({
-      date: dateStr,
-      idName: `${id} / ${name}`,
-      machine, dept,
-      type: type || '—',
-      status: status || '—',
-      cabinet: cabinet || '—',
-      operator: operator || '—',
-    });
-
-    // clear form
-    ['f-id','f-name','f-machine','f-dept','f-operator'].forEach(id => document.getElementById(id).value = '');
-    ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value = '');
-
-    overlay.classList.remove('active');
-    renderTable();
-  });
-
-  // ── Modal open/close ──────────────────────────────────────────────────────
+  // ── ADD row → Apps Script (POST) ──────────────────────────────────────────
   const overlay   = document.getElementById('modalOverlay');
   const openBtn   = document.getElementById('openModal');
   const closeBtn  = document.getElementById('closeModal');
@@ -766,98 +733,91 @@
   overlay.addEventListener('click',   e => { if (e.target === overlay) overlay.classList.remove('active'); });
   document.addEventListener('keydown',e => { if (e.key === 'Escape') overlay.classList.remove('active'); });
 
-  // ── Load from Google Sheets ───────────────────────────────────────────────
-  function showLoading(msg) {
-    document.getElementById('tableBody').innerHTML = `
-      <tr><td colspan="10">
-        <div class="empty-state">
-          <div class="empty-icon" style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">⏳</div>
-          <p style="margin-top:10px">${msg}</p>
-        </div>
-      </td></tr>`;
-  }
+  document.getElementById('addRowBtn').addEventListener('click', async () => {
+    const id       = document.getElementById('f-id').value.trim();
+    const name     = document.getElementById('f-name').value.trim();
+    const machine  = document.getElementById('f-machine').value.trim();
+    const dept     = document.getElementById('f-dept').value.trim();
+    const type     = document.getElementById('f-type').value;
+    const status   = document.getElementById('f-status').value;
+    const cabinet  = document.getElementById('f-cabinet').value;
+    const operator = document.getElementById('f-operator').value.trim();
 
-  function parseCSVLine(line) {
-    // handle quoted fields (commas inside quotes)
-    const result = [];
-    let cur = '', inQuote = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') { inQuote = !inQuote; }
-      else if (ch === ',' && !inQuote) { result.push(cur.trim()); cur = ''; }
-      else { cur += ch; }
+    if (!id || !name || !machine) {
+      alert('กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง'); return;
     }
-    result.push(cur.trim());
-    return result;
-  }
 
-  async function loadFromSheets() {
-    showLoading('กำลังโหลดข้อมูลจาก Google Sheets...');
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}&cachebust=${Date.now()}`;
+    const today   = new Date();
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    const addBtn = document.getElementById('addRowBtn');
+    addBtn.disabled = true; addBtn.textContent = '⏳ กำลังบันทึก...';
+
     try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const csv = await res.text();
-      const lines = csv.trim().split('\n').filter(l => l.trim());
-      if (lines.length < 2) { tableData = []; renderTable(); return; }
+      const res  = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'add',
+          date: dateStr, idName: `${id} / ${name}`,
+          machine, dept,
+          type: type || '—', status: status || '—',
+          cabinet: cabinet || '—', operator: operator || '—',
+        })
+      });
+      const json = await res.json();
+      if (json.status !== 'ok') throw new Error(json.message || 'error');
 
-      const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/\s+/g,''));
-
-      // map sheet columns → internal keys
-      // รองรับทั้งชื่อคอลัมน์ภาษาไทยและอังกฤษ
-      const colMap = {
-        date:     ['date','วันที่รับเครื่อง','วันที่'],
-        idName:   ['idname','id/ชื่อ-สกุล','id','ชื่อ-สกุล','idชื่อ-สกุล'],
-        machine:  ['machine','เบอร์เครื่อง','เบอร์'],
-        dept:     ['dept','department','แผนก'],
-        type:     ['type','ประเภท','ประเภทเครื่อง'],
-        status:   ['status','สถานะ'],
-        cabinet:  ['cabinet','ตู้ที่','ตู้'],
-        operator: ['operator','ผู้ดำเนินการ','ผู้ส่งเครื่อง'],
-      };
-
-      function findCol(key) {
-        for (const alias of colMap[key]) {
-          const idx = headers.findIndex(h => h.includes(alias));
-          if (idx !== -1) return idx;
-        }
-        return -1;
-      }
-
-      const colIdx = {};
-      for (const key of Object.keys(colMap)) colIdx[key] = findCol(key);
-
-      tableData = lines.slice(1).map(line => {
-        const vals = parseCSVLine(line);
-        const get  = key => colIdx[key] !== -1 ? (vals[colIdx[key]] || '').replace(/^"|"$/g,'').trim() : '—';
-        return {
-          date:     get('date'),
-          idName:   get('idName'),
-          machine:  get('machine'),
-          dept:     get('dept'),
-          type:     get('type'),
-          status:   get('status'),
-          cabinet:  get('cabinet'),
-          operator: get('operator'),
-        };
-      }).filter(r => r.idName && r.idName !== '—');
-
-      renderTable();
+      // clear form
+      ['f-id','f-name','f-machine','f-dept','f-operator'].forEach(id => document.getElementById(id).value = '');
+      ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value = '');
+      overlay.classList.remove('active');
+      await loadFromSheets(); // reload จาก Sheets จริง
     } catch (err) {
-      document.getElementById('tableBody').innerHTML = `
-        <tr><td colspan="10">
-          <div class="empty-state">
-            <div class="empty-icon">⚠️</div>
-            <p>โหลดข้อมูลไม่สำเร็จ<br><small style="color:#e53935">${err.message}</small><br><br>
-            <strong>ตรวจสอบ:</strong> Google Sheets ต้องตั้งเป็น "Anyone with the link can view"</p>
-          </div>
-        </td></tr>`;
-      console.error('Sheets error:', err);
+      alert('บันทึกไม่สำเร็จ: ' + err.message);
+    } finally {
+      addBtn.disabled = false; addBtn.innerHTML = '👤+ เพิ่มข้อมูล';
     }
+  });
+
+  // ── DELETE row → Apps Script (POST) ──────────────────────────────────────
+  let pendingDeleteIdx = null;
+  const confirmOverlay   = document.getElementById('confirmOverlay');
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  const cancelDeleteBtn  = document.getElementById('cancelDeleteBtn');
+
+  function askDelete(origIdx) {
+    pendingDeleteIdx = origIdx;
+    document.getElementById('confirmName').textContent =
+      (tableData[origIdx].idName || '') + ' (' + (tableData[origIdx].machine || '') + ')';
+    confirmOverlay.classList.add('active');
   }
 
-  // ── Init ──────────────────────────────────────────────────────────────────
-  loadFromSheets();
+  confirmDeleteBtn.addEventListener('click', async () => {
+    if (pendingDeleteIdx === null) return;
+    confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = '⏳ กำลังลบ...';
+    try {
+      const res  = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'delete', rowIndex: pendingDeleteIdx })
+      });
+      const json = await res.json();
+      if (json.status !== 'ok') throw new Error(json.message || 'error');
+      pendingDeleteIdx = null;
+      confirmOverlay.classList.remove('active');
+      await loadFromSheets();
+    } catch (err) {
+      alert('ลบไม่สำเร็จ: ' + err.message);
+    } finally {
+      confirmDeleteBtn.disabled = false; confirmDeleteBtn.innerHTML = '🗑️ ลบข้อมูล';
+    }
+  });
+
+  cancelDeleteBtn.addEventListener('click', () => {
+    pendingDeleteIdx = null; confirmOverlay.classList.remove('active');
+  });
+  confirmOverlay.addEventListener('click', e => {
+    if (e.target === confirmOverlay) { pendingDeleteIdx = null; confirmOverlay.classList.remove('active'); }
+  });
 
   // ── Refresh button ────────────────────────────────────────────────────────
   document.getElementById('resetSort').addEventListener('click', () => {
@@ -866,6 +826,9 @@
     updateHeaders();
     loadFromSheets();
   });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadFromSheets();
 </script>
 </body>
 </html>
