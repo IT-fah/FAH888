@@ -745,39 +745,51 @@
     showToast('⏳ กำลังบันทึกข้อมูลไปยัง Google Sheets...', 'loading', 0);
 
     try {
-      const res  = await fetch(GAS_URL, {
-        method:  'POST',
-        // GAS ต้องการ text/plain เพราะ CORS บน GAS ไม่รองรับ application/json preflight
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body:    JSON.stringify(payload),
+      /*
+        ใช้ GET + query params แทน POST เพื่อแก้ปัญหา CORS บน GitHub Pages
+        GAS จะรับข้อมูลใน doGet(e) ผ่าน e.parameter
+        ใช้ no-cors mode + Image trick เพราะ GAS redirect หลาย hop
+        แล้ว reload ข้อมูลใหม่หลัง delay เพื่อยืนยันว่าบันทึกสำเร็จ
+      */
+      const params = new URLSearchParams({
+        action:   'add',
+        date:     payload.date,
+        idName:   payload.idName,
+        machine:  payload.machine,
+        dept:     payload.dept,
+        type:     payload.type,
+        status:   payload.status,
+        cabinet:  payload.cabinet,
+        operator: payload.operator,
       });
-      const text = await res.text();
-      let json = {};
-      try { json = JSON.parse(text); } catch(_) {}
+      const fullUrl = `${GAS_URL}?${params.toString()}`;
 
-      if (json.status === 'success' || json.result === 'added' || res.ok) {
-        // เพิ่มลง tableData โดยเก็บ rowIndex ที่ได้จาก GAS (ถ้ามี)
-        tableData.push({
-          date:     dateStr,
-          idName:   idName,
-          machine, dept,
-          type:     type     || '—',
-          status:   status   || '—',
-          cabinet:  cabinet  || '—',
-          operator: operator || '—',
-          rowIndex: json.rowIndex || '',
-        });
+      // วิธีที่ 1: fetch no-cors (ไม่ได้ response แต่ request ไปถึง GAS)
+      await fetch(fullUrl, { method: 'GET', mode: 'no-cors' });
 
-        // Clear form
-        formFields.forEach(fid  => document.getElementById(fid).value  = '');
-        formSelects.forEach(fid => document.getElementById(fid).value  = '');
+      // เพิ่มลง tableData ทันที (Optimistic UI)
+      tableData.push({
+        date:     dateStr,
+        idName:   idName,
+        machine, dept,
+        type:     type     || '—',
+        status:   status   || '—',
+        cabinet:  cabinet  || '—',
+        operator: operator || '—',
+        rowIndex: '',
+      });
 
-        document.getElementById('modalOverlay').classList.remove('active');
-        renderTable();
-        showToast('✅ เพิ่มข้อมูลสำเร็จ!', 'success');
-      } else {
-        throw new Error(json.message || 'ไม่ทราบสาเหตุ');
-      }
+      // Clear form
+      formFields.forEach(fid  => document.getElementById(fid).value  = '');
+      formSelects.forEach(fid => document.getElementById(fid).value  = '');
+
+      document.getElementById('modalOverlay').classList.remove('active');
+      renderTable();
+      showToast('✅ เพิ่มข้อมูลสำเร็จ! กำลังโหลดข้อมูลใหม่...', 'success', 0);
+
+      // รอ 2 วิ แล้ว reload จาก GAS เพื่อยืนยันข้อมูลและรับ rowIndex
+      setTimeout(() => loadFromGAS(), 2000);
+
     } catch (err) {
       showToast(`❌ บันทึกไม่สำเร็จ: ${err.message}`, 'error', 5000);
       console.error('Add error:', err);
