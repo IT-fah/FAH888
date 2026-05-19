@@ -826,14 +826,17 @@
     updateHeaders();
     loadFromSheets();
   });
-  <!-- ── PASSWORD MODAL ── -->
+ <!-- ── PASSWORD MODAL ── -->
 <div class="confirm-overlay" id="passwordOverlay" style="z-index:700">
   <div class="confirm-box">
-    <div class="confirm-header" style="background:linear-gradient(90deg,#1565c0,#1976d2)">
+
+    <div class="confirm-header"
+         style="background:linear-gradient(90deg,#1565c0,#1976d2)">
       🔐 ยืนยันรหัสผ่านผู้ดูแลระบบ
     </div>
 
     <div class="confirm-body">
+
       <p style="margin-bottom:12px">
         กรุณากรอกรหัสผ่านก่อนลบข้อมูล
       </p>
@@ -847,24 +850,35 @@
       />
 
       <p id="pwError"
-         style="display:none;color:#c62828;font-size:.82rem;margin-top:8px">
+         style="display:none;
+                color:#c62828;
+                font-size:.82rem;
+                margin-top:8px">
+
          ❌ รหัสผ่านไม่ถูกต้อง
       </p>
+
     </div>
 
     <div class="confirm-footer">
-      <button class="btn btn-blue" id="confirmPwBtn">
+
+      <button class="btn btn-blue"
+              id="confirmPwBtn">
+
         ✅ ยืนยัน
       </button>
 
-      <button class="btn btn-gray" id="cancelPwBtn">
+      <button class="btn btn-gray"
+              id="cancelPwBtn">
+
         ยกเลิก
       </button>
+
     </div>
+
   </div>
 </div>
 
-});
   // ── Init ──────────────────────────────────────────────────────────────────
   loadFromSheets();
 </script>
