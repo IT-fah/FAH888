@@ -860,30 +860,51 @@ document.getElementById('cancelPwBtn').addEventListener('click', () => {
 <!-- ── PASSWORD MODAL ── -->
 <div class="confirm-overlay" id="passwordOverlay" style="z-index:700">
   <div class="confirm-box">
-    <div class="confirm-header" style="background:linear-gradient(90deg,#1565c0,#1976d2)">
+
+    <div class="confirm-header"
+         style="background:linear-gradient(90deg,#1565c0,#1976d2)">
       🔐 ยืนยันรหัสผ่านผู้ดูแลระบบ
     </div>
+
     <div class="confirm-body">
-      <p style="margin-bottom:12px">กรุณากรอกรหัสผ่านเพื่อยืนยันการลบข้อมูล</p>
-      <input id="deletePassword" type="password" class="form-control"
-        placeholder="กรอกรหัสผ่าน..." style="width:100%"/>
-      <p id="pwError" style="color:#c62828;font-size:0.82rem;margin-top:6px;display:none">
+
+      <p style="margin-bottom:12px">
+        กรุณากรอกรหัสผ่านเพื่อยืนยันการลบข้อมูล
+      </p>
+
+      <input
+        id="deletePassword"
+        type="password"
+        class="form-control"
+        placeholder="กรอกรหัสผ่าน..."
+        style="width:100%"
+      />
+
+      <p id="pwError"
+         style="display:none;
+                color:#c62828;
+                font-size:.82rem;
+                margin-top:8px">
+
         ❌ รหัสผ่านไม่ถูกต้อง
       </p>
+
     </div>
+
     <div class="confirm-footer">
+
       <button class="btn btn-blue" id="confirmPwBtn">
-    ✅ ยืนยัน
-  </button>
+        ✅ ยืนยัน
+      </button>
 
-  <button class="btn btn-gray" id="cancelPwBtn">
-    ยกเลิก
-  </button>
+      <button class="btn btn-gray" id="cancelPwBtn">
+        ยกเลิก
+      </button>
+
+    </div>
+
+  </div>
 </div>
 
-</div>
-</div>
-
-  
 </body>
 </html>
