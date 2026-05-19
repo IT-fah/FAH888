@@ -846,6 +846,35 @@
     </div>
   </div>
 </div>
+  function askDelete(origIdx) {const DELETE_PASSWORD = 'admin123'; // ← เปลี่ยนรหัสผ่านตรงนี้ได้เลย
+
+function askDelete(origIdx) {
+  pendingDeleteIdx = origIdx;
+
+  // เปิด modal รหัสผ่านก่อน
+  document.getElementById('deletePassword').value = '';
+  document.getElementById('pwError').style.display = 'none';
+  document.getElementById('passwordOverlay').classList.add('active');
+}
+
+document.getElementById('confirmPwBtn').addEventListener('click', () => {
+  const pw = document.getElementById('deletePassword').value;
+  if (pw !== DELETE_PASSWORD) {
+    document.getElementById('pwError').style.display = 'block';
+    document.getElementById('deletePassword').value = '';
+    return;
+  }
+  // รหัสถูก → ปิด password modal แล้วเปิด confirm modal
+  document.getElementById('passwordOverlay').classList.remove('active');
+  document.getElementById('confirmName').textContent =
+    (tableData[pendingDeleteIdx].idName || '') + ' (' + (tableData[pendingDeleteIdx].machine || '') + ')';
+  confirmOverlay.classList.add('active');
+});
+
+document.getElementById('cancelPwBtn').addEventListener('click', () => {
+  pendingDeleteIdx = null;
+  document.getElementById('passwordOverlay').classList.remove('active');
+});
   // ── Init ──────────────────────────────────────────────────────────────────
   loadFromSheets();
 </script>
