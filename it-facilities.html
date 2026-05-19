@@ -712,7 +712,7 @@
           cabinet:  row[k('cabinet')] || row[k('ตู้')] || '',
           operator: row[k('operator')] || row[k('ผู้')] || '',
         };
-      }).filter(r => r.idName);
+      }).filter(r => r.idName && r.idName !== '—');
 
       renderTable();
     } catch (err) {
@@ -756,6 +756,9 @@
     try {
       const res  = await fetch(API_URL, {
         method: 'POST',
+        headers: {
+         'Content-Type': 'text/plain;charset=utf-8'
+        },
         body: JSON.stringify({
           action: 'add',
           date: dateStr, idName: `${id} / ${name}`,
@@ -785,20 +788,17 @@
   const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
   const cancelDeleteBtn  = document.getElementById('cancelDeleteBtn');
 
-  function askDelete(origIdx) {
-    pendingDeleteIdx = origIdx;
-    document.getElementById('confirmName').textContent =
-      (tableData[origIdx].idName || '') + ' (' + (tableData[origIdx].machine || '') + ')';
-    confirmOverlay.classList.add('active');
-  }
-
+  
   confirmDeleteBtn.addEventListener('click', async () => {
     if (pendingDeleteIdx === null) return;
     confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = '⏳ กำลังลบ...';
     try {
       const res  = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'delete', rowIndex: pendingDeleteIdx })
+    method: 'POST',
+    headers: {
+    'Content-Type': 'text/plain;charset=utf-8'
+   },
+    body: JSON.stringify({ action: 'delete', rowIndex: pendingDeleteIdx })
       });
       const json = await res.json();
       if (json.status !== 'ok') throw new Error(json.message || 'error');
@@ -820,11 +820,16 @@
   });
 
   // ── Refresh button ────────────────────────────────────────────────────────
-  document.getElementById('resetSort').addEventListener('click', () => {
-    sortCol = null; sortDir = null; searchTerm = '';
-    document.getElementById('searchInput').value = '';
-    updateHeaders();
-    loadFromSheets();
+document.getElementById('resetSort').addEventListener('click', () => {
+  sortCol = null;
+  sortDir = null;
+  searchTerm = '';
+
+  document.getElementById('searchInput').value = '';
+
+  updateHeaders();
+  loadFromSheets();
+
   });
 function askDelete(origIdx) {
   pendingDeleteIdx = origIdx;
