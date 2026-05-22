@@ -699,7 +699,7 @@
     const body = document.getElementById('tableBody');
     let rows = tableData
   .map((r, origIdx) => ({ ...r, origIdx }))
-  .filter(r => !r.deleted)
+  .filter(r => String(r.deleted).toLowerCase() !== 'true')
   .filter(r => {
       if (!searchTerm) return true;
       const q = searchTerm.toLowerCase();
