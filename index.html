@@ -728,7 +728,7 @@
 
     body.innerHTML = rows.map((r, i) => {
       const sc = sortCol !== null ? sortCol + 1 : -1;
-      return `<tr>
+      return `<tr class="${r.deleted ? 'deleted-row' : ''}">
         <td>${i + 1}</td>
         <td class="${sc===1?'sorted-col':''}">${formatDate(r.date)}</td>
         <td class="${sc===2?'sorted-col':''}">${r.idName || '—'}</td>
