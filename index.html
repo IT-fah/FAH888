@@ -697,7 +697,10 @@
   // ── Render table ──────────────────────────────────────────────────────────
   function renderTable() {
     const body = document.getElementById('tableBody');
-    let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => {
+    let rows = tableData
+  .map((r, origIdx) => ({ ...r, origIdx }))
+  .filter(r => !r.deleted)
+  .filter(r => {
       if (!searchTerm) return true;
       const q = searchTerm.toLowerCase();
       return (r.idName  || '').toLowerCase().includes(q) ||
