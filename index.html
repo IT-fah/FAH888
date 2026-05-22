@@ -188,47 +188,26 @@
       font-size: 0.88rem; font-weight: 600; white-space: nowrap;
     }
 
-    /* ── Sortable header ── */
     thead th.sortable {
-      cursor: pointer;
-      user-select: none;
-      transition: background .15s;
+      cursor: pointer; user-select: none; transition: background .15s;
     }
-    thead th.sortable:hover {
-      background: rgba(255,255,255,0.15);
-    }
-    thead th.sortable .th-inner {
-      display: inline-flex; align-items: center; gap: 6px;
-    }
+    thead th.sortable:hover { background: rgba(255,255,255,0.15); }
+    thead th.sortable .th-inner { display: inline-flex; align-items: center; gap: 6px; }
     .sort-icon {
       display: inline-flex; flex-direction: column;
       line-height: 1; font-size: 0.65rem; opacity: 0.5;
-      transition: opacity .15s;
-      gap: 1px;
+      transition: opacity .15s; gap: 1px;
     }
     thead th.sortable:hover .sort-icon { opacity: 0.8; }
     thead th.sort-asc  .sort-icon,
     thead th.sort-desc .sort-icon { opacity: 1; }
-
-    /* active arrow bright, inactive arrow dim */
     thead th.sort-asc  .sort-icon .arrow-up   { opacity: 1; color: #fff; }
     thead th.sort-asc  .sort-icon .arrow-down { opacity: 0.3; }
     thead th.sort-desc .sort-icon .arrow-up   { opacity: 0.3; }
     thead th.sort-desc .sort-icon .arrow-down { opacity: 1; color: #fff; }
-
-    /* highlight sorted column header */
-    thead th.sort-asc,
-    thead th.sort-desc {
-      background: rgba(255,255,255,0.18);
-    }
-
-    /* highlight sorted column cells */
-    td.sorted-col {
-      background: #f0f6ff;
-    }
-    tbody tr:hover td.sorted-col {
-      background: #e3f0ff;
-    }
+    thead th.sort-asc, thead th.sort-desc { background: rgba(255,255,255,0.18); }
+    td.sorted-col { background: #f0f6ff; }
+    tbody tr:hover td.sorted-col { background: #e3f0ff; }
 
     tbody tr { border-bottom: 1px solid #eef2f8; transition: background .12s; }
     tbody tr:last-child { border-bottom: none; }
@@ -238,8 +217,7 @@
     td { padding: 13px 16px; font-size: 0.88rem; vertical-align: middle; }
 
     .empty-state {
-      text-align: center; padding: 64px 20px;
-      color: var(--gray-text);
+      text-align: center; padding: 64px 20px; color: var(--gray-text);
     }
     .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
     .empty-state p { font-size: 0.9rem; }
@@ -270,12 +248,13 @@
     .info-card.red   { border-left-color: var(--red); }         .info-card.red   .ic-value { color: var(--red); }
     .info-card.orange{ border-left-color: var(--orange); }      .info-card.orange .ic-value { color: var(--orange); }
 
-    .modal-overlay {
+    /* ── Generic overlay ── */
+    .modal-overlay, .confirm-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(13,30,60,.45); backdrop-filter: blur(4px);
       z-index: 500; align-items: center; justify-content: center;
     }
-    .modal-overlay.active { display: flex; animation: fadeIn .18s ease; }
+    .modal-overlay.active, .confirm-overlay.active { display: flex; animation: fadeIn .18s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .modal {
@@ -307,7 +286,6 @@
     select.form-control { cursor: pointer; }
     .modal-footer { padding: 12px 22px 20px; display: flex; gap: 8px; }
 
-    /* ── Delete button ── */
     .btn-del {
       display: inline-flex; align-items: center; justify-content: center;
       width: 32px; height: 32px; border-radius: 7px;
@@ -317,29 +295,55 @@
     }
     .btn-del:hover { background: var(--red); color: white; border-color: var(--red); transform: scale(1.1); }
 
-    /* ── Confirm modal ── */
-    .confirm-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(13,30,60,.55); backdrop-filter: blur(4px);
-      z-index: 600; align-items: center; justify-content: center;
-    }
-    .confirm-overlay.active { display: flex; animation: fadeIn .15s ease; }
+    /* ── Confirm delete modal ── */
     .confirm-box {
       background: white; border-radius: 14px; box-shadow: var(--shadow-lg);
-      width: 380px; max-width: 92vw; overflow: hidden;
+      width: 400px; max-width: 92vw; overflow: hidden;
       animation: slideUp .2s cubic-bezier(.4,0,.2,1);
     }
     .confirm-header {
-      background: linear-gradient(90deg, var(--red), #e53935);
       color: white; padding: 14px 20px;
       font-family: 'Prompt', sans-serif; font-size: 0.95rem; font-weight: 700;
       display: flex; align-items: center; gap: 8px;
     }
+    .confirm-header.red   { background: linear-gradient(90deg, var(--red), #e53935); }
+    .confirm-header.blue  { background: linear-gradient(90deg, var(--blue), var(--blue-mid)); }
     .confirm-body { padding: 20px 22px 10px; font-size: 0.9rem; line-height: 1.6; color: var(--text); }
     .confirm-body .target-name { font-weight: 700; color: var(--red); }
     .confirm-footer { padding: 10px 22px 18px; display: flex; gap: 8px; }
     .btn-red { background: var(--red); color: white; }
     .btn-red:hover { background: #b71c1c; }
+
+    /* ── Password modal – shake animation on wrong pw ── */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-6px); }
+      80%      { transform: translateX(6px); }
+    }
+    .shake { animation: shake .4s ease; }
+
+    /* ── password dot-dots display ── */
+    .pw-wrap { position: relative; }
+    .pw-wrap .pw-toggle {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--gray-text); font-size: 1rem; padding: 2px 4px;
+      transition: color .15s;
+    }
+    .pw-wrap .pw-toggle:hover { color: var(--blue); }
+    .pw-wrap .form-control { padding-right: 38px; }
+
+    /* ── Attempt counter badge ── */
+    .attempt-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff3e0; color: var(--orange);
+      border: 1px solid #ffe0b2; border-radius: 6px;
+      padding: 4px 10px; font-size: 0.78rem; font-weight: 700;
+      margin-top: 8px;
+    }
+    .attempt-badge.danger { background: #ffebee; color: var(--red); border-color: #ffcdd2; }
 
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -349,6 +353,31 @@
       font-size: 0.82rem; line-height: 1.7;
     }
     .site-footer strong { color: #e3f2fd; }
+
+    /* ── z-index layering ── */
+    #modalOverlay    { z-index: 500; }
+    #confirmOverlay  { z-index: 600; }
+    #passwordOverlay { z-index: 700; }
+    #lockOverlay     { z-index: 800; }
+
+    /* ── Locked-out overlay ── */
+    #lockOverlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(13,30,60,.85); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
+    }
+    #lockOverlay.active { display: flex; }
+    .lock-box {
+      background: white; border-radius: 16px; box-shadow: var(--shadow-lg);
+      width: 360px; max-width: 92vw; overflow: hidden; text-align: center;
+      animation: slideUp .25s cubic-bezier(.4,0,.2,1);
+    }
+    .lock-header { background: linear-gradient(90deg,#b71c1c,var(--red)); color: white; padding: 18px 20px; font-family:'Prompt',sans-serif; font-size:1rem; font-weight:700; }
+    .lock-body { padding: 28px 24px; }
+    .lock-icon { font-size: 3rem; margin-bottom: 10px; }
+    .lock-body p { font-size: 0.88rem; color: var(--gray-text); line-height: 1.7; }
+    .lock-countdown { font-family:'Prompt',sans-serif; font-size: 2.2rem; font-weight:800; color:var(--red); margin: 14px 0 4px; }
+    .lock-body .lock-sub { font-size: 0.78rem; color:#999; }
   </style>
 </head>
 <body>
@@ -467,8 +496,7 @@
             <th style="text-align:center;min-width:70px">จัดการ</th>
           </tr>
         </thead>
-        <tbody id="tableBody">
-        </tbody>
+        <tbody id="tableBody"></tbody>
       </table>
     </div>
   </div>
@@ -482,22 +510,73 @@
   เวลาทำการ 11:00 – 20:00 น.
 </footer>
 
-<!-- ── CONFIRM DELETE MODAL ── -->
+<!-- ══════════════════════════════════════════════
+     🔐 PASSWORD MODAL  (Step 1)
+═══════════════════════════════════════════════ -->
+<div class="confirm-overlay" id="passwordOverlay">
+  <div class="confirm-box" id="passwordBox">
+    <div class="confirm-header blue">🔐 ยืนยันตัวตนผู้ดูแลระบบ</div>
+    <div class="confirm-body">
+      <p style="margin-bottom:14px;color:var(--gray-text);font-size:0.88rem">
+        กรุณากรอกรหัสผ่านเพื่อดำเนินการลบข้อมูล
+      </p>
+
+      <!-- password input with show/hide toggle -->
+      <div class="pw-wrap">
+        <input id="deletePassword" type="password" class="form-control"
+               placeholder="กรอกรหัสผ่าน..." autocomplete="off"/>
+        <button class="pw-toggle" id="pwToggle" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
+      </div>
+
+      <!-- error message -->
+      <div id="pwError" style="display:none;margin-top:10px">
+        <div style="color:var(--red);font-size:0.83rem;font-weight:600">❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่</div>
+        <div id="attemptBadge" class="attempt-badge"></div>
+      </div>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-blue" id="confirmPwBtn">✅ ยืนยัน</button>
+      <button class="btn btn-gray" id="cancelPwBtn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     🗑️ CONFIRM DELETE MODAL  (Step 2)
+═══════════════════════════════════════════════ -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
-    <div class="confirm-header">🗑️ ยืนยันการลบข้อมูล</div>
+    <div class="confirm-header red">🗑️ ยืนยันการลบข้อมูล</div>
     <div class="confirm-body">
       คุณต้องการลบข้อมูลของ<br>
       <span class="target-name" id="confirmName"></span><br>
-      ออกจากระบบ? การดำเนินการนี้ไม่สามารถย้อนกลับได้
+      ออกจากระบบ? <strong>การดำเนินการนี้ไม่สามารถย้อนกลับได้</strong>
     </div>
     <div class="confirm-footer">
-      <button class="btn btn-red" id="confirmDeleteBtn">🗑️ ลบข้อมูล</button>
+      <button class="btn btn-red" id="confirmDeleteBtn">🗑️ ยืนยันลบข้อมูล</button>
       <button class="btn btn-gray" id="cancelDeleteBtn">ยกเลิก</button>
     </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════
+     🔒 LOCKED-OUT OVERLAY  (after 5 fails)
+═══════════════════════════════════════════════ -->
+<div id="lockOverlay">
+  <div class="lock-box">
+    <div class="lock-header">🔒 ระบบถูกล็อค</div>
+    <div class="lock-body">
+      <div class="lock-icon">🚫</div>
+      <p>กรอกรหัสผ่านผิดเกิน 5 ครั้ง<br>ระบบจะปลดล็อคอัตโนมัติใน</p>
+      <div class="lock-countdown" id="lockCountdown">5:00</div>
+      <div class="lock-sub">นาที:วินาที</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     ➕ ADD RECORD MODAL
+═══════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
@@ -508,19 +587,19 @@
       <div class="form-grid">
         <div class="form-group">
           <label>ID พนักงาน</label>
-          <input class="form-control" id="f-id" type="text" placeholder=""/>
+          <input class="form-control" id="f-id" type="text"/>
         </div>
         <div class="form-group">
           <label>เบอร์เครื่อง</label>
-          <input class="form-control" id="f-machine" type="text" placeholder=""/>
+          <input class="form-control" id="f-machine" type="text"/>
         </div>
         <div class="form-group">
           <label>ชื่อ – สกุล</label>
-          <input class="form-control" id="f-name" type="text" placeholder=""/>
+          <input class="form-control" id="f-name" type="text"/>
         </div>
         <div class="form-group">
           <label>แผนก</label>
-          <input class="form-control" id="f-dept" type="text" placeholder=""/>
+          <input class="form-control" id="f-dept" type="text"/>
         </div>
         <div class="form-group">
           <label>ประเภทเครื่อง</label>
@@ -551,7 +630,7 @@
         </div>
         <div class="form-group">
           <label>ผู้ส่งเครื่อง</label>
-          <input class="form-control" id="f-operator" type="text" placeholder=""/>
+          <input class="form-control" id="f-operator" type="text"/>
         </div>
       </div>
     </div>
@@ -563,13 +642,22 @@
 </div>
 
 <script>
-  // ── Apps Script URL (อ่าน + เขียน + ลบ ผ่าน Sheets จริง) ──────────────
-  const API_URL = 'https://script.google.com/macros/s/AKfycbzax1XCOTZGcbMrhKdUtM78qr3wlhrlQxwr10SeLToO7hlcXkrk9l84_d2ptOmoMWcL4g/exec';
+  // ── Config ────────────────────────────────────────────────────────────────
+  const API_URL         = 'https://script.google.com/macros/s/AKfycbynXyVTwC9W2lrCwoIcmmUTnZD2JEX3kr6ul8mv1e-0EQbID1ekHD8dGcyF83ESDCvpzg/exec';
+  const DELETE_PASSWORD = 'admin123';
+  const MAX_ATTEMPTS    = 5;
+  const LOCKOUT_MS      = 5 * 60 * 1000; // 5 minutes
 
-  let tableData  = [];
-  let sortCol    = null;
-  let sortDir    = null;
-  let searchTerm = '';
+  let tableData        = [];
+  let sortCol          = null;
+  let sortDir          = null;
+  let searchTerm       = '';
+  let pendingDeleteIdx = null;
+
+  // ── Lockout state (persisted in sessionStorage) ───────────────────────────
+  let failCount    = parseInt(sessionStorage.getItem('pwFail')  || '0');
+  let lockedUntil  = parseInt(sessionStorage.getItem('pwLock')  || '0');
+  let lockTimer    = null;
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   function statusChip(s) {
@@ -699,7 +787,6 @@
       const json = await res.json();
       if (json.status !== 'ok') throw new Error(json.message || 'error');
 
-      // map keys จาก Sheets → internal (รองรับทั้งภาษาไทยและอังกฤษ)
       tableData = json.data.map(row => {
         const k = obj => Object.keys(row).find(k => k.toLowerCase().replace(/\s/g,'').includes(obj)) || '';
         return {
@@ -712,7 +799,7 @@
           cabinet:  row[k('cabinet')] || row[k('ตู้')] || '',
           operator: row[k('operator')] || row[k('ผู้')] || '',
         };
-      }).filter(r => r.idName);
+      }).filter(r => r.idName && r.idName !== '—');
 
       renderTable();
     } catch (err) {
@@ -721,17 +808,175 @@
     }
   }
 
-  // ── ADD row → Apps Script (POST) ──────────────────────────────────────────
-  const overlay   = document.getElementById('modalOverlay');
-  const openBtn   = document.getElementById('openModal');
-  const closeBtn  = document.getElementById('closeModal');
-  const closeBtn2 = document.getElementById('closeModal2');
+  // ══════════════════════════════════════════════════════════════════════════
+  //  🔐 PASSWORD / DELETE FLOW
+  // ══════════════════════════════════════════════════════════════════════════
 
-  openBtn.addEventListener('click',   () => overlay.classList.add('active'));
-  closeBtn.addEventListener('click',  () => overlay.classList.remove('active'));
-  closeBtn2.addEventListener('click', () => overlay.classList.remove('active'));
-  overlay.addEventListener('click',   e => { if (e.target === overlay) overlay.classList.remove('active'); });
-  document.addEventListener('keydown',e => { if (e.key === 'Escape') overlay.classList.remove('active'); });
+  // ── Check if currently locked out ────────────────────────────────────────
+  function isLockedOut() {
+    return Date.now() < lockedUntil;
+  }
+
+  // ── Start countdown display ───────────────────────────────────────────────
+  function startLockDisplay() {
+    document.getElementById('lockOverlay').classList.add('active');
+    if (lockTimer) clearInterval(lockTimer);
+    lockTimer = setInterval(() => {
+      const remaining = lockedUntil - Date.now();
+      if (remaining <= 0) {
+        clearInterval(lockTimer);
+        failCount   = 0; lockedUntil = 0;
+        sessionStorage.removeItem('pwFail');
+        sessionStorage.removeItem('pwLock');
+        document.getElementById('lockOverlay').classList.remove('active');
+        return;
+      }
+      const m = Math.floor(remaining / 60000);
+      const s = Math.floor((remaining % 60000) / 1000);
+      document.getElementById('lockCountdown').textContent =
+        `${m}:${String(s).padStart(2,'0')}`;
+    }, 500);
+  }
+
+  // ── Open password modal ───────────────────────────────────────────────────
+  function askDelete(origIdx) {
+    if (isLockedOut()) { startLockDisplay(); return; }
+
+    pendingDeleteIdx = origIdx;
+
+    // reset modal state
+    const pwInput = document.getElementById('deletePassword');
+    pwInput.value = '';
+    pwInput.type  = 'password';
+    document.getElementById('pwToggle').textContent = '👁️';
+    document.getElementById('pwError').style.display = 'none';
+
+    document.getElementById('passwordOverlay').classList.add('active');
+    setTimeout(() => pwInput.focus(), 120);
+  }
+
+  // ── Show/hide password toggle ─────────────────────────────────────────────
+  document.getElementById('pwToggle').addEventListener('click', () => {
+    const inp = document.getElementById('deletePassword');
+    const isHidden = inp.type === 'password';
+    inp.type = isHidden ? 'text' : 'password';
+    document.getElementById('pwToggle').textContent = isHidden ? '🙈' : '👁️';
+    inp.focus();
+  });
+
+  // ── Validate password ─────────────────────────────────────────────────────
+  function validatePassword() {
+    if (isLockedOut()) {
+      document.getElementById('passwordOverlay').classList.remove('active');
+      startLockDisplay(); return;
+    }
+
+    const pw = document.getElementById('deletePassword').value;
+
+    if (pw === DELETE_PASSWORD) {
+      // ✅ correct — reset counter, proceed to confirm step
+      failCount = 0; lockedUntil = 0;
+      sessionStorage.removeItem('pwFail');
+      sessionStorage.removeItem('pwLock');
+
+      document.getElementById('passwordOverlay').classList.remove('active');
+      document.getElementById('confirmName').textContent =
+        (tableData[pendingDeleteIdx].idName  || '') +
+        ' (' + (tableData[pendingDeleteIdx].machine || '') + ')';
+      document.getElementById('confirmOverlay').classList.add('active');
+
+    } else {
+      // ❌ wrong password
+      failCount++;
+      sessionStorage.setItem('pwFail', failCount);
+
+      const remaining = MAX_ATTEMPTS - failCount;
+      const box       = document.getElementById('passwordBox');
+
+      // shake animation
+      box.classList.remove('shake');
+      void box.offsetWidth; // reflow
+      box.classList.add('shake');
+
+      // clear input
+      document.getElementById('deletePassword').value = '';
+
+      // show error + attempt count
+      document.getElementById('pwError').style.display = 'block';
+      const badge = document.getElementById('attemptBadge');
+
+      if (remaining <= 0) {
+        // lock out
+        lockedUntil = Date.now() + LOCKOUT_MS;
+        sessionStorage.setItem('pwLock', lockedUntil);
+        document.getElementById('passwordOverlay').classList.remove('active');
+        startLockDisplay();
+      } else {
+        badge.className = 'attempt-badge' + (remaining <= 2 ? ' danger' : '');
+        badge.textContent = `⚠️ เหลือโอกาสอีก ${remaining} ครั้ง`;
+      }
+    }
+  }
+
+  // ── Confirm button + Enter key ────────────────────────────────────────────
+  document.getElementById('confirmPwBtn').addEventListener('click', validatePassword);
+  document.getElementById('deletePassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') validatePassword();
+  });
+
+  // ── Cancel password modal ─────────────────────────────────────────────────
+  document.getElementById('cancelPwBtn').addEventListener('click', () => {
+    pendingDeleteIdx = null;
+    document.getElementById('passwordOverlay').classList.remove('active');
+  });
+  document.getElementById('passwordOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('passwordOverlay')) {
+      pendingDeleteIdx = null;
+      document.getElementById('passwordOverlay').classList.remove('active');
+    }
+  });
+
+  // ── DELETE row → Apps Script (POST) ──────────────────────────────────────
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if (pendingDeleteIdx === null) return;
+    const btn = document.getElementById('confirmDeleteBtn');
+    btn.disabled = true; btn.textContent = '⏳ กำลังลบ...';
+    try {
+      const res  = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'delete', rowIndex: pendingDeleteIdx })
+      });
+      const json = await res.json();
+      if (json.status !== 'ok') throw new Error(json.message || 'error');
+      pendingDeleteIdx = null;
+      document.getElementById('confirmOverlay').classList.remove('active');
+      await loadFromSheets();
+    } catch (err) {
+      alert('ลบไม่สำเร็จ: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.innerHTML = '🗑️ ยืนยันลบข้อมูล';
+    }
+  });
+
+  document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+    pendingDeleteIdx = null;
+    document.getElementById('confirmOverlay').classList.remove('active');
+  });
+  document.getElementById('confirmOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('confirmOverlay')) {
+      pendingDeleteIdx = null;
+      document.getElementById('confirmOverlay').classList.remove('active');
+    }
+  });
+
+  // ── ADD RECORD MODAL ──────────────────────────────────────────────────────
+  const addOverlay = document.getElementById('modalOverlay');
+  document.getElementById('openModal').addEventListener('click',   () => addOverlay.classList.add('active'));
+  document.getElementById('closeModal').addEventListener('click',  () => addOverlay.classList.remove('active'));
+  document.getElementById('closeModal2').addEventListener('click', () => addOverlay.classList.remove('active'));
+  addOverlay.addEventListener('click', e => { if (e.target === addOverlay) addOverlay.classList.remove('active'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') addOverlay.classList.remove('active'); });
 
   document.getElementById('addRowBtn').addEventListener('click', async () => {
     const id       = document.getElementById('f-id').value.trim();
@@ -756,10 +1001,10 @@
     try {
       const res  = await fetch(API_URL, {
         method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
-          action: 'add',
-          date: dateStr, idName: `${id} / ${name}`,
-          machine, dept,
+          action: 'add', date: dateStr,
+          idName: `${id} / ${name}`, machine, dept,
           type: type || '—', status: status || '—',
           cabinet: cabinet || '—', operator: operator || '—',
         })
@@ -767,11 +1012,10 @@
       const json = await res.json();
       if (json.status !== 'ok') throw new Error(json.message || 'error');
 
-      // clear form
       ['f-id','f-name','f-machine','f-dept','f-operator'].forEach(id => document.getElementById(id).value = '');
       ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value = '');
-      overlay.classList.remove('active');
-      await loadFromSheets(); // reload จาก Sheets จริง
+      addOverlay.classList.remove('active');
+      await loadFromSheets();
     } catch (err) {
       alert('บันทึกไม่สำเร็จ: ' + err.message);
     } finally {
@@ -779,53 +1023,15 @@
     }
   });
 
-  // ── DELETE row → Apps Script (POST) ──────────────────────────────────────
-  let pendingDeleteIdx = null;
-  const confirmOverlay   = document.getElementById('confirmOverlay');
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-  const cancelDeleteBtn  = document.getElementById('cancelDeleteBtn');
-
-  function askDelete(origIdx) {
-    pendingDeleteIdx = origIdx;
-    document.getElementById('confirmName').textContent =
-      (tableData[origIdx].idName || '') + ' (' + (tableData[origIdx].machine || '') + ')';
-    confirmOverlay.classList.add('active');
-  }
-
-  confirmDeleteBtn.addEventListener('click', async () => {
-    if (pendingDeleteIdx === null) return;
-    confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = '⏳ กำลังลบ...';
-    try {
-      const res  = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'delete', rowIndex: pendingDeleteIdx })
-      });
-      const json = await res.json();
-      if (json.status !== 'ok') throw new Error(json.message || 'error');
-      pendingDeleteIdx = null;
-      confirmOverlay.classList.remove('active');
-      await loadFromSheets();
-    } catch (err) {
-      alert('ลบไม่สำเร็จ: ' + err.message);
-    } finally {
-      confirmDeleteBtn.disabled = false; confirmDeleteBtn.innerHTML = '🗑️ ลบข้อมูล';
-    }
-  });
-
-  cancelDeleteBtn.addEventListener('click', () => {
-    pendingDeleteIdx = null; confirmOverlay.classList.remove('active');
-  });
-  confirmOverlay.addEventListener('click', e => {
-    if (e.target === confirmOverlay) { pendingDeleteIdx = null; confirmOverlay.classList.remove('active'); }
-  });
-
   // ── Refresh button ────────────────────────────────────────────────────────
   document.getElementById('resetSort').addEventListener('click', () => {
     sortCol = null; sortDir = null; searchTerm = '';
     document.getElementById('searchInput').value = '';
-    updateHeaders();
-    loadFromSheets();
+    updateHeaders(); loadFromSheets();
   });
+
+  // ── Check lockout on page load (if user refreshes during lockout) ─────────
+  if (isLockedOut()) startLockDisplay();
 
   // ── Init ──────────────────────────────────────────────────────────────────
   loadFromSheets();
