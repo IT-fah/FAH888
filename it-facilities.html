@@ -835,7 +835,7 @@ function askDelete(origIdx) {
   pendingDeleteIdx = origIdx;
 
   // เปิด modal รหัสผ่านก่อน
-  document.getElementById('deletePassword').value = '';
+  document.getElementById('deletePassword').value = 'confirmDeleteBtn';
   document.getElementById('pwError').style.display = 'none';
   document.getElementById('passwordOverlay').classList.add('active');
 }
