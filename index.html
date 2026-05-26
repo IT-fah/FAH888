@@ -667,12 +667,26 @@
     return `<span class="chip chip-blue">${s || '—'}</span>`;
   }
 
-  function formatDate(d) {
-    if (!d) return '—';
-    const parts = d.split('-');
-    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    return d;
-  }
+  function formatDate(dateStr) {
+
+  if (!dateStr) return '—';
+
+  const d = new Date(dateStr);
+
+  // เช็คว่าวันที่ถูกไหม
+  if (isNaN(d.getTime())) return dateStr;
+
+  // เวลา
+  const hours = String(d.getHours()).padStart(2, '0');
+  const mins  = String(d.getMinutes()).padStart(2, '0');
+
+  // วัน เดือน ปี
+  const day   = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year  = d.getFullYear();
+
+  return `${hours}:${mins} น. ${day}/${month}/${year}`;
+}
 
   function showLoading(msg) {
     document.getElementById('tableBody').innerHTML = `
