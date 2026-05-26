@@ -699,7 +699,7 @@
     const body = document.getElementById('tableBody');
     let rows = tableData
   .map((r, origIdx) => ({ ...r, origIdx }))
-  .filter(r => String(r.deleted).toLowerCase() !== 'true')
+  .filter(r => !r.deleted)
   .filter(r => {
       if (!searchTerm) return true;
       const q = searchTerm.toLowerCase();
@@ -791,19 +791,26 @@
       if (json.status !== 'ok') throw new Error(json.message || 'error');
 
       tableData = json.data.map(row => {
-        const k = obj => Object.keys(row).find(k => k.toLowerCase().replace(/\s/g,'').includes(obj)) || '';
-        return {
-          date:     row[k('date')] || row[k('วันที่')] || '',
-          idName:   row[k('idname')] || row[k('id')] || row[k('ชื่อ')] || '',
-          machine:  row[k('machine')] || row[k('เบอร์')] || '',
-          dept:     row[k('dept')] || row[k('แผนก')] || '',
-          type:     row[k('type')] || row[k('ประเภท')] || '',
-          status:   row[k('status')] || row[k('สถานะ')] || '',
-          cabinet:  row[k('cabinet')] || row[k('ตู้')] || '',
-          operator: row[k('operator')] || row[k('ผู้')] || '',
-          deleted: row.deleted || false
-        };
-      }).filter(r => r.idName && r.idName !== '—');
+
+  const k = obj =>
+    Object.keys(row).find(key =>
+      key.toLowerCase().replace(/\s/g,'').includes(obj)
+    ) || '';
+
+  return {
+    date: row[k('date')] || row[k('วันที่')] || '',
+    idName: row[k('idname')] || row[k('id')] || row[k('ชื่อ')] || '',
+    machine: row[k('machine')] || row[k('เบอร์')] || '',
+    dept: row[k('dept')] || row[k('แผนก')] || '',
+    type: row[k('type')] || row[k('ประเภท')] || '',
+    status: row[k('status')] || row[k('สถานะ')] || '',
+    cabinet: row[k('cabinet')] || row[k('ตู้')] || '',
+    operator: row[k('operator')] || row[k('ผู้')] || '',
+
+    // ⭐ สำคัญมาก
+    deleted: row.deleted === true
+  };
+});
 
       renderTable();
     } catch (err) {
