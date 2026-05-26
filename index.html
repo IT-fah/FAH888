@@ -801,6 +801,7 @@
           status:   row[k('status')] || row[k('สถานะ')] || '',
           cabinet:  row[k('cabinet')] || row[k('ตู้')] || '',
           operator: row[k('operator')] || row[k('ผู้')] || '',
+          deleted: row.deleted || false
         };
       }).filter(r => r.idName && r.idName !== '—');
 
