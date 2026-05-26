@@ -758,11 +758,22 @@
   }
 
   function updateStats() {
-    document.getElementById('stat-total').textContent  = tableData.length;
-    document.getElementById('stat-ready').textContent  = tableData.filter(r => r.status === 'พร้อมใช้งาน').length;
-    document.getElementById('stat-issue').textContent  = tableData.filter(r => r.status === 'ขาดเมล์+WiFi').length;
-    document.getElementById('stat-repair').textContent = tableData.filter(r => r.status === 'ซ่อม').length;
-  }
+
+  // กรองข้อมูลที่ถูกลบออกก่อน
+  const activeData = tableData.filter(r => !r.deleted);
+
+  document.getElementById('stat-total').textContent =
+    activeData.length;
+
+  document.getElementById('stat-ready').textContent =
+    activeData.filter(r => r.status === 'พร้อมใช้งาน').length;
+
+  document.getElementById('stat-issue').textContent =
+    activeData.filter(r => r.status === 'ขาดเมล์+WiFi').length;
+
+  document.getElementById('stat-repair').textContent =
+    activeData.filter(r => r.status === 'ซ่อม').length;
+}
 
   // ── Sort ──────────────────────────────────────────────────────────────────
   document.querySelectorAll('thead th.sortable').forEach(th => {
