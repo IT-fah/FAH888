@@ -27,24 +27,18 @@
       --shadow-lg:  0 8px 40px rgba(21,101,192,.18);
     }
 
-    body {
-      font-family: 'Sarabun', sans-serif;
-      background: var(--gray-bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
+    body { font-family: 'Sarabun', sans-serif; background: var(--gray-bg); color: var(--text); min-height: 100vh; }
 
+    /* ── Topnav ── */
     .sites-topnav {
-      background: #ffffff;
-      border-bottom: 1px solid #e0e0e0;
+      background: #ffffff; border-bottom: 1px solid #e0e0e0;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px; height: 64px;
       position: sticky; top: 0; z-index: 100;
       box-shadow: 0 1px 4px rgba(0,0,0,.08);
     }
     .sites-topnav .site-title {
-      font-family: 'Prompt', sans-serif;
-      font-size: 1.15rem; font-weight: 700;
+      font-family: 'Prompt', sans-serif; font-size: 1.15rem; font-weight: 700;
       color: var(--blue); letter-spacing: .01em;
       display: flex; align-items: center; gap: 10px;
     }
@@ -64,84 +58,60 @@
     .nav-link:hover { background: var(--blue-pale); color: var(--blue); }
     .nav-link.active { background: var(--blue-pale); color: var(--blue); }
 
+    /* ── Hero ── */
     .hero {
       background: linear-gradient(135deg, #0d47a1 0%, #1565c0 40%, #1976d2 70%, #42a5f5 100%);
-      padding: 56px 40px 52px;
-      text-align: center;
-      position: relative; overflow: hidden;
+      padding: 56px 40px 52px; text-align: center; position: relative; overflow: hidden;
     }
     .hero::before {
-      content: '';
-      position: absolute; inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
     .hero-logo {
       width: 90px; height: 90px; border-radius: 20px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
       border: 2px solid rgba(255,255,255,0.3);
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 18px;
-      font-size: 2.4rem;
+      margin: 0 auto 18px; font-size: 2.4rem;
       box-shadow: 0 8px 32px rgba(0,0,0,0.2);
     }
     .hero h1 {
-      font-family: 'Prompt', sans-serif;
-      font-size: 2rem; font-weight: 800;
+      font-family: 'Prompt', sans-serif; font-size: 2rem; font-weight: 800;
       color: #ffffff; margin-bottom: 8px;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.2);
-      position: relative;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.2); position: relative;
     }
-    .hero .hero-sub {
-      font-size: 1rem; color: rgba(255,255,255,0.82);
-      font-weight: 400; position: relative;
-    }
-    .hero-badges {
-      display: flex; justify-content: center; gap: 10px;
-      margin-top: 18px; flex-wrap: wrap; position: relative;
-    }
+    .hero .hero-sub { font-size: 1rem; color: rgba(255,255,255,0.82); font-weight: 400; position: relative; }
+    .hero-badges { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; position: relative; }
     .hero-badge {
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,0.25);
-      color: white; padding: 5px 16px; border-radius: 20px;
-      font-size: 0.82rem; font-weight: 600;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.25); color: white;
+      padding: 5px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
     }
 
+    /* ── Contact bar ── */
     .contact-bar {
-      background: white;
-      border-bottom: 2px solid var(--blue-pale);
+      background: white; border-bottom: 2px solid var(--blue-pale);
       display: flex; align-items: center; justify-content: center;
       gap: 32px; padding: 14px 32px; flex-wrap: wrap;
     }
-    .contact-item {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.88rem; color: var(--text);
-    }
-    .contact-item .ci-icon {
-      width: 30px; height: 30px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.95rem;
-    }
+    .contact-item { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--text); }
+    .contact-item .ci-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; }
     .ci-blue   { background: #e3f2fd; color: var(--blue); }
     .ci-green  { background: #e8f5e9; color: var(--green); }
     .ci-orange { background: #fff3e0; color: var(--orange); }
     .contact-item strong { font-weight: 700; }
     .divider { width: 1px; height: 28px; background: #e0e0e0; }
 
+    /* ── Main ── */
     .main-content { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
 
     .section-title {
-      font-family: 'Prompt', sans-serif;
-      font-size: 1.05rem; font-weight: 700; color: var(--blue);
+      font-family: 'Prompt', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--blue);
       margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
     }
-    .section-title::after {
-      content: ''; flex: 1; height: 2px;
-      background: linear-gradient(to right, var(--blue-pale), transparent);
-      margin-left: 8px;
-    }
+    .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(to right, var(--blue-pale), transparent); margin-left: 8px; }
 
+    /* ── Toolbar ── */
     .data-toolbar {
       background: white; border-radius: 12px; box-shadow: var(--shadow-sm);
       padding: 14px 20px; margin-bottom: 16px;
@@ -157,17 +127,12 @@
     .btn-blue:hover { background: #0d47a1; }
     .btn-green   { background: var(--green-light); color: white; }
     .btn-green:hover { background: var(--green); }
-    .btn-outline {
-      background: white; color: var(--blue);
-      border: 1.5px solid var(--blue);
-    }
+    .btn-outline { background: white; color: var(--blue); border: 1.5px solid var(--blue); }
     .btn-outline:hover { background: var(--blue-pale); }
     .btn-gray    { background: #f0f0f0; color: #555; border: 1px solid #ddd; }
     .btn-gray:hover { background: #e0e0e0; }
 
-    .search-box {
-      display: flex; align-items: center; gap: 8px; margin-left: auto;
-    }
+    .search-box { display: flex; align-items: center; gap: 8px; margin-left: auto; }
     .search-input {
       padding: 8px 14px; border-radius: 8px;
       border: 1.5px solid var(--gray-border);
@@ -176,39 +141,25 @@
     }
     .search-input:focus { border-color: var(--blue); background: white; }
 
-    .table-card {
-      background: white; border-radius: 12px;
-      box-shadow: var(--shadow-sm); overflow: hidden;
-    }
+    /* ── Table ── */
+    .table-card { background: white; border-radius: 12px; box-shadow: var(--shadow-sm); overflow: hidden; }
     .table-scroll { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; min-width: 750px; }
     thead { background: linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 100%); color: white; }
-    thead th {
-      padding: 13px 16px; text-align: left;
-      font-size: 0.88rem; font-weight: 600; white-space: nowrap;
-    }
-
-    thead th.sortable {
-      cursor: pointer; user-select: none; transition: background .15s;
-    }
+    thead th { padding: 13px 16px; text-align: left; font-size: 0.88rem; font-weight: 600; white-space: nowrap; }
+    thead th.sortable { cursor: pointer; user-select: none; transition: background .15s; }
     thead th.sortable:hover { background: rgba(255,255,255,0.15); }
     thead th.sortable .th-inner { display: inline-flex; align-items: center; gap: 6px; }
-    .sort-icon {
-      display: inline-flex; flex-direction: column;
-      line-height: 1; font-size: 0.65rem; opacity: 0.5;
-      transition: opacity .15s; gap: 1px;
-    }
+    .sort-icon { display: inline-flex; flex-direction: column; line-height: 1; font-size: 0.65rem; opacity: 0.5; transition: opacity .15s; gap: 1px; }
     thead th.sortable:hover .sort-icon { opacity: 0.8; }
-    thead th.sort-asc  .sort-icon,
-    thead th.sort-desc .sort-icon { opacity: 1; }
-    thead th.sort-asc  .sort-icon .arrow-up   { opacity: 1; color: #fff; }
-    thead th.sort-asc  .sort-icon .arrow-down { opacity: 0.3; }
-    thead th.sort-desc .sort-icon .arrow-up   { opacity: 0.3; }
+    thead th.sort-asc .sort-icon, thead th.sort-desc .sort-icon { opacity: 1; }
+    thead th.sort-asc .sort-icon .arrow-up   { opacity: 1; color: #fff; }
+    thead th.sort-asc .sort-icon .arrow-down { opacity: 0.3; }
+    thead th.sort-desc .sort-icon .arrow-up  { opacity: 0.3; }
     thead th.sort-desc .sort-icon .arrow-down { opacity: 1; color: #fff; }
     thead th.sort-asc, thead th.sort-desc { background: rgba(255,255,255,0.18); }
     td.sorted-col { background: #f0f6ff; }
     tbody tr:hover td.sorted-col { background: #e3f0ff; }
-
     tbody tr { border-bottom: 1px solid #eef2f8; transition: background .12s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: #f0f6ff; }
@@ -216,26 +167,19 @@
     tbody tr:nth-child(even):hover { background: #eaf3ff; }
     td { padding: 13px 16px; font-size: 0.88rem; vertical-align: middle; }
 
-    .empty-state {
-      text-align: center; padding: 64px 20px; color: var(--gray-text);
-    }
+    .empty-state { text-align: center; padding: 64px 20px; color: var(--gray-text); }
     .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
     .empty-state p { font-size: 0.9rem; }
 
-    .chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 12px; border-radius: 20px;
-      font-size: 0.78rem; font-weight: 700;
-    }
+    /* ── Status chips ── */
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
     .chip-green  { background: #e8f5e9; color: var(--green); }
     .chip-red    { background: #ffebee; color: var(--red); }
     .chip-orange { background: #fff3e0; color: var(--orange); }
     .chip-blue   { background: var(--blue-pale); color: var(--blue); }
 
-    .info-cards {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px; margin-bottom: 28px;
-    }
+    /* ── Info cards ── */
+    .info-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
     .info-card {
       background: white; border-radius: 12px; box-shadow: var(--shadow-sm);
       padding: 18px 20px; border-left: 4px solid var(--blue);
@@ -244,11 +188,68 @@
     .info-card .ic-label { font-size: 0.78rem; font-weight: 600; color: var(--gray-text); text-transform: uppercase; letter-spacing: .04em; }
     .info-card .ic-value { font-family: 'Prompt', sans-serif; font-size: 1.7rem; font-weight: 700; color: var(--blue); }
     .info-card .ic-sub   { font-size: 0.78rem; color: var(--gray-text); }
-    .info-card.green { border-left-color: var(--green-light); } .info-card.green .ic-value { color: var(--green); }
-    .info-card.red   { border-left-color: var(--red); }         .info-card.red   .ic-value { color: var(--red); }
-    .info-card.orange{ border-left-color: var(--orange); }      .info-card.orange .ic-value { color: var(--orange); }
+    .info-card.green  { border-left-color: var(--green-light); } .info-card.green  .ic-value { color: var(--green); }
+    .info-card.red    { border-left-color: var(--red); }         .info-card.red    .ic-value { color: var(--red); }
+    .info-card.orange { border-left-color: var(--orange); }      .info-card.orange .ic-value { color: var(--orange); }
 
-    /* ── Generic overlay ── */
+    /* ══════════════════════════════════════
+       3-DOT ACTION DROPDOWN
+    ══════════════════════════════════════ */
+    .action-wrap { position: relative; display: inline-block; }
+
+    .btn-dots {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: #f0f4ff; color: var(--blue);
+      border: 1.5px solid var(--gray-border);
+      cursor: pointer; font-size: 1.25rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s; user-select: none; line-height: 1;
+      letter-spacing: -1px; padding-bottom: 3px;
+    }
+    .btn-dots:hover { background: var(--blue-pale); border-color: var(--blue); }
+    .btn-dots.open  { background: var(--blue); color: white; border-color: var(--blue); }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0; top: calc(100% + 6px);
+      background: white; border-radius: 10px;
+      box-shadow: 0 6px 28px rgba(21,101,192,.18);
+      border: 1px solid #e3eaf5;
+      min-width: 152px; z-index: 300; overflow: hidden;
+    }
+    .dropdown-menu.open { display: block; animation: ddFadeIn .15s ease; }
+
+    @keyframes ddFadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      font-size: 0.87rem; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: background .13s;
+      border: none; background: none; width: 100%;
+      text-align: left; font-family: 'Sarabun', sans-serif;
+      border-bottom: 1px solid #f0f4fa;
+    }
+    .dropdown-item:last-child { border-bottom: none; }
+    .dropdown-item:hover { background: var(--blue-pale); }
+    .dropdown-item.del { color: var(--red); }
+    .dropdown-item.del:hover { background: #ffebee; }
+    .dropdown-item .di-icon {
+      width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; flex-shrink: 0;
+    }
+    .di-red    { background: #ffebee; }
+    .di-blue   { background: #e3f2fd; }
+    .di-orange { background: #fff3e0; }
+
+    /* ══════════════════════════════════════
+       MODALS — Generic overlay
+    ══════════════════════════════════════ */
     .modal-overlay, .confirm-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(13,30,60,.45); backdrop-filter: blur(4px);
@@ -272,7 +273,6 @@
     }
     .modal-close { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 2px 7px; border-radius: 5px; transition: background .15s; }
     .modal-close:hover { background: rgba(255,255,255,.2); }
-
     .modal-body { padding: 24px 22px 16px; }
     .form-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
@@ -286,35 +286,39 @@
     select.form-control { cursor: pointer; }
     .modal-footer { padding: 12px 22px 20px; display: flex; gap: 8px; }
 
-    .btn-del {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 32px; height: 32px; border-radius: 7px;
-      background: #fff0f0; color: var(--red);
-      border: 1.5px solid #ffcdd2; cursor: pointer;
-      font-size: 0.9rem; transition: all .15s;
-    }
-    .btn-del:hover { background: var(--red); color: white; border-color: var(--red); transform: scale(1.1); }
-
-    /* ── Confirm delete modal ── */
+    /* ── Confirm modals ── */
     .confirm-box {
       background: white; border-radius: 14px; box-shadow: var(--shadow-lg);
       width: 400px; max-width: 92vw; overflow: hidden;
       animation: slideUp .2s cubic-bezier(.4,0,.2,1);
     }
-    .confirm-header {
-      color: white; padding: 14px 20px;
-      font-family: 'Prompt', sans-serif; font-size: 0.95rem; font-weight: 700;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .confirm-header.red   { background: linear-gradient(90deg, var(--red), #e53935); }
-    .confirm-header.blue  { background: linear-gradient(90deg, var(--blue), var(--blue-mid)); }
+    .confirm-header { color: white; padding: 14px 20px; font-family: 'Prompt', sans-serif; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .confirm-header.red  { background: linear-gradient(90deg, var(--red), #e53935); }
+    .confirm-header.blue { background: linear-gradient(90deg, var(--blue), var(--blue-mid)); }
     .confirm-body { padding: 20px 22px 10px; font-size: 0.9rem; line-height: 1.6; color: var(--text); }
     .confirm-body .target-name { font-weight: 700; color: var(--red); }
     .confirm-footer { padding: 10px 22px 18px; display: flex; gap: 8px; }
     .btn-red { background: var(--red); color: white; }
     .btn-red:hover { background: #b71c1c; }
 
-    /* ── Password modal – shake animation on wrong pw ── */
+    /* ── Password modal ── */
+    .pw-wrap { position: relative; }
+    .pw-wrap .pw-toggle {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--gray-text); font-size: 1rem; padding: 2px 4px; transition: color .15s;
+    }
+    .pw-wrap .pw-toggle:hover { color: var(--blue); }
+    .pw-wrap .form-control { padding-right: 38px; }
+
+    .attempt-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff3e0; color: var(--orange);
+      border: 1px solid #ffe0b2; border-radius: 6px;
+      padding: 4px 10px; font-size: 0.78rem; font-weight: 700; margin-top: 8px;
+    }
+    .attempt-badge.danger { background: #ffebee; color: var(--red); border-color: #ffcdd2; }
+
     @keyframes shake {
       0%,100% { transform: translateX(0); }
       20%      { transform: translateX(-8px); }
@@ -323,65 +327,37 @@
       80%      { transform: translateX(6px); }
     }
     .shake { animation: shake .4s ease; }
-
-    /* ── password dot-dots display ── */
-    .pw-wrap { position: relative; }
-    .pw-wrap .pw-toggle {
-      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; cursor: pointer;
-      color: var(--gray-text); font-size: 1rem; padding: 2px 4px;
-      transition: color .15s;
-    }
-    .pw-wrap .pw-toggle:hover { color: var(--blue); }
-    .pw-wrap .form-control { padding-right: 38px; }
-
-    /* ── Attempt counter badge ── */
-    .attempt-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: #fff3e0; color: var(--orange);
-      border: 1px solid #ffe0b2; border-radius: 6px;
-      padding: 4px 10px; font-size: 0.78rem; font-weight: 700;
-      margin-top: 8px;
-    }
-    .attempt-badge.danger { background: #ffebee; color: var(--red); border-color: #ffcdd2; }
-
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    .site-footer {
-      background: #1a2332; color: #8fa3b8;
-      text-align: center; padding: 20px 24px;
-      font-size: 0.82rem; line-height: 1.7;
-    }
-    .site-footer strong { color: #e3f2fd; }
-
-    /* ── z-index layering ── */
-    #modalOverlay    { z-index: 500; }
-    #confirmOverlay  { z-index: 600; }
-    #passwordOverlay { z-index: 700; }
-    #lockOverlay     { z-index: 800; }
-
-    /* ── Locked-out overlay ── */
+    /* ── Lock overlay ── */
     #lockOverlay {
       display: none; position: fixed; inset: 0;
       background: rgba(13,30,60,.85); backdrop-filter: blur(8px);
-      align-items: center; justify-content: center;
+      align-items: center; justify-content: center; z-index: 800;
     }
     #lockOverlay.active { display: flex; }
-    .lock-box {
-      background: white; border-radius: 16px; box-shadow: var(--shadow-lg);
-      width: 360px; max-width: 92vw; overflow: hidden; text-align: center;
-      animation: slideUp .25s cubic-bezier(.4,0,.2,1);
-    }
+    .lock-box { background: white; border-radius: 16px; box-shadow: var(--shadow-lg); width: 360px; max-width: 92vw; overflow: hidden; text-align: center; animation: slideUp .25s cubic-bezier(.4,0,.2,1); }
     .lock-header { background: linear-gradient(90deg,#b71c1c,var(--red)); color: white; padding: 18px 20px; font-family:'Prompt',sans-serif; font-size:1rem; font-weight:700; }
     .lock-body { padding: 28px 24px; }
     .lock-icon { font-size: 3rem; margin-bottom: 10px; }
     .lock-body p { font-size: 0.88rem; color: var(--gray-text); line-height: 1.7; }
     .lock-countdown { font-family:'Prompt',sans-serif; font-size: 2.2rem; font-weight:800; color:var(--red); margin: 14px 0 4px; }
     .lock-body .lock-sub { font-size: 0.78rem; color:#999; }
+
+    /* ── z-index layers ── */
+    #modalOverlay    { z-index: 500; }
+    #confirmOverlay  { z-index: 600; }
+    #passwordOverlay { z-index: 700; }
+    #lockOverlay     { z-index: 800; }
+
+    /* ── Footer ── */
+    .site-footer { background: #1a2332; color: #8fa3b8; text-align: center; padding: 20px 24px; font-size: 0.82rem; line-height: 1.7; }
+    .site-footer strong { color: #e3f2fd; }
   </style>
 </head>
 <body>
 
+<!-- ── Topnav ── -->
 <nav class="sites-topnav">
   <div class="site-title">
     <div class="icon-wrap">💻</div>
@@ -391,10 +367,10 @@
     <a class="nav-link active">หน้าแรก</a>
     <a class="nav-link">อุปกรณ์เสริม</a>
     <a class="nav-link">ประวัติ</a>
-    
   </div>
 </nav>
 
+<!-- ── Hero ── -->
 <div class="hero">
   <div class="hero-logo">💻</div>
   <h1>IT Facilities Department</h1>
@@ -407,6 +383,7 @@
   </div>
 </div>
 
+<!-- ── Contact bar ── -->
 <div class="contact-bar">
   <div class="contact-item">
     <div class="ci-icon ci-blue">📞</div>
@@ -425,6 +402,7 @@
   </div>
 </div>
 
+<!-- ── Main content ── -->
 <div class="main-content">
 
   <div class="section-title">📊 ภาพรวมระบบ</div>
@@ -493,26 +471,24 @@
             <th class="sortable" data-col="7" data-type="string">
               <span class="th-inner">ผู้ดำเนินการ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
             </th>
-            <th style="text-align:center;min-width:70px">จัดการ</th>
+            <th style="text-align:center;min-width:60px">จัดการ</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
   </div>
-
 </div>
 
 <footer class="site-footer">
   <strong>IT Facilities Department</strong><br>
-  Tel : 02-017-7777 Ext. 7442 &nbsp;|&nbsp;
-  Hotline : 083-989-0894, 083-989-1551<br>
-  เวลาทำการ 11:00 – 20:00 น.
+  Tel : 02-017-7777 Ext. 7442 &nbsp;|&nbsp; Hotline : 083-989-0894, 083-989-1551<br>
+  เวลาทำการ 09:00 – 18:00 น.
 </footer>
 
-<!-- ══════════════════════════════════════════════
-     🔐 PASSWORD MODAL  (Step 1)
-═══════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     🔐 PASSWORD MODAL
+══════════════════════════════════════════ -->
 <div class="confirm-overlay" id="passwordOverlay">
   <div class="confirm-box" id="passwordBox">
     <div class="confirm-header blue">🔐 ยืนยันตัวตนผู้ดูแลระบบ</div>
@@ -520,15 +496,10 @@
       <p style="margin-bottom:14px;color:var(--gray-text);font-size:0.88rem">
         กรุณากรอกรหัสผ่านเพื่อดำเนินการลบข้อมูล
       </p>
-
-      <!-- password input with show/hide toggle -->
       <div class="pw-wrap">
-        <input id="deletePassword" type="password" class="form-control"
-               placeholder="กรอกรหัสผ่าน..." autocomplete="off"/>
+        <input id="deletePassword" type="password" class="form-control" placeholder="กรอกรหัสผ่าน..." autocomplete="off"/>
         <button class="pw-toggle" id="pwToggle" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
       </div>
-
-      <!-- error message -->
       <div id="pwError" style="display:none;margin-top:10px">
         <div style="color:var(--red);font-size:0.83rem;font-weight:600">❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่</div>
         <div id="attemptBadge" class="attempt-badge"></div>
@@ -541,9 +512,9 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     🗑️ CONFIRM DELETE MODAL  (Step 2)
-═══════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     🗑️ CONFIRM DELETE MODAL
+══════════════════════════════════════════ -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <div class="confirm-header red">🗑️ ยืนยันการลบข้อมูล</div>
@@ -559,9 +530,9 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     🔒 LOCKED-OUT OVERLAY  (after 5 fails)
-═══════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     🔒 LOCKED-OUT OVERLAY
+══════════════════════════════════════════ -->
 <div id="lockOverlay">
   <div class="lock-box">
     <div class="lock-header">🔒 ระบบถูกล็อค</div>
@@ -574,13 +545,13 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     ➕ ADD RECORD MODAL
-═══════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     ➕ ADD / EDIT RECORD MODAL
+══════════════════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
-      <span>➕ เพิ่มข้อมูลส่งเครื่องพนักงาน</span>
+      <span id="modalTitle">➕ เพิ่มข้อมูลส่งเครื่องพนักงาน</span>
       <button class="modal-close" id="closeModal">✕</button>
     </div>
     <div class="modal-body">
@@ -641,25 +612,47 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════
+     📤 SEND MACHINE MODAL
+══════════════════════════════════════════ -->
+<div class="confirm-overlay" id="sendOverlay">
+  <div class="confirm-box">
+    <div class="confirm-header blue">📤 ส่งเครื่อง</div>
+    <div class="confirm-body" style="padding-bottom:16px">
+      <p style="margin-bottom:14px;color:var(--gray-text);font-size:0.88rem">ยืนยันการส่งเครื่องสำหรับ</p>
+      <p style="font-weight:700;font-size:0.95rem" id="sendName"></p>
+      <p style="margin-top:10px;font-size:0.85rem;color:var(--gray-text)">เบอร์เครื่อง: <strong id="sendMachine"></strong></p>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-blue" id="confirmSendBtn">📤 ยืนยันส่งเครื่อง</button>
+      <button class="btn btn-gray" id="cancelSendBtn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // ── Config ────────────────────────────────────────────────────────────────
-  const API_URL         = 'https://script.google.com/macros/s/AKfycbySP4laug5y7eyrDu60VhaZLBaZ22lTC6SchoBF5U85wk4bIs5qY9VemGiV2XUSaktcVw/exec';
+  const API_URL         = 'https://script.google.com/macros/s/AKfycbwTFyJEDXklk9YzeuOxNWZ0Z379NbO_N6KF0eEDMGU2OPdLxyv8aw3KZ2ffOdb_NSoiag/exec';
   const DELETE_PASSWORD = 'admin123';
   const MAX_ATTEMPTS    = 5;
-  const LOCKOUT_MS      = 5 * 60 * 1000; // 5 minutes
+  const LOCKOUT_MS      = 5 * 60 * 1000;
 
   let tableData        = [];
   let sortCol          = null;
   let sortDir          = null;
   let searchTerm       = '';
   let pendingDeleteIdx = null;
+  let pendingSendIdx   = null;
+  let editingIdx       = null;   // ← index ที่กำลัง edit
 
-  // ── Lockout state (persisted in sessionStorage) ───────────────────────────
-  let failCount    = parseInt(sessionStorage.getItem('pwFail')  || '0');
-  let lockedUntil  = parseInt(sessionStorage.getItem('pwLock')  || '0');
-  let lockTimer    = null;
+  // ── Lockout state ─────────────────────────────────────────────────────────
+  let failCount   = parseInt(sessionStorage.getItem('pwFail') || '0');
+  let lockedUntil = parseInt(sessionStorage.getItem('pwLock') || '0');
+  let lockTimer   = null;
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  //  HELPERS
+  // ══════════════════════════════════════════════════════════════════════════
   function statusChip(s) {
     if (s === 'พร้อมใช้งาน')  return `<span class="chip chip-green">✅ ${s}</span>`;
     if (s === 'ขาดเมล์+WiFi') return `<span class="chip chip-red">⚠️ ${s}</span>`;
@@ -668,72 +661,78 @@
   }
 
   function formatDate(dateStr) {
-
-  if (!dateStr) return '—';
-
-  const d = new Date(dateStr);
-
-  // เช็คว่าวันที่ถูกไหม
-  if (isNaN(d.getTime())) return dateStr;
-
-  // เวลา
-  const hours = String(d.getHours()).padStart(2, '0');
-  const mins  = String(d.getMinutes()).padStart(2, '0');
-
-  // วัน เดือน ปี
-  const day   = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const year  = d.getFullYear();
-
-  return `${hours}:${mins} น. ${day}/${month}/${year}`;
-}
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const hh  = String(d.getHours()).padStart(2,'0');
+    const mm  = String(d.getMinutes()).padStart(2,'0');
+    const dd  = String(d.getDate()).padStart(2,'0');
+    const mo  = String(d.getMonth()+1).padStart(2,'0');
+    return `${hh}:${mm} น. ${dd}/${mo}/${d.getFullYear()}`;
+  }
 
   function showLoading(msg) {
     document.getElementById('tableBody').innerHTML = `
-      <tr><td colspan="10">
-        <div class="empty-state">
-          <div style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">⏳</div>
-          <p style="margin-top:10px">${msg}</p>
-        </div>
-      </td></tr>`;
+      <tr><td colspan="10"><div class="empty-state">
+        <div style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">⏳</div>
+        <p style="margin-top:10px">${msg}</p>
+      </div></td></tr>`;
   }
-
   function showError(msg) {
     document.getElementById('tableBody').innerHTML = `
-      <tr><td colspan="10">
-        <div class="empty-state">
-          <div class="empty-icon">⚠️</div>
-          <p>${msg}</p>
-        </div>
-      </td></tr>`;
+      <tr><td colspan="10"><div class="empty-state">
+        <div class="empty-icon">⚠️</div><p>${msg}</p>
+      </div></td></tr>`;
   }
 
-  // ── Render table ──────────────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  //  DROPDOWN  (3-dot)
+  // ══════════════════════════════════════════════════════════════════════════
+  function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-menu.open').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.btn-dots.open').forEach(b => b.classList.remove('open'));
+  }
+
+  function toggleDropdown(origIdx, e) {
+    e.stopPropagation();
+    const dd    = document.getElementById(`dd-${origIdx}`);
+    const btn   = e.currentTarget;
+    const isOpen = dd.classList.contains('open');
+    closeAllDropdowns();
+    if (!isOpen) {
+      dd.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  // ปิด dropdown เมื่อคลิกที่อื่น
+  document.addEventListener('click', closeAllDropdowns);
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  RENDER TABLE
+  // ══════════════════════════════════════════════════════════════════════════
   function renderTable() {
     const body = document.getElementById('tableBody');
     let rows = tableData
-  .map((r, origIdx) => ({ ...r, origIdx }))
-  .filter(r => !r.deleted)
-  .filter(r => {
-      if (!searchTerm) return true;
-      const q = searchTerm.toLowerCase();
-      return (r.idName  || '').toLowerCase().includes(q) ||
-             (r.machine || '').toLowerCase().includes(q) ||
-             (r.dept    || '').toLowerCase().includes(q);
-    });
+      .map((r, origIdx) => ({ ...r, origIdx }))
+      .filter(r => !r.deleted)
+      .filter(r => {
+        if (!searchTerm) return true;
+        const q = searchTerm.toLowerCase();
+        return (r.idName  || '').toLowerCase().includes(q) ||
+               (r.machine || '').toLowerCase().includes(q) ||
+               (r.dept    || '').toLowerCase().includes(q);
+      });
 
     if (sortCol !== null) {
       const cols = ['date','idName','machine','dept','type','status','cabinet','operator'];
       const key  = cols[sortCol];
       rows = [...rows].sort((a, b) => {
         let va = a[key] || '', vb = b[key] || '';
-        if (sortCol === 0) {
-          va = new Date(va); vb = new Date(vb);
-          return sortDir === 'asc' ? va - vb : vb - va;
-        }
+        if (sortCol === 0) { va = new Date(va); vb = new Date(vb); return sortDir==='asc' ? va-vb : vb-va; }
         va = va.toLowerCase(); vb = vb.toLowerCase();
-        if (va < vb) return sortDir === 'asc' ? -1 : 1;
-        if (va > vb) return sortDir === 'asc' ?  1 : -1;
+        if (va < vb) return sortDir==='asc' ? -1 : 1;
+        if (va > vb) return sortDir==='asc' ?  1 : -1;
         return 0;
       });
     }
@@ -745,18 +744,32 @@
 
     body.innerHTML = rows.map((r, i) => {
       const sc = sortCol !== null ? sortCol + 1 : -1;
-      return `<tr class="${r.deleted ? 'deleted-row' : ''}">
-        <td>${i + 1}</td>
+      return `<tr>
+        <td>${i+1}</td>
         <td class="${sc===1?'sorted-col':''}">${formatDate(r.date)}</td>
-        <td class="${sc===2?'sorted-col':''}">${r.idName || '—'}</td>
+        <td class="${sc===2?'sorted-col':''}">${r.idName  || '—'}</td>
         <td class="${sc===3?'sorted-col':''}">${r.machine || '—'}</td>
-        <td class="${sc===4?'sorted-col':''}">${r.dept || '—'}</td>
-        <td class="${sc===5?'sorted-col':''}">${r.type || '—'}</td>
+        <td class="${sc===4?'sorted-col':''}">${r.dept    || '—'}</td>
+        <td class="${sc===5?'sorted-col':''}">${r.type    || '—'}</td>
         <td class="${sc===6?'sorted-col':''}">${statusChip(r.status)}</td>
-        <td class="${sc===7?'sorted-col':''}">${r.cabinet || '—'}</td>
+        <td class="${sc===7?'sorted-col':''}">${r.cabinet  || '—'}</td>
         <td class="${sc===8?'sorted-col':''}">${r.operator || '—'}</td>
         <td style="text-align:center">
-          <button class="btn-del" title="ลบข้อมูล" onclick="askDelete(${r.origIdx})">🗑️</button>
+          <!-- ⋮ 3-dot button -->
+          <div class="action-wrap" id="aw-${r.origIdx}">
+            <button class="btn-dots" onclick="toggleDropdown(${r.origIdx}, event)" title="จัดการ">⋮</button>
+            <div class="dropdown-menu" id="dd-${r.origIdx}">
+              <button class="dropdown-item del" onclick="closeAllDropdowns(); askDelete(${r.origIdx})">
+                <span class="di-icon di-red">🗑️</span> ลบข้อมูล
+              </button>
+              <button class="dropdown-item" onclick="closeAllDropdowns(); askSend(${r.origIdx})">
+                <span class="di-icon di-blue">📤</span> ส่งเครื่อง
+              </button>
+              <button class="dropdown-item" onclick="closeAllDropdowns(); openEdit(${r.origIdx})">
+                <span class="di-icon di-orange">✏️</span> แก้ไขข้อมูล
+              </button>
+            </div>
+          </div>
         </td>
       </tr>`;
     }).join('');
@@ -765,36 +778,26 @@
 
   function updateHeaders() {
     document.querySelectorAll('thead th.sortable').forEach(th => {
-      th.classList.remove('sort-asc', 'sort-desc');
+      th.classList.remove('sort-asc','sort-desc');
       if (sortCol === parseInt(th.dataset.col))
-        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+        th.classList.add(sortDir==='asc' ? 'sort-asc' : 'sort-desc');
     });
   }
 
   function updateStats() {
-
-  // กรองข้อมูลที่ถูกลบออกก่อน
-  const activeData = tableData.filter(r => !r.deleted);
-
-  document.getElementById('stat-total').textContent =
-    activeData.length;
-
-  document.getElementById('stat-ready').textContent =
-    activeData.filter(r => r.status === 'พร้อมใช้งาน').length;
-
-  document.getElementById('stat-issue').textContent =
-    activeData.filter(r => r.status === 'ขาดเมล์+WiFi').length;
-
-  document.getElementById('stat-repair').textContent =
-    activeData.filter(r => r.status === 'ซ่อม').length;
-}
+    const active = tableData.filter(r => !r.deleted);
+    document.getElementById('stat-total').textContent  = active.length;
+    document.getElementById('stat-ready').textContent  = active.filter(r => r.status==='พร้อมใช้งาน').length;
+    document.getElementById('stat-issue').textContent  = active.filter(r => r.status==='ขาดเมล์+WiFi').length;
+    document.getElementById('stat-repair').textContent = active.filter(r => r.status==='ซ่อม').length;
+  }
 
   // ── Sort ──────────────────────────────────────────────────────────────────
   document.querySelectorAll('thead th.sortable').forEach(th => {
     th.addEventListener('click', () => {
       const col = parseInt(th.dataset.col);
-      if (sortCol === col) { sortDir === 'asc' ? sortDir = 'desc' : (sortCol = sortDir = null); }
-      else { sortCol = col; sortDir = 'asc'; }
+      if (sortCol===col) { sortDir==='asc' ? sortDir='desc' : (sortCol=sortDir=null); }
+      else { sortCol=col; sortDir='asc'; }
       updateHeaders(); renderTable();
     });
   });
@@ -804,10 +807,12 @@
     searchTerm = document.getElementById('searchInput').value.trim(); renderTable();
   });
   document.getElementById('searchInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { searchTerm = e.target.value.trim(); renderTable(); }
+    if (e.key==='Enter') { searchTerm = e.target.value.trim(); renderTable(); }
   });
 
-  // ── LOAD from Apps Script (GET) ───────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  //  LOAD DATA (GET)
+  // ══════════════════════════════════════════════════════════════════════════
   async function loadFromSheets() {
     showLoading('กำลังโหลดข้อมูลจาก Google Sheets...');
     try {
@@ -816,204 +821,213 @@
       if (json.status !== 'ok') throw new Error(json.message || 'error');
 
       tableData = json.data.map(row => {
-
-  const k = obj =>
-    Object.keys(row).find(key =>
-      key.toLowerCase().replace(/\s/g,'').includes(obj)
-    ) || '';
-
-  return {
-    date: row[k('date')] || row[k('วันที่')] || '',
-    idName: row[k('idname')] || row[k('id')] || row[k('ชื่อ')] || '',
-    machine: row[k('machine')] || row[k('เบอร์')] || '',
-    dept: row[k('dept')] || row[k('แผนก')] || '',
-    type: row[k('type')] || row[k('ประเภท')] || '',
-    status: row[k('status')] || row[k('สถานะ')] || '',
-    cabinet: row[k('cabinet')] || row[k('ตู้')] || '',
-    operator: row[k('operator')] || row[k('ผู้')] || '',
-
-    // ⭐ สำคัญมาก
-    deleted: row.deleted === true
-  };
-});
-
+        const k = obj => Object.keys(row).find(key => key.toLowerCase().replace(/\s/g,'').includes(obj)) || '';
+        return {
+          date:     row[k('date')]    || row[k('วันที่')]  || '',
+          idName:   row[k('idname')]  || row[k('id')]      || row[k('ชื่อ')] || '',
+          machine:  row[k('machine')] || row[k('เบอร์')]   || '',
+          dept:     row[k('dept')]    || row[k('แผนก')]    || '',
+          type:     row[k('type')]    || row[k('ประเภท')]  || '',
+          status:   row[k('status')]  || row[k('สถานะ')]   || '',
+          cabinet:  row[k('cabinet')] || row[k('ตู้')]     || '',
+          operator: row[k('operator')]|| row[k('ผู้')]     || '',
+          deleted:  row.deleted === true
+        };
+      });
       renderTable();
-    } catch (err) {
+    } catch(err) {
       showError(`โหลดข้อมูลไม่สำเร็จ: <small style="color:#e53935">${err.message}</small>`);
-      console.error(err);
     }
   }
 
   // ══════════════════════════════════════════════════════════════════════════
-  //  🔐 PASSWORD / DELETE FLOW
+  //  LOCKOUT HELPERS
   // ══════════════════════════════════════════════════════════════════════════
+  function isLockedOut() { return Date.now() < lockedUntil; }
 
-  // ── Check if currently locked out ────────────────────────────────────────
-  function isLockedOut() {
-    return Date.now() < lockedUntil;
-  }
-
-  // ── Start countdown display ───────────────────────────────────────────────
   function startLockDisplay() {
     document.getElementById('lockOverlay').classList.add('active');
     if (lockTimer) clearInterval(lockTimer);
     lockTimer = setInterval(() => {
-      const remaining = lockedUntil - Date.now();
-      if (remaining <= 0) {
+      const rem = lockedUntil - Date.now();
+      if (rem <= 0) {
         clearInterval(lockTimer);
-        failCount   = 0; lockedUntil = 0;
-        sessionStorage.removeItem('pwFail');
-        sessionStorage.removeItem('pwLock');
+        failCount=0; lockedUntil=0;
+        sessionStorage.removeItem('pwFail'); sessionStorage.removeItem('pwLock');
         document.getElementById('lockOverlay').classList.remove('active');
         return;
       }
-      const m = Math.floor(remaining / 60000);
-      const s = Math.floor((remaining % 60000) / 1000);
-      document.getElementById('lockCountdown').textContent =
-        `${m}:${String(s).padStart(2,'0')}`;
+      const m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
+      document.getElementById('lockCountdown').textContent = `${m}:${String(s).padStart(2,'0')}`;
     }, 500);
   }
 
-  // ── Open password modal ───────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  //  DELETE FLOW  (Password → Confirm → API)
+  // ══════════════════════════════════════════════════════════════════════════
   function askDelete(origIdx) {
     if (isLockedOut()) { startLockDisplay(); return; }
-
     pendingDeleteIdx = origIdx;
-
-    // reset modal state
     const pwInput = document.getElementById('deletePassword');
-    pwInput.value = '';
-    pwInput.type  = 'password';
-    document.getElementById('pwToggle').textContent = '👁️';
-    document.getElementById('pwError').style.display = 'none';
-
+    pwInput.value=''; pwInput.type='password';
+    document.getElementById('pwToggle').textContent='👁️';
+    document.getElementById('pwError').style.display='none';
     document.getElementById('passwordOverlay').classList.add('active');
     setTimeout(() => pwInput.focus(), 120);
   }
 
-  // ── Show/hide password toggle ─────────────────────────────────────────────
   document.getElementById('pwToggle').addEventListener('click', () => {
     const inp = document.getElementById('deletePassword');
-    const isHidden = inp.type === 'password';
-    inp.type = isHidden ? 'text' : 'password';
-    document.getElementById('pwToggle').textContent = isHidden ? '🙈' : '👁️';
+    const hidden = inp.type==='password';
+    inp.type = hidden ? 'text' : 'password';
+    document.getElementById('pwToggle').textContent = hidden ? '🙈' : '👁️';
     inp.focus();
   });
 
-  // ── Validate password ─────────────────────────────────────────────────────
   function validatePassword() {
-    if (isLockedOut()) {
-      document.getElementById('passwordOverlay').classList.remove('active');
-      startLockDisplay(); return;
-    }
-
+    if (isLockedOut()) { document.getElementById('passwordOverlay').classList.remove('active'); startLockDisplay(); return; }
     const pw = document.getElementById('deletePassword').value;
-
     if (pw === DELETE_PASSWORD) {
-      // ✅ correct — reset counter, proceed to confirm step
-      failCount = 0; lockedUntil = 0;
-      sessionStorage.removeItem('pwFail');
-      sessionStorage.removeItem('pwLock');
-
+      failCount=0; lockedUntil=0;
+      sessionStorage.removeItem('pwFail'); sessionStorage.removeItem('pwLock');
       document.getElementById('passwordOverlay').classList.remove('active');
-      document.getElementById('confirmName').textContent =
-        (tableData[pendingDeleteIdx].idName  || '') +
-        ' (' + (tableData[pendingDeleteIdx].machine || '') + ')';
+      const r = tableData[pendingDeleteIdx];
+      document.getElementById('confirmName').textContent = `${r.idName||''} (${r.machine||''})`;
       document.getElementById('confirmOverlay').classList.add('active');
-
     } else {
-      // ❌ wrong password
       failCount++;
       sessionStorage.setItem('pwFail', failCount);
-
-      const remaining = MAX_ATTEMPTS - failCount;
-      const box       = document.getElementById('passwordBox');
-
-      // shake animation
-      box.classList.remove('shake');
-      void box.offsetWidth; // reflow
-      box.classList.add('shake');
-
-      // clear input
-      document.getElementById('deletePassword').value = '';
-
-      // show error + attempt count
-      document.getElementById('pwError').style.display = 'block';
+      const rem = MAX_ATTEMPTS - failCount;
+      const box = document.getElementById('passwordBox');
+      box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+      document.getElementById('deletePassword').value='';
+      document.getElementById('pwError').style.display='block';
       const badge = document.getElementById('attemptBadge');
-
-      if (remaining <= 0) {
-        // lock out
+      if (rem <= 0) {
         lockedUntil = Date.now() + LOCKOUT_MS;
         sessionStorage.setItem('pwLock', lockedUntil);
         document.getElementById('passwordOverlay').classList.remove('active');
         startLockDisplay();
       } else {
-        badge.className = 'attempt-badge' + (remaining <= 2 ? ' danger' : '');
-        badge.textContent = `⚠️ เหลือโอกาสอีก ${remaining} ครั้ง`;
+        badge.className = 'attempt-badge' + (rem<=2 ? ' danger' : '');
+        badge.textContent = `⚠️ เหลือโอกาสอีก ${rem} ครั้ง`;
       }
     }
   }
 
-  // ── Confirm button + Enter key ────────────────────────────────────────────
   document.getElementById('confirmPwBtn').addEventListener('click', validatePassword);
-  document.getElementById('deletePassword').addEventListener('keydown', e => {
-    if (e.key === 'Enter') validatePassword();
-  });
-
-  // ── Cancel password modal ─────────────────────────────────────────────────
+  document.getElementById('deletePassword').addEventListener('keydown', e => { if(e.key==='Enter') validatePassword(); });
   document.getElementById('cancelPwBtn').addEventListener('click', () => {
-    pendingDeleteIdx = null;
-    document.getElementById('passwordOverlay').classList.remove('active');
+    pendingDeleteIdx=null; document.getElementById('passwordOverlay').classList.remove('active');
   });
   document.getElementById('passwordOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('passwordOverlay')) {
-      pendingDeleteIdx = null;
-      document.getElementById('passwordOverlay').classList.remove('active');
-    }
+    if (e.target===document.getElementById('passwordOverlay')) { pendingDeleteIdx=null; document.getElementById('passwordOverlay').classList.remove('active'); }
   });
 
-  // ── DELETE row → Apps Script (POST) ──────────────────────────────────────
   document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-    if (pendingDeleteIdx === null) return;
+    if (pendingDeleteIdx===null) return;
     const btn = document.getElementById('confirmDeleteBtn');
-    btn.disabled = true; btn.textContent = '⏳ กำลังลบ...';
+    btn.disabled=true; btn.textContent='⏳ กำลังลบ...';
     try {
-      const res  = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'delete', rowIndex: pendingDeleteIdx })
-      });
+      const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action:'delete', rowIndex: pendingDeleteIdx }) });
       const json = await res.json();
-      if (json.status !== 'ok') throw new Error(json.message || 'error');
-      pendingDeleteIdx = null;
+      if (json.status!=='ok') throw new Error(json.message||'error');
+      pendingDeleteIdx=null;
       document.getElementById('confirmOverlay').classList.remove('active');
       await loadFromSheets();
-    } catch (err) {
-      alert('ลบไม่สำเร็จ: ' + err.message);
-    } finally {
-      btn.disabled = false; btn.innerHTML = '🗑️ ยืนยันลบข้อมูล';
-    }
+    } catch(err) { alert('ลบไม่สำเร็จ: '+err.message); }
+    finally { btn.disabled=false; btn.innerHTML='🗑️ ยืนยันลบข้อมูล'; }
   });
-
   document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-    pendingDeleteIdx = null;
-    document.getElementById('confirmOverlay').classList.remove('active');
+    pendingDeleteIdx=null; document.getElementById('confirmOverlay').classList.remove('active');
   });
   document.getElementById('confirmOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('confirmOverlay')) {
-      pendingDeleteIdx = null;
-      document.getElementById('confirmOverlay').classList.remove('active');
-    }
+    if (e.target===document.getElementById('confirmOverlay')) { pendingDeleteIdx=null; document.getElementById('confirmOverlay').classList.remove('active'); }
   });
 
-  // ── ADD RECORD MODAL ──────────────────────────────────────────────────────
-  const addOverlay = document.getElementById('modalOverlay');
-  document.getElementById('openModal').addEventListener('click',   () => addOverlay.classList.add('active'));
-  document.getElementById('closeModal').addEventListener('click',  () => addOverlay.classList.remove('active'));
-  document.getElementById('closeModal2').addEventListener('click', () => addOverlay.classList.remove('active'));
-  addOverlay.addEventListener('click', e => { if (e.target === addOverlay) addOverlay.classList.remove('active'); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') addOverlay.classList.remove('active'); });
+  // ══════════════════════════════════════════════════════════════════════════
+  //  SEND MACHINE FLOW
+  // ══════════════════════════════════════════════════════════════════════════
+  function askSend(origIdx) {
+    pendingSendIdx = origIdx;
+    const r = tableData[origIdx];
+    document.getElementById('sendName').textContent    = r.idName  || '—';
+    document.getElementById('sendMachine').textContent = r.machine || '—';
+    document.getElementById('sendOverlay').classList.add('active');
+  }
 
+  document.getElementById('confirmSendBtn').addEventListener('click', async () => {
+    if (pendingSendIdx===null) return;
+    const btn = document.getElementById('confirmSendBtn');
+    btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
+    try {
+      // เปลี่ยนสถานะเป็น "ส่งเครื่องแล้ว" (แก้ไขตาม business logic ที่ต้องการ)
+      const r = tableData[pendingSendIdx];
+      const res  = await fetch(API_URL, {
+        method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({
+          action:'edit', rowIndex: pendingSendIdx,
+          date: r.date, idName: r.idName, machine: r.machine,
+          dept: r.dept, type: r.type, status: 'ส่งเครื่องแล้ว',
+          cabinet: r.cabinet, operator: r.operator
+        })
+      });
+      const json = await res.json();
+      if (json.status!=='ok') throw new Error(json.message||'error');
+      pendingSendIdx=null;
+      document.getElementById('sendOverlay').classList.remove('active');
+      await loadFromSheets();
+    } catch(err) { alert('บันทึกไม่สำเร็จ: '+err.message); }
+    finally { btn.disabled=false; btn.innerHTML='📤 ยืนยันส่งเครื่อง'; }
+  });
+  document.getElementById('cancelSendBtn').addEventListener('click', () => {
+    pendingSendIdx=null; document.getElementById('sendOverlay').classList.remove('active');
+  });
+  document.getElementById('sendOverlay').addEventListener('click', e => {
+    if (e.target===document.getElementById('sendOverlay')) { pendingSendIdx=null; document.getElementById('sendOverlay').classList.remove('active'); }
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  EDIT FLOW
+  // ══════════════════════════════════════════════════════════════════════════
+  function openEdit(origIdx) {
+    editingIdx = origIdx;
+    const r    = tableData[origIdx];
+    const parts = (r.idName||'').split(' / ');
+    document.getElementById('f-id').value       = parts[0]                || '';
+    document.getElementById('f-name').value     = parts.slice(1).join(' / ') || '';
+    document.getElementById('f-machine').value  = r.machine  || '';
+    document.getElementById('f-dept').value     = r.dept     || '';
+    document.getElementById('f-type').value     = r.type     || '';
+    document.getElementById('f-status').value   = r.status   || '';
+    document.getElementById('f-cabinet').value  = r.cabinet  || '';
+    document.getElementById('f-operator').value = r.operator || '';
+
+    document.getElementById('modalTitle').textContent = '✏️ แก้ไขข้อมูล';
+    document.getElementById('addRowBtn').innerHTML    = '💾 บันทึกการแก้ไข';
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  // ── Reset modal to ADD mode ───────────────────────────────────────────────
+  function resetModal() {
+    editingIdx = null;
+    document.getElementById('modalTitle').textContent = '➕ เพิ่มข้อมูลส่งเครื่องพนักงาน';
+    document.getElementById('addRowBtn').innerHTML    = '👤+ เพิ่มข้อมูล';
+    ['f-id','f-name','f-machine','f-dept','f-operator'].forEach(id => document.getElementById(id).value='');
+    ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value='');
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  ADD / EDIT MODAL — open / close
+  // ══════════════════════════════════════════════════════════════════════════
+  const addOverlay = document.getElementById('modalOverlay');
+  document.getElementById('openModal').addEventListener('click',   () => { resetModal(); addOverlay.classList.add('active'); });
+  document.getElementById('closeModal').addEventListener('click',  () => { resetModal(); addOverlay.classList.remove('active'); });
+  document.getElementById('closeModal2').addEventListener('click', () => { resetModal(); addOverlay.classList.remove('active'); });
+  addOverlay.addEventListener('click', e => { if(e.target===addOverlay) { resetModal(); addOverlay.classList.remove('active'); } });
+  document.addEventListener('keydown', e => { if(e.key==='Escape') { resetModal(); addOverlay.classList.remove('active'); } });
+
+  // ── Save (ADD or EDIT) ───────────────────────────────────────────────────
   document.getElementById('addRowBtn').addEventListener('click', async () => {
     const id       = document.getElementById('f-id').value.trim();
     const name     = document.getElementById('f-name').value.trim();
@@ -1024,49 +1038,47 @@
     const cabinet  = document.getElementById('f-cabinet').value;
     const operator = document.getElementById('f-operator').value.trim();
 
-    if (!id || !name || !machine) {
-      alert('กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง'); return;
-    }
+    if (!id || !name || !machine) { alert('กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง'); return; }
 
     const today   = new Date();
-    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}T${String(today.getHours()).padStart(2,'0')}:${String(today.getMinutes()).padStart(2,'0')}:00`;
 
     const addBtn = document.getElementById('addRowBtn');
-    addBtn.disabled = true; addBtn.textContent = '⏳ กำลังบันทึก...';
+    addBtn.disabled=true; addBtn.textContent='⏳ กำลังบันทึก...';
 
     try {
-      const res  = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'add', date: dateStr,
-          idName: `${id} / ${name}`, machine, dept,
-          type: type || '—', status: status || '—',
-          cabinet: cabinet || '—', operator: operator || '—',
-        })
-      });
-      const json = await res.json();
-      if (json.status !== 'ok') throw new Error(json.message || 'error');
+      const isEdit = editingIdx !== null;
+      const body = {
+        action:   isEdit ? 'edit' : 'add',
+        date:     isEdit ? tableData[editingIdx].date : dateStr,  // edit คงวันที่เดิม
+        idName:   `${id} / ${name}`,
+        machine, dept,
+        type:     type    || '—',
+        status:   status  || '—',
+        cabinet:  cabinet || '—',
+        operator: operator|| '—',
+      };
+      if (isEdit) body.rowIndex = editingIdx;
 
-      ['f-id','f-name','f-machine','f-dept','f-operator'].forEach(id => document.getElementById(id).value = '');
-      ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value = '');
+      const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
+      const json = await res.json();
+      if (json.status!=='ok') throw new Error(json.message||'error');
+
+      resetModal();
       addOverlay.classList.remove('active');
       await loadFromSheets();
-    } catch (err) {
-      alert('บันทึกไม่สำเร็จ: ' + err.message);
-    } finally {
-      addBtn.disabled = false; addBtn.innerHTML = '👤+ เพิ่มข้อมูล';
-    }
+    } catch(err) { alert('บันทึกไม่สำเร็จ: '+err.message); }
+    finally { addBtn.disabled=false; }
   });
 
-  // ── Refresh button ────────────────────────────────────────────────────────
+  // ── Refresh ───────────────────────────────────────────────────────────────
   document.getElementById('resetSort').addEventListener('click', () => {
-    sortCol = null; sortDir = null; searchTerm = '';
-    document.getElementById('searchInput').value = '';
+    sortCol=null; sortDir=null; searchTerm='';
+    document.getElementById('searchInput').value='';
     updateHeaders(); loadFromSheets();
   });
 
-  // ── Check lockout on page load (if user refreshes during lockout) ─────────
+  // ── Check lockout on load ─────────────────────────────────────────────────
   if (isLockedOut()) startLockDisplay();
 
   // ── Init ──────────────────────────────────────────────────────────────────
