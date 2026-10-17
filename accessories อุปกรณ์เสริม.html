@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT Facilities Dept. — อุปกรณ์เสริม</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Prompt:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:#d65a5a; --blue-mid:#e06a6a; --blue-light:#f28b82; --blue-pale:#fdecea;
+      --green:#2e7d32; --green-light:#43a047; --orange:#e65100; --red:#c62828;
+      --gray-bg:#fdf6f5; --gray-border:#ecd9d7; --gray-text:#8a6e6c; --text:#2b1d1d;
+      --shadow-sm:0 1px 6px rgba(214,90,90,.10);
+      --shadow-md:0 4px 20px rgba(214,90,90,.13);
+      --shadow-lg:0 8px 40px rgba(214,90,90,.18);
+    }
+
+    body { font-family:'Sarabun',sans-serif; background:var(--gray-bg); color:var(--text); min-height:100vh; }
+
+    /* ── Topnav ── */
+    .sites-topnav {
+      background:#fff; border-bottom:1px solid #e0e0e0;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 28px; height:64px; position:sticky; top:0; z-index:100;
+      box-shadow:0 1px 4px rgba(0,0,0,.08);
+    }
+    .site-title { font-family:'Prompt',sans-serif; font-size:1.15rem; font-weight:700; color:var(--blue); display:flex; align-items:center; gap:10px; }
+    .icon-wrap { width:36px; height:36px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--blue-light)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.05rem; }
+    .nav-links { display:flex; gap:4px; align-items:center; }
+    .nav-link { padding:7px 16px; border-radius:20px; font-size:.88rem; font-weight:600; color:var(--gray-text); cursor:pointer; transition:all .18s; text-decoration:none; }
+    .nav-link:hover, .nav-link.active { background:var(--blue-pale); color:var(--blue); }
+
+    /* ── Hero (โทนเขียวอมฟ้า ให้ต่างจากหน้าแรกเล็กน้อย) ── */
+    .hero {
+      background:linear-gradient(135deg,#b94a4a 0%,#d65a5a 40%,#e57373 75%,#f4a29b 100%);
+      padding:56px 40px 52px; text-align:center; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0;
+      background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-logo { width:90px; height:90px; border-radius:20px; background:rgba(255,255,255,.15); backdrop-filter:blur(8px); border:2px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:2.4rem; box-shadow:0 8px 32px rgba(0,0,0,.2); position:relative; }
+    .hero h1 { font-family:'Prompt',sans-serif; font-size:2rem; font-weight:800; color:#fff; margin-bottom:8px; text-shadow:0 2px 12px rgba(0,0,0,.2); position:relative; }
+    .hero-sub { font-size:1rem; color:rgba(255,255,255,.85); position:relative; }
+    .hero-badges { display:flex; justify-content:center; gap:10px; margin-top:18px; flex-wrap:wrap; position:relative; }
+    .hero-badge { background:rgba(255,255,255,.15); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.25); color:#fff; padding:5px 16px; border-radius:20px; font-size:.82rem; font-weight:600; }
+
+    /* ── Contact bar ── */
+    .contact-bar { background:#fff; border-bottom:2px solid var(--blue-pale); display:flex; align-items:center; justify-content:center; gap:32px; padding:14px 32px; flex-wrap:wrap; }
+    .contact-item { display:flex; align-items:center; gap:8px; font-size:.88rem; }
+    .ci-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.95rem; }
+    .ci-blue{background:#fdecea;color:var(--blue)} .ci-green{background:#e8f5e9;color:var(--green)} .ci-orange{background:#fff3e0;color:var(--orange)}
+    .divider { width:1px; height:28px; background:#e0e0e0; }
+
+    /* ── Main ── */
+    .main-content { max-width:1100px; margin:0 auto; padding:32px 24px 60px; }
+    .section-title { font-family:'Prompt',sans-serif; font-size:1.05rem; font-weight:700; color:var(--blue); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .section-title::after { content:''; flex:1; height:2px; background:linear-gradient(to right,var(--blue-pale),transparent); margin-left:8px; }
+
+    /* ── Info cards (กดได้) ── */
+    .info-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr)); gap:16px; margin-bottom:28px; }
+    .info-card {
+      background:#fff; border-radius:12px; box-shadow:var(--shadow-sm);
+      padding:16px 18px; border-left:4px solid var(--c, var(--blue));
+      display:flex; flex-direction:column; gap:3px; cursor:pointer;
+      transition:transform .15s, box-shadow .15s; position:relative;
+    }
+    .info-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
+    .info-card .ic-top { display:flex; align-items:center; gap:10px; }
+    .info-card .ic-emoji { width:38px; height:38px; border-radius:10px; background:color-mix(in srgb, var(--c, var(--blue)) 12%, white); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+    .info-card .ic-label { font-size:.86rem; font-weight:700; color:var(--text); line-height:1.25; }
+    .info-card .ic-value { font-family:'Prompt',sans-serif; font-size:1.9rem; font-weight:700; color:var(--c, var(--blue)); margin-top:4px; }
+    .info-card .ic-sub { font-size:.78rem; color:var(--gray-text); }
+    .info-card .ic-hint { font-size:.72rem; color:var(--blue-light); font-weight:600; margin-top:2px; }
+
+    /* ── Toolbar ── */
+    .data-toolbar { background:#fff; border-radius:12px; box-shadow:var(--shadow-sm); padding:14px 20px; margin-bottom:16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 18px; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.88rem; font-weight:600; cursor:pointer; border:none; transition:all .18s; white-space:nowrap; }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
+    .btn-blue{background:var(--blue);color:#fff} .btn-blue:hover{background:#c24848}
+    .btn-green{background:var(--green-light);color:#fff} .btn-green:hover{background:var(--green)}
+    .btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue)} .btn-outline:hover{background:var(--blue-pale)}
+    .btn-gray{background:#f0f0f0;color:#555;border:1px solid #ddd} .btn-gray:hover{background:#e0e0e0}
+    .btn-red{background:var(--red);color:#fff} .btn-red:hover{background:#b71c1c}
+    .search-box { display:flex; align-items:center; gap:8px; margin-left:auto; }
+    .search-input { padding:8px 14px; border-radius:8px; border:1.5px solid var(--gray-border); font-family:'Sarabun',sans-serif; font-size:.88rem; outline:none; transition:border .15s; min-width:220px; background:#fffafa; }
+    .search-input:focus { border-color:var(--blue); background:#fff; }
+
+    /* ── Table ── */
+    .table-card { background:#fff; border-radius:12px; box-shadow:var(--shadow-sm); overflow:hidden; }
+    .table-scroll { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:760px; }
+    thead { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); color:#fff; }
+    thead th { padding:13px 16px; text-align:left; font-size:.88rem; font-weight:600; white-space:nowrap; }
+    thead th.sortable { cursor:pointer; user-select:none; transition:background .15s; }
+    thead th.sortable:hover { background:rgba(255,255,255,.15); }
+    .sort-icon { display:inline-flex; flex-direction:column; line-height:1; font-size:.65rem; opacity:.5; gap:1px; margin-left:6px; vertical-align:middle; }
+    thead th.sort-asc, thead th.sort-desc { background:rgba(255,255,255,.18); }
+    thead th.sort-asc .sort-icon, thead th.sort-desc .sort-icon { opacity:1; }
+    thead th.sort-asc .arrow-down, thead th.sort-desc .arrow-up { opacity:.3; }
+    tbody tr { border-bottom:1px solid #f8e6e4; transition:background .12s; }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:nth-child(even) { background:#fffafa; }
+    tbody tr:hover { background:#fff5f4; }
+    td { padding:13px 16px; font-size:.88rem; vertical-align:middle; }
+    .empty-state { text-align:center; padding:56px 20px; color:var(--gray-text); }
+    .empty-icon { font-size:2.5rem; margin-bottom:12px; opacity:.5; }
+    .type-tag { display:inline-block; padding:3px 10px; border-radius:6px; font-size:.8rem; font-weight:700; background:#fdecea; color:var(--blue); white-space:nowrap; }
+
+    /* ── Chips ── */
+    .chip { display:inline-flex; align-items:center; gap:4px; padding:3px 12px; border-radius:20px; font-size:.78rem; font-weight:700; white-space:nowrap; }
+    .chip-green{background:#e8f5e9;color:var(--green)} .chip-red{background:#ffebee;color:var(--red)}
+    .chip-orange{background:#fff3e0;color:var(--orange)} .chip-blue{background:var(--blue-pale);color:var(--blue)}
+
+    /* ── 3-dot dropdown ── */
+    .action-wrap { position:relative; display:inline-block; }
+    .btn-dots { width:34px; height:34px; border-radius:8px; background:#fff1f0; color:var(--blue); border:1.5px solid var(--gray-border); cursor:pointer; font-size:1.25rem; font-weight:900; display:flex; align-items:center; justify-content:center; transition:all .15s; line-height:1; padding-bottom:3px; }
+    .btn-dots:hover { background:var(--blue-pale); border-color:var(--blue); }
+    .btn-dots.open { background:var(--blue); color:#fff; border-color:var(--blue); }
+    .dropdown-menu { display:none; position:absolute; right:0; top:calc(100% + 6px); background:#fff; border-radius:10px; box-shadow:0 6px 28px rgba(214,90,90,.18); border:1px solid #f6dcda; min-width:152px; z-index:300; overflow:hidden; }
+    .dropdown-menu.open { display:block; animation:ddFadeIn .15s ease; }
+    @keyframes ddFadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+    .dropdown-item { display:flex; align-items:center; gap:10px; padding:10px 14px; font-size:.87rem; font-weight:600; color:var(--text); cursor:pointer; border:none; background:none; width:100%; text-align:left; font-family:'Sarabun',sans-serif; border-bottom:1px solid #fbeceb; }
+    .dropdown-item:last-child { border-bottom:none; }
+    .dropdown-item:hover { background:var(--blue-pale); }
+    .dropdown-item.del { color:var(--red); } .dropdown-item.del:hover { background:#ffebee; }
+    .di-icon { width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.85rem; flex-shrink:0; }
+    .di-red{background:#ffebee} .di-orange{background:#fff3e0} .di-blue{background:#fdecea}
+
+    /* ── Modals ── */
+    .modal-overlay, .confirm-overlay { display:none; position:fixed; inset:0; background:rgba(13,30,60,.45); backdrop-filter:blur(4px); align-items:center; justify-content:center; }
+    .modal-overlay.active, .confirm-overlay.active { display:flex; animation:fadeIn .18s ease; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes slideUp { from{transform:translateY(28px);opacity:0} to{transform:translateY(0);opacity:1} }
+    #modalOverlay { z-index:500; } #listOverlay { z-index:500; } #confirmOverlay { z-index:600; } #sendOverlay { z-index:600; }
+    .modal { background:#fff; border-radius:14px; box-shadow:var(--shadow-lg); width:560px; max-width:95vw; animation:slideUp .22s cubic-bezier(.4,0,.2,1); overflow:hidden; }
+    .list-modal { width:820px; }
+    .modal-header { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); color:#fff; padding:16px 22px; display:flex; align-items:center; justify-content:space-between; font-family:'Prompt',sans-serif; font-size:1rem; font-weight:700; }
+    .modal-close { background:none; border:none; color:#fff; font-size:1.3rem; cursor:pointer; padding:2px 7px; border-radius:5px; }
+    .modal-close:hover { background:rgba(255,255,255,.2); }
+    .modal-body { padding:24px 22px 16px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .form-group { display:flex; flex-direction:column; gap:5px; }
+    .form-group.full { grid-column:1 / -1; }
+    .form-group label { font-size:.85rem; font-weight:600; color:#5a2a2a; }
+    .form-control { padding:9px 12px; border:1.5px solid var(--gray-border); border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.88rem; color:var(--text); outline:none; transition:border .15s, box-shadow .15s; background:#fffafa; }
+    .form-control:focus { border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(214,90,90,.1); }
+    .modal-body { max-height:70vh; overflow-y:auto; }
+    .dev-list { max-height:230px; overflow-y:auto; padding:2px 2px 0; }
+    .dev-row { display:grid; grid-template-columns:150px 1fr 36px; gap:8px; margin-bottom:8px; }
+    .dev-del { border:1.5px solid var(--gray-border); background:#fff; border-radius:8px; color:var(--red); cursor:pointer; font-weight:700; }
+    .dev-del:hover { background:#ffebee; }
+    .dev-count { font-weight:500; color:var(--gray-text); margin-left:6px; }
+    .dev-hint { font-size:.76rem; color:var(--gray-text); }
+    .btn-sm { padding:6px 14px; font-size:.84rem; align-self:flex-start; margin-top:2px; }
+    .modal-footer { padding:12px 22px 20px; display:flex; gap:8px; }
+
+    .confirm-box { background:#fff; border-radius:14px; box-shadow:var(--shadow-lg); width:400px; max-width:92vw; overflow:hidden; animation:slideUp .2s cubic-bezier(.4,0,.2,1); }
+    .confirm-header { color:#fff; padding:14px 20px; font-family:'Prompt',sans-serif; font-size:.95rem; font-weight:700; background:linear-gradient(90deg,var(--red),#e53935); }
+    .confirm-header.blue { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); }
+    .confirm-body { padding:20px 22px 10px; font-size:.9rem; line-height:1.6; }
+    .target-name { font-weight:700; color:var(--red); }
+    .confirm-footer { padding:10px 22px 18px; display:flex; gap:8px; }
+
+    .list-summary { display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.95rem; font-weight:600; }
+    .list-count { font-family:'Prompt',sans-serif; font-size:1.5rem; font-weight:800; color:var(--blue); }
+    .list-scroll { max-height:52vh; overflow:auto; border:1px solid var(--gray-border); border-radius:10px; }
+    .list-table { width:100%; border-collapse:collapse; min-width:640px; }
+    .list-table th { position:sticky; top:0; background:var(--blue-pale); color:var(--blue); padding:10px 12px; font-size:.82rem; text-align:left; white-space:nowrap; }
+    .list-table td { padding:10px 12px; font-size:.86rem; border-top:1px solid #f8e6e4; }
+
+    .site-footer { background:#3a2425; color:#d1a8a6; text-align:center; padding:20px 24px; font-size:.82rem; line-height:1.7; }
+    .site-footer strong { color:#fdecea; }
+
+    @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+    @media (max-width:640px) { .form-grid { grid-template-columns:1fr; } .search-box { margin-left:0; width:100%; } .search-input { flex:1; min-width:0; } }
+  </style>
+</head>
+<body>
+
+<!-- ── Topnav ── -->
+<nav class="sites-topnav">
+  <div class="site-title"><div class="icon-wrap">💻</div>IT Facilities Dept.</div>
+  <div class="nav-links">
+    <a class="nav-link" id="navHome" href="#">หน้าแรก</a>
+    <a class="nav-link active" href="#">อุปกรณ์เสริม</a>
+    <a class="nav-link" href="#">ประวัติ</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-logo">🔌</div>
+  <h1>อุปกรณ์เสริม</h1>
+  <p class="hero-sub">ระบบจัดการและติดตามอุปกรณ์เครือข่ายและกล้องวงจรปิด</p>
+  <div class="hero-badges">
+    <span class="hero-badge">📹 DVR</span>
+    <span class="hero-badge">📡 Access Point</span>
+    <span class="hero-badge">🔐 Box VPN</span>
+    <span class="hero-badge">📶 Router SIM</span>
+    <span class="hero-badge">💾 Harddisk</span>
+  </div>
+</div>
+
+<!-- ── Contact bar ── -->
+<div class="contact-bar">
+  <div class="contact-item"><div class="ci-icon ci-blue">📞</div><span><strong>Tel :</strong> . 7442</span><span style="color:#999;font-size:.8rem">(office hours)</span></div>
+  <div class="divider"></div>
+  <div class="contact-item"><div class="ci-icon ci-green">📱</div><span><strong>Hotline :</strong> 083-989-0894, 083-989-1551</span></div>
+  <div class="divider"></div>
+  <div class="contact-item"><div class="ci-icon ci-orange">🕐</div><span><strong>เวลาทำการ :</strong> 09:00 – 18:00 น.</span></div>
+</div>
+
+<!-- ── Main ── -->
+<div class="main-content">
+
+  <div class="section-title">📊 ภาพรวมอุปกรณ์เสริม</div>
+  <div class="info-cards" id="infoCards"></div>
+
+  <div class="section-title">📋 รายการอุปกรณ์เสริม</div>
+
+  <div class="data-toolbar">
+    <button class="btn btn-outline" id="showAllBtn">📦 ข้อมูลทั้งหมด</button>
+    <button class="btn btn-green" id="openModal">➕ เพิ่มอุปกรณ์</button>
+    <button class="btn btn-gray" id="reloadBtn">🔄 โหลดข้อมูลใหม่</button>
+    <div class="search-box">
+      <input class="search-input" id="searchInput" type="text" placeholder="ค้นหาประเภท / รหัส / ผู้ดำเนินการ..." autocomplete="off"/>
+      <button class="btn btn-blue" id="searchBtn">🔍 ค้นหา</button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="sortable" data-key="date">วันที่รับ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="sentDate">วันที่ส่ง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="type">ประเภท<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="serial">S/N<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="status">สถานะ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="operator">ผู้ดำเนินการ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th style="text-align:center;min-width:60px">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <strong>IT Facilities Department</strong><br>
+  Tel : 02-017-7777 Ext. 7442 &nbsp;|&nbsp; Hotline : 083-989-0894, 083-989-1551<br>
+  เวลาทำการ 09:00 – 18:00 น.
+</footer>
+
+<!-- ══ LIST MODAL (กดการ์ด) ══ -->
+<div class="modal-overlay" id="listOverlay">
+  <div class="modal list-modal">
+    <div class="modal-header"><span id="listTitle">รายการ</span><button class="modal-close" id="closeList">✕</button></div>
+    <div class="modal-body">
+      <div class="list-summary"><span>จำนวน</span><span class="list-count" id="listCount">0</span><span>รายการ</span></div>
+      <div class="list-scroll">
+        <table class="list-table">
+          <thead><tr><th>#</th><th>วันที่รับ</th><th>วันที่ส่ง</th><th>S/N</th><th>สถานะ</th></tr></thead>
+          <tbody id="listBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-gray" id="closeList2">ปิด</button></div>
+  </div>
+</div>
+
+<!-- ══ ADD / EDIT MODAL ══ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header"><span id="modalTitle">➕ เพิ่มอุปกรณ์เสริม</span><button class="modal-close" id="closeModal">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>รายการอุปกรณ์ <span id="devCount" class="dev-count"></span></label>
+          <div class="dev-list" id="devList"></div>
+          <button type="button" class="btn btn-outline btn-sm" id="addDevRow">➕ เพิ่มอีกเครื่อง</button>
+          <div class="dev-hint" id="devHint">💡 กด Enter ในช่องรหัสเพื่อเพิ่มเครื่องถัดไป หรือวางรหัสหลายบรรทัดลงในช่องเดียวได้</div>
+        </div>
+        <div class="form-group full" id="sentDateGroup" style="display:none">
+          <label>วันที่ส่ง <span class="dev-count">(เว้นว่าง = ยังไม่ได้ส่ง)</span></label>
+          <input class="form-control" id="f-sentdate" type="date"/>
+        </div>
+        <div class="form-group">
+          <label>สถานะ</label>
+          <select class="form-control" id="f-status">
+            <option value="">-- เลือกสถานะ --</option>
+            <option>กำลังรอดำเนินการ</option>
+            <option>ดำเนินการเสร็จแล้ว</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ผู้ดำเนินการ</label>
+          <input class="form-control" id="f-operator" type="text"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-green" id="saveBtn">➕ เพิ่มอุปกรณ์</button>
+      <button class="btn btn-gray" id="closeModal2">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SEND MACHINE ══ -->
+<div class="confirm-overlay" id="sendOverlay">
+  <div class="confirm-box">
+    <div class="confirm-header blue">📤 ส่งเครื่อง</div>
+    <div class="confirm-body" style="padding-bottom:16px">
+      <p style="margin-bottom:14px;color:var(--gray-text);font-size:.88rem">ยืนยันการส่งเครื่องสำหรับ</p>
+      <p style="font-weight:700;font-size:.95rem" id="sendName"></p>
+      <p style="margin-top:10px;font-size:.85rem;color:var(--gray-text)">รหัส / S/N: <strong id="sendSerial"></strong></p>
+      <p id="sendNote" style="margin-top:10px;font-size:.85rem"></p>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-blue" id="confirmSendBtn">📤 ยืนยันส่งเครื่อง</button>
+      <button class="btn btn-gray" id="cancelSendBtn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRM DELETE ══ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-header">🗑️ ยืนยันการลบข้อมูล</div>
+    <div class="confirm-body">
+      คุณต้องการลบ<br><span class="target-name" id="confirmName"></span><br>
+      ออกจากระบบ? <strong>การดำเนินการนี้ไม่สามารถย้อนกลับได้</strong>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-red" id="confirmDeleteBtn">🗑️ ยืนยันลบข้อมูล</button>
+      <button class="btn btn-gray" id="cancelDeleteBtn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ══════════════════════════════════════════════════════════════════════════
+  //  CONFIG  ← แก้ตรงนี้
+  // ══════════════════════════════════════════════════════════════════════════
+  // ใส่ URL ของ Apps Script (เหมือนหน้าแรก) ถ้าปล่อยว่าง ระบบจะใช้ "ข้อมูลตัวอย่าง" ให้ดูหน้าตาก่อน
+  const API_URL  = '';
+  const SHEET    = 'accessories';          // ชื่อแท็บชีทที่เก็บอุปกรณ์เสริม
+  const HOME_URL = '#';                    // ลิงก์หน้าแรก (URL ของหน้าแรกใน Google Sites)
+
+  // ประเภทอุปกรณ์ = ชื่อการ์ดในภาพรวม
+  const TYPES = [
+    { name:'DVR 8CH 4T',        icon:'📹', color:'#d65a5a' },
+    { name:'DVR 16CH 6T',       icon:'🎥', color:'#b0413e' },
+    { name:'Access Point(TP)',  icon:'📡', color:'#e08a5b' },
+    { name:'Access Point(OMD)', icon:'📶', color:'#d4a04a' },
+    { name:'Box VPN',           icon:'🔐', color:'#a05a8a' },
+    { name:'Router SIM',        icon:'📱', color:'#e57399' },
+    { name:'Harddisk',          icon:'💾', color:'#8d6e63' }
+  ];
+
+  document.getElementById('navHome').href = HOME_URL;
+
+  let tableData = [];
+  let sortKey = null, sortDir = null;
+  let searchTerm = '';
+  let typeFilter = '';
+  let editingIdx = null, pendingDeleteIdx = null;
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function escHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function statusChip(s) {
+    const t = escHtml(s) || '—';
+    if (s === 'กำลังรอดำเนินการ')   return `<span class="chip chip-orange">⏳ ${t}</span>`;
+    if (s === 'ดำเนินการเสร็จแล้ว') return `<span class="chip chip-green">✅ ${t}</span>`;
+    return `<span class="chip chip-blue">${t}</span>`;
+  }
+  // blank: ข้อความที่แสดงเมื่อไม่มีวันที่ (ค่าเริ่มต้น '—', ส่ง '' เพื่อให้ว่าง)
+  function formatDate(v, blank) {
+    if (!v) return blank === undefined ? '—' : blank;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
+    const d = m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(v);
+    if (isNaN(d.getTime())) return escHtml(v);
+    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  }
+  function toInputDate(v) {
+    if (!v) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return '';
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function showMsg(icon, msg) {
+    document.getElementById('tableBody').innerHTML =
+      `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">${icon}</div><p>${msg}</p></div></td></tr>`;
+  }
+
+  // ── API (มีโหมดตัวอย่างเมื่อไม่ได้ใส่ API_URL) ────────────────────────────
+  function sampleData() {
+    const d = new Date().toISOString();
+    return [
+      { date:d, type:'DVR 8CH 4T',        serial:'DV8-0001', sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมชาย' },
+      { date:d, type:'DVR 8CH 4T',        serial:'DV8-0002', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'DVR 16CH 6T',       serial:'DV16-0001',sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมหญิง' },
+      { date:d, type:'Access Point(TP)',  serial:'TP-0101',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมหญิง' },
+      { date:d, type:'Access Point(TP)',  serial:'TP-0102',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'Access Point(OMD)', serial:'OMD-0001', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'Box VPN',           serial:'VPN-0001', sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมหญิง' },
+      { date:d, type:'Router SIM',        serial:'RS-0001',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'Harddisk',          serial:'HDD-0001', sentDate:'', status:'ดำเนินการเสร็จแล้ว', operator:'สมชาย' },
+      { date:d, type:'Harddisk',          serial:'HDD-0002', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมหญิง' }
+    ];
+  }
+
+  async function apiPost(body) {
+    if (!API_URL) {                       // โหมดตัวอย่าง: แก้ข้อมูลในหน้าเว็บอย่างเดียว
+      if (body.action === 'add')    tableData.push({ ...body });
+      if (body.action === 'edit')   tableData[body.rowIndex] = { ...tableData[body.rowIndex], ...body };
+      if (body.action === 'delete') tableData[body.rowIndex].deleted = true;
+      return;
+    }
+    const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ ...body, sheet: SHEET }) });
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message || 'error');
+  }
+
+  async function loadData() {
+    if (!API_URL) { if (!tableData.length) tableData = sampleData(); renderAll(); return; }
+    showMsg('<span style="display:inline-block;animation:spin 1s linear infinite">⏳</span>', 'กำลังโหลดข้อมูลจาก Google Sheets...');
+    try {
+      const res  = await fetch(`${API_URL}?sheet=${encodeURIComponent(SHEET)}`);
+      const json = await res.json();
+      if (json.status !== 'ok') throw new Error(json.message || 'error');
+      tableData = json.data.map(r => ({
+        date: r.date || '', type: r.type || '', serial: r.serial || '', sentDate: r.sentDate || '', status: r.status || '', operator: r.operator || '',
+        deleted: r.deleted === true
+      }));
+      renderAll();
+    } catch (err) { showMsg('⚠️', `โหลดข้อมูลไม่สำเร็จ: <small style="color:#e53935">${escHtml(err.message)}</small>`); }
+  }
+
+  // ── Cards ─────────────────────────────────────────────────────────────────
+  function renderCards() {
+    const active = tableData.filter(r => !r.deleted);
+    document.getElementById('infoCards').innerHTML = TYPES.map((t, i) => {
+      const items = active.filter(r => r.type === t.name);
+      const wait = items.filter(r => r.status === 'กำลังรอดำเนินการ').length;
+      const done = items.filter(r => r.status === 'ดำเนินการเสร็จแล้ว').length;
+      return `<div class="info-card" style="--c:${t.color}" onclick="openTypeList(${i})">
+        <div class="ic-top"><div class="ic-emoji">${t.icon}</div><div class="ic-label">${escHtml(t.name)}</div></div>
+        <div class="ic-value">${items.length}</div>
+        <div class="ic-sub">รอดำเนินการ ${wait} · เสร็จแล้ว ${done}</div>
+        <div class="ic-hint">👆 คลิกดูรายการ</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Table ─────────────────────────────────────────────────────────────────
+  function renderTable() {
+    const q = searchTerm.toLowerCase();
+    let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => !r.deleted)
+      .filter(r => !typeFilter || r.type === typeFilter)
+      .filter(r => !q || [r.type, r.serial, r.operator].some(v => String(v || '').toLowerCase().includes(q)));
+
+    if (sortKey) {
+      rows.sort((a, b) => {
+        let va = a[sortKey] || '', vb = b[sortKey] || '';
+        if (sortKey === 'date' || sortKey === 'sentDate') {
+          const ta = va ? new Date(va).getTime() : NaN, tb = vb ? new Date(vb).getTime() : NaN;
+          if (isNaN(ta) && isNaN(tb)) return 0;
+          if (isNaN(ta)) return 1;          // ไม่มีวันที่ → อยู่ท้ายเสมอ
+          if (isNaN(tb)) return -1;
+          return sortDir === 'asc' ? ta - tb : tb - ta;
+        }
+        va = String(va).toLowerCase(); vb = String(vb).toLowerCase();
+        return (va < vb ? -1 : va > vb ? 1 : 0) * (sortDir === 'asc' ? 1 : -1);
+      });
+    }
+
+    if (!rows.length) { showMsg('📭', typeFilter ? `ไม่พบข้อมูลของ ${escHtml(typeFilter)}` : 'ไม่พบข้อมูล'); return; }
+
+    document.getElementById('tableBody').innerHTML = rows.map((r, i) => `<tr>
+      <td>${i + 1}</td>
+      <td>${formatDate(r.date)}</td>
+      <td>${formatDate(r.sentDate, '')}</td>
+      <td><span class="type-tag">${escHtml(r.type) || '—'}</span></td>
+      <td>${escHtml(r.serial) || '—'}</td>
+      <td>${statusChip(r.status)}</td>
+      <td>${escHtml(r.operator) || '—'}</td>
+      <td style="text-align:center">
+        <div class="action-wrap">
+          <button class="btn-dots" onclick="toggleDropdown(${r.origIdx}, event)" title="จัดการ">⋮</button>
+          <div class="dropdown-menu" id="dd-${r.origIdx}">
+            <button class="dropdown-item" onclick="closeAllDropdowns(); askSend(${r.origIdx})"><span class="di-icon di-blue">📤</span> ส่งเครื่อง</button>
+            <button class="dropdown-item" onclick="closeAllDropdowns(); openEdit(${r.origIdx})"><span class="di-icon di-orange">✏️</span> แก้ไขข้อมูล</button>
+            <button class="dropdown-item del" onclick="closeAllDropdowns(); askDelete(${r.origIdx})"><span class="di-icon di-red">🗑️</span> ลบข้อมูล</button>
+          </div>
+        </div>
+      </td>
+    </tr>`).join('');
+  }
+
+  function renderAll() { renderCards(); renderTable(); }
+
+  // ── Dropdown ──────────────────────────────────────────────────────────────
+  function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-menu.open').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.btn-dots.open').forEach(b => b.classList.remove('open'));
+  }
+  function toggleDropdown(idx, e) {
+    e.stopPropagation();
+    const dd = document.getElementById('dd-' + idx), btn = e.currentTarget, was = dd.classList.contains('open');
+    closeAllDropdowns();
+    if (!was) { dd.classList.add('open'); btn.classList.add('open'); }
+  }
+  document.addEventListener('click', closeAllDropdowns);
+
+  // ── Sort / Search / Toolbar ───────────────────────────────────────────────
+  document.querySelectorAll('thead th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const k = th.dataset.key;
+      if (sortKey === k) { if (sortDir === 'asc') sortDir = 'desc'; else { sortKey = sortDir = null; } }
+      else { sortKey = k; sortDir = 'asc'; }
+      document.querySelectorAll('thead th.sortable').forEach(h => {
+        h.classList.remove('sort-asc', 'sort-desc');
+        if (h.dataset.key === sortKey) h.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      });
+      renderTable();
+    });
+  });
+
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', () => { searchTerm = searchInput.value.trim(); renderTable(); });
+  document.getElementById('searchBtn').addEventListener('click', () => { searchTerm = searchInput.value.trim(); renderTable(); });
+  document.getElementById('showAllBtn').addEventListener('click', () => {
+    typeFilter = ''; searchTerm = ''; searchInput.value = ''; renderTable();
+  });
+  document.getElementById('reloadBtn').addEventListener('click', () => {
+    sortKey = sortDir = null; typeFilter = ''; searchTerm = ''; searchInput.value = '';
+    document.querySelectorAll('thead th.sortable').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+    loadData();
+  });
+
+  // ── List modal (กดการ์ด) ──────────────────────────────────────────────────
+  function openTypeList(i) {
+    const t = TYPES[i];
+    const rows = tableData.filter(r => !r.deleted && r.type === t.name);
+    document.getElementById('listTitle').textContent = `${t.icon} ${t.name}`;
+    document.getElementById('listCount').textContent = rows.length;
+    document.getElementById('listBody').innerHTML = rows.length === 0
+      ? `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div><p>ยังไม่มีอุปกรณ์ในหมวดนี้</p></div></td></tr>`
+      : rows.map((r, n) => `<tr>
+          <td>${n + 1}</td><td>${formatDate(r.date)}</td><td>${formatDate(r.sentDate, '')}</td>
+          <td>${escHtml(r.serial) || '—'}</td><td>${statusChip(r.status)}</td>
+        </tr>`).join('');
+    document.getElementById('listOverlay').classList.add('active');
+  }
+  function closeList() { document.getElementById('listOverlay').classList.remove('active'); }
+  document.getElementById('closeList').addEventListener('click', closeList);
+  document.getElementById('closeList2').addEventListener('click', closeList);
+  document.getElementById('listOverlay').addEventListener('click', e => { if (e.target.id === 'listOverlay') closeList(); });
+
+  // ── Add / Edit modal ──────────────────────────────────────────────────────
+  const modalOverlay = document.getElementById('modalOverlay');
+  // ── Device rows (เพิ่มหลายเครื่องในครั้งเดียว) ──────────────────────────
+  const devList = document.getElementById('devList');
+  const saveBtnEl = document.getElementById('saveBtn');
+
+  function typeOptionsHtml(sel) {
+    return '<option value="">-- ประเภท --</option>' +
+      TYPES.map(t => `<option${t.name === sel ? ' selected' : ''}>${escHtml(t.name)}</option>`).join('');
+  }
+  function lastDevType() {
+    const sel = devList.querySelectorAll('.dev-type');
+    return sel.length ? sel[sel.length - 1].value : '';
+  }
+  function updateDevUi() {
+    const isEdit = editingIdx !== null;
+    const rows = devList.querySelectorAll('.dev-row');
+    rows.forEach(r => { r.querySelector('.dev-del').style.display = (isEdit || rows.length <= 1) ? 'none' : ''; });
+    document.getElementById('addDevRow').style.display = isEdit ? 'none' : '';
+    document.getElementById('devHint').style.display   = isEdit ? 'none' : '';
+    document.getElementById('sentDateGroup').style.display = isEdit ? '' : 'none';
+    const filled = [...devList.querySelectorAll('.dev-serial')].filter(i => i.value.trim()).length;
+    document.getElementById('devCount').textContent = isEdit ? '' : `(${filled} เครื่อง)`;
+    if (!saveBtnEl.disabled) {
+      saveBtnEl.innerHTML = isEdit ? '💾 บันทึกการแก้ไข' : (filled > 1 ? `➕ เพิ่ม ${filled} เครื่อง` : '➕ เพิ่มอุปกรณ์');
+    }
+  }
+  function addDevRow(type, serial, focus) {
+    const row = document.createElement('div');
+    row.className = 'dev-row';
+    row.innerHTML = `<select class="form-control dev-type">${typeOptionsHtml(type || '')}</select>` +
+      `<input class="form-control dev-serial" type="text" placeholder="รหัส / S/N" autocomplete="off"/>` +
+      `<button type="button" class="dev-del" title="ลบแถวนี้">✕</button>`;
+    row.querySelector('.dev-serial').value = serial || '';
+    devList.appendChild(row);
+    updateDevUi();
+    if (focus) { row.querySelector('.dev-serial').focus(); row.scrollIntoView({ block: 'nearest' }); }
+    return row;
+  }
+
+  document.getElementById('addDevRow').addEventListener('click', () => addDevRow(lastDevType(), '', true));
+
+  devList.addEventListener('click', e => {
+    const del = e.target.closest('.dev-del');
+    if (!del) return;
+    del.closest('.dev-row').remove();
+    updateDevUi();
+  });
+  devList.addEventListener('input', e => { if (e.target.classList.contains('dev-serial')) updateDevUi(); });
+  devList.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || !e.target.classList.contains('dev-serial')) return;
+    e.preventDefault();
+    if (editingIdx !== null || !e.target.value.trim()) return;
+    const rows = [...devList.querySelectorAll('.dev-row')];
+    const cur = e.target.closest('.dev-row');
+    const next = rows[rows.indexOf(cur) + 1];
+    if (next) next.querySelector('.dev-serial').focus();
+    else addDevRow(cur.querySelector('.dev-type').value, '', true);
+  });
+  // วางหลายบรรทัด → แตกเป็นหลายแถวอัตโนมัติ
+  devList.addEventListener('paste', e => {
+    if (editingIdx !== null || !e.target.classList.contains('dev-serial')) return;
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    const parts = text.split(/[\r\n,;\t]+/).map(x => x.trim()).filter(Boolean);
+    if (parts.length < 2) return;
+    e.preventDefault();
+    const cur = e.target.closest('.dev-row');
+    const type = cur.querySelector('.dev-type').value;
+    e.target.value = parts[0];
+    let anchor = cur;
+    parts.slice(1).forEach(sn => {
+      const r = addDevRow(type, sn, false);
+      anchor.after(r);
+      anchor = r;
+    });
+    updateDevUi();
+  });
+
+  function resetModal() {
+    editingIdx = null;
+    document.getElementById('modalTitle').textContent = '➕ เพิ่มอุปกรณ์เสริม';
+    document.getElementById('saveBtn').innerHTML = '➕ เพิ่มอุปกรณ์';
+    document.querySelectorAll('#f-status option[data-legacy]').forEach(o => o.remove());
+    ['f-sentdate','f-status','f-operator'].forEach(id => document.getElementById(id).value = '');
+    devList.innerHTML = '';
+    addDevRow('', '', false);
+  }
+  function closeModalFn() { resetModal(); modalOverlay.classList.remove('active'); }
+
+  resetModal();
+  document.getElementById('openModal').addEventListener('click', () => {
+    resetModal(); modalOverlay.classList.add('active');
+    setTimeout(() => { const f = devList.querySelector('.dev-serial'); if (f) f.focus(); }, 120);
+  });
+  document.getElementById('closeModal').addEventListener('click', closeModalFn);
+  document.getElementById('closeModal2').addEventListener('click', closeModalFn);
+  modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModalFn(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModalFn(); closeList(); } });
+
+  function openEdit(idx) {
+    editingIdx = idx;
+    const r = tableData[idx];
+    devList.innerHTML = '';
+    addDevRow(r.type || '', r.serial || '', false);
+    document.getElementById('f-sentdate').value = toInputDate(r.sentDate);
+    const stSel = document.getElementById('f-status');
+    stSel.value = r.status || '';
+    if (r.status && stSel.value !== r.status) {      // สถานะเก่าที่ไม่อยู่ในตัวเลือกใหม่ → คงค่าเดิมไว้ ไม่ให้หาย
+      const o = document.createElement('option'); o.textContent = r.status; o.dataset.legacy = '1';
+      stSel.appendChild(o); stSel.value = r.status;
+    }
+    document.getElementById('f-operator').value = r.operator || '';
+    document.getElementById('modalTitle').textContent = '✏️ แก้ไขข้อมูล';
+    document.getElementById('saveBtn').innerHTML = '💾 บันทึกการแก้ไข';
+    modalOverlay.classList.add('active');
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', async () => {
+    const isEdit = editingIdx !== null;
+    let items = [...devList.querySelectorAll('.dev-row')].map(el => ({
+      el,
+      type: el.querySelector('.dev-type').value,
+      serial: el.querySelector('.dev-serial').value.trim()
+    }));
+    if (!isEdit) items = items.filter(x => x.type || x.serial);   // ข้ามแถวที่ว่างทั้งแถว
+    if (!items.length) { alert('กรุณากรอกรหัส / S/N อย่างน้อย 1 เครื่อง'); return; }
+    const bad = items.findIndex(x => !x.type || !x.serial);
+    if (bad >= 0) { alert(`รายการที่ ${bad + 1}: กรุณาเลือกประเภทและกรอกรหัส / S/N ให้ครบ`); return; }
+
+    const seen = new Set();
+    for (const x of items) {
+      const k = (x.type + '|' + x.serial).toLowerCase();
+      if (seen.has(k)) { alert(`รหัส ${x.serial} (${x.type}) ซ้ำกันในรายการที่กรอก`); return; }
+      seen.add(k);
+    }
+    if (!isEdit) {
+      const dups = items.filter(x => tableData.some(r => !r.deleted && r.type === x.type && String(r.serial).toLowerCase() === x.serial.toLowerCase()));
+      if (dups.length && !confirm(`มีรหัสเหล่านี้ในระบบอยู่แล้ว:\n${dups.map(d => d.serial).join(', ')}\n\nต้องการเพิ่มซ้ำหรือไม่?`)) return;
+    }
+
+    const common = {
+      sentDate: document.getElementById('f-sentdate').value || '',
+      status:   document.getElementById('f-status').value || '—',
+      operator: document.getElementById('f-operator').value.trim() || '—'
+    };
+
+    const btn = saveBtnEl;
+    btn.disabled = true;
+    let done = 0;
+    try {
+      if (isEdit) {
+        btn.textContent = '⏳ กำลังบันทึก...';
+        await apiPost({ action: 'edit', rowIndex: editingIdx, date: tableData[editingIdx].date, type: items[0].type, serial: items[0].serial, ...common });
+      } else {
+        const now = new Date().toISOString();
+        for (const it of items) {
+          btn.textContent = `⏳ กำลังบันทึก ${done + 1}/${items.length}`;
+          await apiPost({ action: 'add', date: now, type: it.type, serial: it.serial, ...common });
+          done++;
+        }
+      }
+      closeModalFn();
+      await loadData();
+    } catch (err) {
+      if (done > 0) {
+        items.slice(0, done).forEach(x => x.el.remove());   // เอาแถวที่บันทึกสำเร็จแล้วออก เหลือไว้ให้ลองใหม่
+        alert(`บันทึกสำเร็จ ${done} จาก ${items.length} เครื่อง แล้วเกิดข้อผิดพลาด: ${err.message}\nแถวที่เหลือยังอยู่ในฟอร์ม กดบันทึกอีกครั้งเพื่อลองใหม่`);
+        await loadData();
+      } else {
+        alert('บันทึกไม่สำเร็จ: ' + err.message);
+      }
+    } finally { btn.disabled = false; updateDevUi(); }
+  });
+
+  // ── Delete ────────────────────────────────────────────────────────────────
+  function askDelete(idx) {
+    pendingDeleteIdx = idx;
+    const r = tableData[idx];
+    document.getElementById('confirmName').textContent = `${r.type || ''} (${r.serial || ''})`;
+    document.getElementById('confirmOverlay').classList.add('active');
+  }
+  function closeConfirm() { pendingDeleteIdx = null; document.getElementById('confirmOverlay').classList.remove('active'); }
+  document.getElementById('cancelDeleteBtn').addEventListener('click', closeConfirm);
+  document.getElementById('confirmOverlay').addEventListener('click', e => { if (e.target.id === 'confirmOverlay') closeConfirm(); });
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if (pendingDeleteIdx === null) return;
+    const btn = document.getElementById('confirmDeleteBtn');
+    btn.disabled = true; btn.textContent = '⏳ กำลังลบ...';
+    try {
+      await apiPost({ action: 'delete', rowIndex: pendingDeleteIdx });
+      closeConfirm();
+      await loadData();
+    } catch (err) { alert('ลบไม่สำเร็จ: ' + err.message); }
+    finally { btn.disabled = false; btn.innerHTML = '🗑️ ยืนยันลบข้อมูล'; }
+  });
+
+  // ── Send machine ──────────────────────────────────────────────────────────
+  let pendingSendIdx = null;
+  function askSend(idx) {
+    pendingSendIdx = idx;
+    const r = tableData[idx];
+    document.getElementById('sendName').textContent   = r.type || '—';
+    document.getElementById('sendSerial').textContent = r.serial || '—';
+    document.getElementById('sendNote').innerHTML = r.sentDate
+      ? `<span style="color:var(--orange);font-weight:600">⚠️ ส่งไปแล้วเมื่อ ${formatDate(r.sentDate)} · ถ้ายืนยันจะเปลี่ยนเป็นวันนี้</span>`
+      : `<span style="color:var(--gray-text)">จะบันทึกวันที่ส่งเป็นวันนี้ (${formatDate(todayStr())})</span>`;
+    document.getElementById('sendOverlay').classList.add('active');
+  }
+  function closeSend() { pendingSendIdx = null; document.getElementById('sendOverlay').classList.remove('active'); }
+  document.getElementById('cancelSendBtn').addEventListener('click', closeSend);
+  document.getElementById('sendOverlay').addEventListener('click', e => { if (e.target.id === 'sendOverlay') closeSend(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSend(); });
+  document.getElementById('confirmSendBtn').addEventListener('click', async () => {
+    if (pendingSendIdx === null) return;
+    const btn = document.getElementById('confirmSendBtn');
+    btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
+    try {
+      const r = tableData[pendingSendIdx];
+      await apiPost({
+        action: 'edit', rowIndex: pendingSendIdx,
+        date: r.date, type: r.type, serial: r.serial, sentDate: todayStr(),
+        status: r.status || '', operator: r.operator
+      });
+      closeSend();
+      await loadData();
+    } catch (err) { alert('บันทึกไม่สำเร็จ: ' + err.message); }
+    finally { btn.disabled = false; btn.innerHTML = '📤 ยืนยันส่งเครื่อง'; }
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadData();
+</script>
+</body>
+</html>
