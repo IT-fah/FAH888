@@ -371,6 +371,31 @@
       padding: 10px 12px; font-size: 0.82rem; text-align: left; white-space: nowrap;
     }
     .list-table td { padding: 10px 12px; font-size: 0.86rem; border-top: 1px solid #eef2f8; }
+        /* ── Search suggest ── */
+    .search-wrap { position: relative; }
+    .suggest-box {
+      display: none; position: absolute; right: 0; top: calc(100% + 6px);
+      width: 400px; max-width: 90vw; max-height: 380px; overflow-y: auto;
+      background: white; border-radius: 10px; border: 1px solid #e3eaf5;
+      box-shadow: 0 6px 28px rgba(21,101,192,.18); z-index: 250;
+    }
+    .suggest-box.open { display: block; animation: ddFadeIn .15s ease; }
+    .suggest-group {
+      padding: 7px 14px; font-size: 0.74rem; font-weight: 700; letter-spacing: .03em;
+      color: var(--gray-text); background: #f5f8fc; border-bottom: 1px solid #eef2f8;
+      position: sticky; top: 0;
+    }
+    .suggest-group.near { color: var(--orange); background: #fff8f0; }
+    .suggest-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 9px 14px; cursor: pointer; border-bottom: 1px solid #f0f4fa;
+    }
+    .suggest-item:last-child { border-bottom: none; }
+    .suggest-item:hover, .suggest-item.active { background: var(--blue-pale); }
+    .suggest-item .si-main { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .suggest-item .si-sub  { font-size: 0.76rem; color: var(--gray-text); margin-top: 2px; }
+    .suggest-item mark { background: #fff59d; color: inherit; border-radius: 3px; padding: 0 1px; }
+    .suggest-empty { padding: 18px; text-align: center; font-size: 0.85rem; color: var(--gray-text); }
     /* ── Footer ── */
     .site-footer { background: #1a2332; color: #8fa3b8; text-align: center; padding: 20px 24px; font-size: 0.82rem; line-height: 1.7; }
     .site-footer strong { color: #e3f2fd; }
@@ -460,8 +485,11 @@
     <button class="btn btn-outline">👥 ข้อมูลทั้งหมด</button>
     <button class="btn btn-green" id="openModal">👤+ เพิ่มข้อมูล</button>
     <button class="btn btn-gray" id="resetSort">🔄 โหลดข้อมูลใหม่</button>
-    <div class="search-box">
-      <input class="search-input" id="searchInput" type="text" placeholder="ค้นหาชื่อ / ID / เบอร์เครื่อง..."/>
+        <div class="search-box">
+      <div class="search-wrap">
+        <input class="search-input" id="searchInput" type="text" placeholder="ค้นหาชื่อ / ID / เบอร์เครื่อง..." autocomplete="off"/>
+        <div class="suggest-box" id="suggestBox"></div>
+      </div>
       <button class="btn btn-blue" id="searchBtn">🔍 ค้นหา</button>
     </div>
   </div>
@@ -1179,6 +1207,154 @@
     if (e.target === document.getElementById('listOverlay')) closeStatList();
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatList(); });
+    // ══════════════════════════════════════════════════════════════════════════
+  //  SEARCH SUGGEST  (ตรงกัน → ใกล้เคียง)
+  // ══════════════════════════════════════════════════════════════════════════
+  const searchInputEl = document.getElementById('searchInput');
+  const suggestBox    = document.getElementById('suggestBox');
+  let suggestItems  = [];
+  let suggestActive = -1;
+
+  // ระยะห่างระหว่างข้อความ 2 อัน (ยิ่งน้อยยิ่งคล้าย)
+  function lev(a, b) {
+    const m = a.length, n = b.length;
+    if (!m) return n; if (!n) return m;
+    let prev = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) {
+      const cur = [i];
+      for (let j = 1; j <= n; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[n];
+  }
+
+  // ให้คะแนนความตรงกัน: 60 ขึ้นไป = ตรงกัน, ต่ำกว่านั้น = ใกล้เคียง
+  function matchScore(q, text) {
+    const t = String(text || '').toLowerCase();
+    if (!t) return 0;
+    if (t === q) return 100;
+    const tokens = t.split(/[\s\/]+/).filter(Boolean);
+    if (tokens.includes(q)) return 90;
+    if (t.startsWith(q)) return 85;
+    if (tokens.some(x => x.startsWith(q))) return 75;
+    if (t.includes(q)) return 60;
+
+    // พิมพ์ตัวอักษรครบตามลำดับ แต่ไม่ติดกัน
+    let i = 0;
+    for (const ch of t) { if (i < q.length && ch === q[i]) i++; }
+    if (q.length >= 2 && i === q.length) return 35;
+
+    // พิมพ์ผิดเล็กน้อย
+    if (q.length >= 3) {
+      const limit = q.length >= 6 ? 2 : 1;
+      let best = 99;
+      tokens.forEach(tok => {
+        best = Math.min(best, lev(q, tok), lev(q, tok.slice(0, q.length)));
+      });
+      if (best <= limit) return 30 - best;
+    }
+    return 0;
+  }
+
+  function getSuggestions(q) {
+    return tableData
+      .filter(r => !r.deleted)
+      .map(r => ({
+        row: r,
+        score: Math.max(matchScore(q, r.idName), matchScore(q, r.machine), matchScore(q, r.dept))
+      }))
+      .filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
+  }
+
+  function hl(text, q) {
+    const s = String(text || '');
+    const idx = s.toLowerCase().indexOf(q);
+    if (idx < 0 || !q) return escHtml(s) || '—';
+    return escHtml(s.slice(0, idx)) + '<mark>' + escHtml(s.slice(idx, idx + q.length)) + '</mark>' + escHtml(s.slice(idx + q.length));
+  }
+
+  function hideSuggest() {
+    suggestBox.classList.remove('open');
+    suggestActive = -1;
+  }
+
+  function renderSuggest() {
+    const raw = searchInputEl.value.trim();
+    if (!raw) { hideSuggest(); return; }
+    const q = raw.toLowerCase();
+    suggestItems = getSuggestions(q);
+    suggestActive = -1;
+
+    if (suggestItems.length === 0) {
+      suggestBox.innerHTML = `<div class="suggest-empty">📭 ไม่พบข้อมูลที่ตรงหรือใกล้เคียง</div>`;
+      suggestBox.classList.add('open');
+      return;
+    }
+
+    let html = '', lastGroup = '';
+    suggestItems.forEach((it, i) => {
+      const group = it.score >= 60 ? 'exact' : 'near';
+      if (group !== lastGroup) {
+        html += group === 'exact'
+          ? `<div class="suggest-group">✅ ตรงกัน</div>`
+          : `<div class="suggest-group near">🔎 ใกล้เคียง</div>`;
+        lastGroup = group;
+      }
+      const r = it.row;
+      html += `<div class="suggest-item" data-i="${i}">
+        <div>
+          <div class="si-main">${hl(r.idName, q)}</div>
+          <div class="si-sub">🖥️ ${hl(r.machine, q)} · ${hl(r.dept, q)} · ${escHtml(r.type) || '—'}</div>
+        </div>
+        ${statusChip(r.status)}
+      </div>`;
+    });
+    suggestBox.innerHTML = html;
+    suggestBox.classList.add('open');
+  }
+
+  function setSuggestActive(n) {
+    const els = suggestBox.querySelectorAll('.suggest-item');
+    if (!els.length) return;
+    suggestActive = (n + els.length) % els.length;
+    els.forEach((el, i) => el.classList.toggle('active', i === suggestActive));
+    els[suggestActive].scrollIntoView({ block: 'nearest' });
+  }
+
+  function pickSuggest(i) {
+    const it = suggestItems[i];
+    if (!it) return;
+    const r = it.row;
+    const key = (r.idName || '').split(' / ')[0].trim() || r.machine || '';
+    searchInputEl.value = key;
+    searchTerm = key;
+    hideSuggest();
+    renderTable();
+  }
+
+  searchInputEl.addEventListener('input', renderSuggest);
+  searchInputEl.addEventListener('focus', () => { if (searchInputEl.value.trim()) renderSuggest(); });
+
+  searchInputEl.addEventListener('keydown', e => {
+    if (!suggestBox.classList.contains('open')) return;
+    if (e.key === 'ArrowDown')      { e.preventDefault(); setSuggestActive(suggestActive + 1); }
+    else if (e.key === 'ArrowUp')   { e.preventDefault(); setSuggestActive(suggestActive - 1); }
+    else if (e.key === 'Enter' && suggestActive >= 0) { e.preventDefault(); pickSuggest(suggestActive); }
+    else if (e.key === 'Escape')    { hideSuggest(); }
+  });
+
+  suggestBox.addEventListener('click', e => {
+    e.stopPropagation();
+    const el = e.target.closest('.suggest-item');
+    if (el) pickSuggest(parseInt(el.dataset.i));
+  });
+
+  document.getElementById('searchBtn').addEventListener('click', hideSuggest);
+  document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) hideSuggest(); });
   // ── Check lockout on load ─────────────────────────────────────────────────
   if (isLockedOut()) startLockDisplay();
 
