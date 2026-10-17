@@ -349,7 +349,28 @@
     #confirmOverlay  { z-index: 600; }
     #passwordOverlay { z-index: 700; }
     #lockOverlay     { z-index: 800; }
+        /* ── Clickable stat cards ── */
+    .info-card.clickable { cursor: pointer; transition: transform .15s, box-shadow .15s; position: relative; }
+    .info-card.clickable:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .info-card .ic-hint { font-size: 0.72rem; color: var(--blue-light); font-weight: 600; margin-top: 2px; }
 
+    /* ── Stat list modal ── */
+    #listOverlay { z-index: 500; }
+    .list-modal { width: 820px; }
+    .list-summary {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px; font-size: 0.95rem; font-weight: 600;
+    }
+    .list-count {
+      font-family: 'Prompt', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--blue);
+    }
+    .list-scroll { max-height: 52vh; overflow: auto; border: 1px solid var(--gray-border); border-radius: 10px; }
+    .list-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+    .list-table th {
+      position: sticky; top: 0; background: var(--blue-pale); color: var(--blue);
+      padding: 10px 12px; font-size: 0.82rem; text-align: left; white-space: nowrap;
+    }
+    .list-table td { padding: 10px 12px; font-size: 0.86rem; border-top: 1px solid #eef2f8; }
     /* ── Footer ── */
     .site-footer { background: #1a2332; color: #8fa3b8; text-align: center; padding: 20px 24px; font-size: 0.82rem; line-height: 1.7; }
     .site-footer strong { color: #e3f2fd; }
@@ -407,25 +428,29 @@
 
   <div class="section-title">📊 ภาพรวมระบบ</div>
   <div class="info-cards">
-    <div class="info-card">
+    <div class="info-card clickable" onclick="openStatList('total')">
       <div class="ic-label">เครื่องทั้งหมด</div>
       <div class="ic-value" id="stat-total">—</div>
       <div class="ic-sub">รายการในระบบ</div>
+      <div class="ic-hint">👆 คลิกดูรายชื่อ</div>
     </div>
-    <div class="info-card green">
+    <div class="info-card green clickable" onclick="openStatList('ready')">
       <div class="ic-label">พร้อมใช้งาน</div>
       <div class="ic-value" id="stat-ready">—</div>
       <div class="ic-sub">สถานะปกติ</div>
+      <div class="ic-hint">👆 คลิกดูรายชื่อ</div>
     </div>
-    <div class="info-card red">
+    <div class="info-card red clickable" onclick="openStatList('issue')">
       <div class="ic-label">ขาดเมล์ / WiFi</div>
       <div class="ic-value" id="stat-issue">—</div>
       <div class="ic-sub">ต้องดำเนินการ</div>
+      <div class="ic-hint">👆 คลิกดูรายชื่อ</div>
     </div>
-    <div class="info-card orange">
+    <div class="info-card orange clickable" onclick="openStatList('repair')">
       <div class="ic-label">รอดำเนินการ</div>
       <div class="ic-value" id="stat-repair">—</div>
       <div class="ic-sub">อยู่ระหว่างรอดำเนินการ</div>
+      <div class="ic-hint">👆 คลิกดูรายชื่อ</div>
     </div>
   </div>
 
@@ -630,7 +655,38 @@
     </div>
   </div>
 </div>
-
+<!-- ══════════════════════════════════════════
+     📋 STAT LIST MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="listOverlay">
+  <div class="modal list-modal">
+    <div class="modal-header">
+      <span id="listTitle">รายชื่อเครื่อง</span>
+      <button class="modal-close" id="closeList">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="list-summary">
+        <span>จำนวน</span>
+        <span class="list-count" id="listCount">0</span>
+        <span>เครื่อง</span>
+      </div>
+      <div class="list-scroll">
+        <table class="list-table">
+          <thead>
+            <tr>
+              <th>#</th><th>ID / ชื่อ-สกุล</th><th>เบอร์เครื่อง</th>
+              <th>แผนก</th><th>ประเภท</th><th>สถานะ</th><th>ตู้ที่</th>
+            </tr>
+          </thead>
+          <tbody id="listBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gray" id="closeList2">ปิด</button>
+    </div>
+  </div>
+</div>
 <script>
   // ── Config ────────────────────────────────────────────────────────────────
   const API_URL         = 'https://script.google.com/macros/s/AKfycbwTFyJEDXklk9YzeuOxNWZ0Z379NbO_N6KF0eEDMGU2OPdLxyv8aw3KZ2ffOdb_NSoiag/exec';
@@ -790,7 +846,7 @@
     document.getElementById('stat-total').textContent  = active.length;
     document.getElementById('stat-ready').textContent  = active.filter(r => r.status==='พร้อมใช้งาน').length;
     document.getElementById('stat-issue').textContent  = active.filter(r => r.status==='ขาดเมล์+WiFi').length;
-    document.getElementById('stat-repair').textContent = active.filter(r => r.status==='ซ่อม').length;
+    document.getElementById('stat-repair').textContent = active.filter(r => r.status==='อยู่ระหว่างรอดำเนินการ').length;
   }
 
   // ── Sort ──────────────────────────────────────────────────────────────────
@@ -1078,7 +1134,51 @@
     document.getElementById('searchInput').value='';
     updateHeaders(); loadFromSheets();
   });
+  // ══════════════════════════════════════════════════════════════════════════
+  //  STAT CARD → LIST MODAL
+  // ══════════════════════════════════════════════════════════════════════════
+  const STAT_GROUPS = {
+    total:  { title: '💻 เครื่องทั้งหมด',       match: r => true },
+    ready:  { title: '✅ พร้อมใช้งาน',          match: r => r.status === 'พร้อมใช้งาน' },
+    issue:  { title: '⚠️ ขาดเมล์ / WiFi',        match: r => r.status === 'ขาดเมล์+WiFi' },
+    repair: { title: '🔧 รอดำเนินการ',          match: r => r.status === 'อยู่ระหว่างรอดำเนินการ' || r.status === 'ซ่อม' }
+  };
 
+  function escHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function openStatList(key) {
+    const g = STAT_GROUPS[key];
+    if (!g) return;
+    const rows = tableData.filter(r => !r.deleted).filter(g.match);
+
+    document.getElementById('listTitle').textContent = g.title;
+    document.getElementById('listCount').textContent = rows.length;
+
+    document.getElementById('listBody').innerHTML = rows.length === 0
+      ? `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่มีเครื่องในหมวดนี้</p></div></td></tr>`
+      : rows.map((r, i) => `<tr>
+          <td>${i + 1}</td>
+          <td>${escHtml(r.idName) || '—'}</td>
+          <td>${escHtml(r.machine) || '—'}</td>
+          <td>${escHtml(r.dept) || '—'}</td>
+          <td>${escHtml(r.type) || '—'}</td>
+          <td>${statusChip(r.status)}</td>
+          <td>${escHtml(r.cabinet) || '—'}</td>
+        </tr>`).join('');
+
+    document.getElementById('listOverlay').classList.add('active');
+  }
+
+  function closeStatList() { document.getElementById('listOverlay').classList.remove('active'); }
+
+  document.getElementById('closeList').addEventListener('click', closeStatList);
+  document.getElementById('closeList2').addEventListener('click', closeStatList);
+  document.getElementById('listOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('listOverlay')) closeStatList();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatList(); });
   // ── Check lockout on load ─────────────────────────────────────────────────
   if (isLockedOut()) startLockDisplay();
 
