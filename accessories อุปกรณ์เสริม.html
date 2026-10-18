@@ -149,7 +149,7 @@
     .form-control:focus { border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(214,90,90,.1); }
     .modal-body { max-height:70vh; overflow-y:auto; }
     .dev-list { max-height:230px; overflow-y:auto; padding:2px 2px 0; }
-    .dev-row { display:grid; grid-template-columns:150px 1fr 36px; gap:8px; margin-bottom:8px; }
+    .dev-row { display:grid; grid-template-columns:150px 1fr 40px 36px; gap:8px; margin-bottom:8px; }
     .dev-del { border:1.5px solid var(--gray-border); background:#fff; border-radius:8px; color:var(--red); cursor:pointer; font-weight:700; }
     .dev-del:hover { background:#ffebee; }
     .dev-count { font-weight:500; color:var(--gray-text); margin-left:6px; }
@@ -175,6 +175,18 @@
     .site-footer strong { color:#fdecea; }
 
     @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+    
+    /* ── Barcode scanner ── */
+    .dev-scan { border:1.5px solid var(--blue); background:var(--blue-pale); border-radius:8px; cursor:pointer; font-size:1.05rem; }
+    .dev-scan:hover { background:#fbd9d5; }
+    #scanOverlay { z-index:700; }
+    .scan-box { width:460px; }
+    .scan-body { padding:14px 16px 6px; }
+    #scanReader { width:100%; min-height:200px; background:#1a1010; border-radius:10px; overflow:hidden; }
+    .scan-msg { margin-top:10px; font-size:.86rem; color:var(--gray-text); text-align:center; min-height:1.3em; }
+    .scan-msg.bad { color:var(--red); font-weight:600; }
+    .scan-cont { display:flex; align-items:center; gap:8px; margin-top:10px; font-size:.84rem; cursor:pointer; }
+    @media (max-width:640px) { .dev-row { grid-template-columns:1fr 40px 36px; } .dev-row .dev-type { grid-column:1 / -1; } }
     @media (max-width:640px) { .form-grid { grid-template-columns:1fr; } .search-box { margin-left:0; width:100%; } .search-input { flex:1; min-width:0; } }
   </style>
 </head>
@@ -328,7 +340,19 @@
     </div>
   </div>
 </div>
-
+<!-- ══ BARCODE SCANNER ══ -->
+<div class="confirm-overlay" id="scanOverlay">
+  <div class="confirm-box scan-box">
+    <div class="confirm-header blue">📷 สแกนบาร์โค้ด S/N</div>
+    <div class="scan-body">
+      <div id="scanReader"></div>
+      <div id="scanMsg" class="scan-msg">กำลังเปิดกล้อง...</div>
+      <label class="scan-cont"><input type="checkbox" id="scanContinuous"/> สแกนต่อเนื่อง (เพิ่มแถวใหม่ให้อัตโนมัติ)</label>
+    </div>
+    <div class="confirm-footer"><button class="btn btn-gray" id="closeScanBtn">ปิดกล้อง</button></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <!-- ══ CONFIRM DELETE ══ -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
@@ -603,7 +627,8 @@
     const row = document.createElement('div');
     row.className = 'dev-row';
     row.innerHTML = `<select class="form-control dev-type">${typeOptionsHtml(type || '')}</select>` +
-      `<input class="form-control dev-serial" type="text" placeholder="รหัส / S/N" autocomplete="off"/>` +
+          `<input class="form-control dev-serial" type="text" placeholder="รหัส / S/N" autocomplete="off"/>` +
+      `<button type="button" class="dev-scan" title="สแกนบาร์โค้ด">📷</button>` +
       `<button type="button" class="dev-del" title="ลบแถวนี้">✕</button>`;
     row.querySelector('.dev-serial').value = serial || '';
     devList.appendChild(row);
@@ -614,7 +639,9 @@
 
   document.getElementById('addDevRow').addEventListener('click', () => addDevRow(lastDevType(), '', true));
 
-  devList.addEventListener('click', e => {
+    devList.addEventListener('click', e => {
+    const scanBtn = e.target.closest('.dev-scan');
+    if (scanBtn) { openScan(scanBtn.closest('.dev-row')); return; }
     const del = e.target.closest('.dev-del');
     if (!del) return;
     del.closest('.dev-row').remove();
@@ -659,7 +686,7 @@
     devList.innerHTML = '';
     addDevRow('', '', false);
   }
-  function closeModalFn() { resetModal(); modalOverlay.classList.remove('active'); }
+  function closeModalFn() { closeScan(); resetModal(); modalOverlay.classList.remove('active'); }
 
   resetModal();
   document.getElementById('openModal').addEventListener('click', () => {
@@ -696,7 +723,7 @@
       type: el.querySelector('.dev-type').value,
       serial: el.querySelector('.dev-serial').value.trim()
     }));
-    if (!isEdit) items = items.filter(x => x.type || x.serial);   // ข้ามแถวที่ว่างทั้งแถว
+    if (!isEdit) items = items.filter(x => x.serial);   // ข้ามแถวที่ยังไม่ได้กรอก S/N
     if (!items.length) { alert('กรุณากรอกรหัส / S/N อย่างน้อย 1 เครื่อง'); return; }
     const bad = items.findIndex(x => !x.type || !x.serial);
     if (bad >= 0) { alert(`รายการที่ ${bad + 1}: กรุณาเลือกประเภทและกรอกรหัส / S/N ให้ครบ`); return; }
@@ -802,6 +829,79 @@
   });
 
   // ── Init ──────────────────────────────────────────────────────────────────
+    // ── Barcode scanner (กล้องสแกน S/N) ───────────────────────────────────────
+  const scanOverlay = document.getElementById('scanOverlay');
+  const scanMsg = document.getElementById('scanMsg');
+  let scanner = null, scanRow = null, lastCode = '', lastAt = 0, scanCount = 0, scanStarting = false;
+
+  function setScanMsg(t, bad) { scanMsg.textContent = t; scanMsg.classList.toggle('bad', !!bad); }
+
+  async function openScan(row) {
+    if (scanStarting || scanner) return;
+    scanRow = row; scanCount = 0; lastCode = ''; lastAt = 0;
+    scanOverlay.classList.add('active');
+    if (typeof Html5Qrcode === 'undefined') { setScanMsg('โหลดตัวสแกนไม่สำเร็จ (ตรวจอินเทอร์เน็ต) — พิมพ์ S/N เองได้', true); return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setScanMsg('เปิดกล้องไม่ได้ — หน้านี้ต้องเปิดผ่าน https:// และเบราว์เซอร์ต้องรองรับกล้อง', true); return;
+    }
+    setScanMsg('กำลังเปิดกล้อง...');
+    scanStarting = true;
+    const F = window.Html5QrcodeSupportedFormats;
+    const inst = new Html5Qrcode('scanReader', {
+      verbose: false,
+      formatsToSupport: [F.CODE_128, F.CODE_39, F.CODE_93, F.EAN_13, F.EAN_8, F.UPC_A, F.UPC_E, F.ITF, F.CODABAR, F.QR_CODE, F.DATA_MATRIX],
+      experimentalFeatures: { useBarCodeDetectorIfSupported: true }
+    });
+    scanner = inst;
+    try {
+      await inst.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: (w, h) => ({ width: Math.floor(w * 0.9), height: Math.floor(Math.min(h * 0.6, 180)) }) },
+        onScanOk, () => {}
+      );
+      if (!scanOverlay.classList.contains('active')) { try { await inst.stop(); } catch (e) {} return; }
+      setScanMsg('เล็งกล้องไปที่บาร์โค้ด');
+    } catch (err) {
+      if (scanner === inst) scanner = null;
+      const n = (err && err.name) || String(err);
+      setScanMsg(/NotAllowed|Permission/i.test(n) ? 'ไม่ได้อนุญาตให้ใช้กล้อง — กดไอคอนกุญแจข้างช่อง URL แล้วอนุญาตกล้อง'
+               : /NotFound|Devices/i.test(n)      ? 'ไม่พบกล้องในอุปกรณ์นี้'
+               : /NotReadable|Abort/i.test(n)     ? 'กล้องถูกใช้งานโดยแอปอื่นอยู่'
+               : 'เปิดกล้องไม่สำเร็จ: ' + n, true);
+    } finally { scanStarting = false; }
+  }
+
+  async function closeScan() {
+    scanOverlay.classList.remove('active');
+    const s = scanner; scanner = null; scanRow = null;
+    if (s) { try { await s.stop(); } catch (e) {} try { s.clear(); } catch (e) {} }
+    document.getElementById('scanReader').innerHTML = '';
+  }
+
+  function onScanOk(text) {
+    const code = String(text || '').trim();
+    const now = Date.now();
+    if (!code || !scanRow || !scanRow.isConnected) return;
+    if (code === lastCode && now - lastAt < 2000) return;      // กันอ่านซ้ำรัวๆ
+    lastCode = code; lastAt = now;
+    const inp = scanRow.querySelector('.dev-serial');
+    const dup = [...devList.querySelectorAll('.dev-serial')].some(i => i !== inp && i.value.trim().toLowerCase() === code.toLowerCase());
+    if (dup) { setScanMsg(`⚠️ ${code} ซ้ำกับที่สแกนไว้แล้ว`, true); return; }
+    inp.value = code;
+    scanCount++;
+    if (navigator.vibrate) navigator.vibrate(60);
+    updateDevUi();
+    if (document.getElementById('scanContinuous').checked && editingIdx === null) {
+      scanRow = addDevRow(scanRow.querySelector('.dev-type').value, '', false);
+      scanRow.scrollIntoView({ block: 'nearest' });
+      setScanMsg(`✅ ${code} · สแกนแล้ว ${scanCount} เครื่อง — สแกนเครื่องถัดไปได้เลย`);
+    } else {
+      closeScan(); inp.focus();
+    }
+  }
+
+  document.getElementById('closeScanBtn').addEventListener('click', closeScan);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScan(); });
   loadData();
 </script>
 </body>
