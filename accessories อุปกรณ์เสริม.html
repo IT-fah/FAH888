@@ -32,7 +32,7 @@
     .nav-link { padding:7px 16px; border-radius:20px; font-size:.88rem; font-weight:600; color:var(--gray-text); cursor:pointer; transition:all .18s; text-decoration:none; }
     .nav-link:hover, .nav-link.active { background:var(--blue-pale); color:var(--blue); }
 
-    /* ── Hero (โทนเขียวอมฟ้า ให้ต่างจากหน้าแรกเล็กน้อย) ── */
+    /* ── Hero ── */
     .hero {
       background:linear-gradient(135deg,#b94a4a 0%,#d65a5a 40%,#e57373 75%,#f4a29b 100%);
       padding:56px 40px 52px; text-align:center; position:relative; overflow:hidden;
@@ -59,7 +59,7 @@
     .section-title { font-family:'Prompt',sans-serif; font-size:1.05rem; font-weight:700; color:var(--blue); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
     .section-title::after { content:''; flex:1; height:2px; background:linear-gradient(to right,var(--blue-pale),transparent); margin-left:8px; }
 
-    /* ── Info cards (กดได้) ── */
+    /* ── Info cards ── */
     .info-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr)); gap:16px; margin-bottom:28px; }
     .info-card {
       background:#fff; border-radius:12px; box-shadow:var(--shadow-sm);
@@ -91,7 +91,7 @@
     /* ── Table ── */
     .table-card { background:#fff; border-radius:12px; box-shadow:var(--shadow-sm); overflow:hidden; }
     .table-scroll { overflow-x:auto; }
-    table { width:100%; border-collapse:collapse; min-width:760px; }
+    table { width:100%; border-collapse:collapse; min-width:860px; }
     thead { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); color:#fff; }
     thead th { padding:13px 16px; text-align:left; font-size:.88rem; font-weight:600; white-space:nowrap; }
     thead th.sortable { cursor:pointer; user-select:none; transition:background .15s; }
@@ -108,6 +108,7 @@
     .empty-state { text-align:center; padding:56px 20px; color:var(--gray-text); }
     .empty-icon { font-size:2.5rem; margin-bottom:12px; opacity:.5; }
     .type-tag { display:inline-block; padding:3px 10px; border-radius:6px; font-size:.8rem; font-weight:700; background:#fdecea; color:var(--blue); white-space:nowrap; }
+    .cap-tag { display:inline-block; margin-left:6px; padding:3px 9px; border-radius:6px; font-size:.78rem; font-weight:700; background:#efebe9; color:#6d4c41; white-space:nowrap; }
 
     /* ── Chips ── */
     .chip { display:inline-flex; align-items:center; gap:4px; padding:3px 12px; border-radius:20px; font-size:.78rem; font-weight:700; white-space:nowrap; }
@@ -135,8 +136,8 @@
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
     @keyframes slideUp { from{transform:translateY(28px);opacity:0} to{transform:translateY(0);opacity:1} }
     #modalOverlay { z-index:500; } #listOverlay { z-index:500; } #confirmOverlay { z-index:600; } #sendOverlay { z-index:600; }
-    .modal { background:#fff; border-radius:14px; box-shadow:var(--shadow-lg); width:560px; max-width:95vw; animation:slideUp .22s cubic-bezier(.4,0,.2,1); overflow:hidden; }
-    .list-modal { width:820px; }
+    .modal { background:#fff; border-radius:14px; box-shadow:var(--shadow-lg); width:600px; max-width:95vw; animation:slideUp .22s cubic-bezier(.4,0,.2,1); overflow:hidden; }
+    .list-modal { width:900px; }
     .modal-header { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); color:#fff; padding:16px 22px; display:flex; align-items:center; justify-content:space-between; font-family:'Prompt',sans-serif; font-size:1rem; font-weight:700; }
     .modal-close { background:none; border:none; color:#fff; font-size:1.3rem; cursor:pointer; padding:2px 7px; border-radius:5px; }
     .modal-close:hover { background:rgba(255,255,255,.2); }
@@ -148,8 +149,14 @@
     .form-control { padding:9px 12px; border:1.5px solid var(--gray-border); border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.88rem; color:var(--text); outline:none; transition:border .15s, box-shadow .15s; background:#fffafa; }
     .form-control:focus { border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(214,90,90,.1); }
     .modal-body { max-height:70vh; overflow-y:auto; }
-    .dev-list { max-height:230px; overflow-y:auto; padding:2px 2px 0; }
-    .dev-row { display:grid; grid-template-columns:150px 1fr 40px 36px; gap:8px; margin-bottom:8px; }
+    .dev-list { max-height:300px; overflow-y:auto; padding:2px 2px 0; }
+    .dev-row { display:grid; grid-template-columns:150px 1fr 40px 36px; gap:8px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed var(--gray-border); }
+    .dev-row:last-child { border-bottom:none; }
+    .dev-extra { grid-column:1 / -1; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .dev-extra .dev-cond { width:150px; }
+    .dev-cap-wrap { display:flex; gap:6px; align-items:center; }
+    .dev-cap-wrap .dev-cap { width:130px; }
+    .dev-cap-wrap .dev-capunit { width:80px; }
     .dev-del { border:1.5px solid var(--gray-border); background:#fff; border-radius:8px; color:var(--red); cursor:pointer; font-weight:700; }
     .dev-del:hover { background:#ffebee; }
     .dev-count { font-weight:500; color:var(--gray-text); margin-left:6px; }
@@ -167,7 +174,7 @@
     .list-summary { display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.95rem; font-weight:600; }
     .list-count { font-family:'Prompt',sans-serif; font-size:1.5rem; font-weight:800; color:var(--blue); }
     .list-scroll { max-height:52vh; overflow:auto; border:1px solid var(--gray-border); border-radius:10px; }
-    .list-table { width:100%; border-collapse:collapse; min-width:640px; }
+    .list-table { width:100%; border-collapse:collapse; min-width:720px; }
     .list-table th { position:sticky; top:0; background:var(--blue-pale); color:var(--blue); padding:10px 12px; font-size:.82rem; text-align:left; white-space:nowrap; }
     .list-table td { padding:10px 12px; font-size:.86rem; border-top:1px solid #f8e6e4; }
 
@@ -175,19 +182,20 @@
     .site-footer strong { color:#fdecea; }
 
     @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-    
-    /* ── Barcode scanner ── */
+
+    /* ── Barcode scanner (ขนาดเล็กลง) ── */
     .dev-scan { border:1.5px solid var(--blue); background:var(--blue-pale); border-radius:8px; cursor:pointer; font-size:1.05rem; }
     .dev-scan:hover { background:#fbd9d5; }
     #scanOverlay { z-index:700; }
-    .scan-box { width:460px; }
-    .scan-body { padding:14px 16px 6px; }
-    #scanReader { width:100%; min-height:200px; background:#1a1010; border-radius:10px; overflow:hidden; }
-    .scan-msg { margin-top:10px; font-size:.86rem; color:var(--gray-text); text-align:center; min-height:1.3em; }
+    .scan-box { width:320px; }
+    .scan-body { padding:12px 14px 4px; }
+    #scanReader { width:100%; max-width:260px; margin:0 auto; min-height:120px; max-height:190px; background:#1a1010; border-radius:10px; overflow:hidden; }
+    #scanReader video { max-height:190px !important; object-fit:cover; }
+    .scan-msg { margin-top:8px; font-size:.82rem; color:var(--gray-text); text-align:center; min-height:1.3em; }
     .scan-msg.bad { color:var(--red); font-weight:600; }
-    .scan-cont { display:flex; align-items:center; gap:8px; margin-top:10px; font-size:.84rem; cursor:pointer; }
+    .scan-cont { display:flex; align-items:center; gap:8px; margin-top:8px; font-size:.8rem; cursor:pointer; }
     @media (max-width:640px) { .dev-row { grid-template-columns:1fr 40px 36px; } .dev-row .dev-type { grid-column:1 / -1; } }
-    @media (max-width:640px) { .form-grid { grid-template-columns:1fr; } .search-box { margin-left:0; width:100%; } .search-input { flex:1; min-width:0; } }
+    @media (max-width:640px) { .form-grid { grid-template-columns:1fr; } .search-box { margin-left:0; width:100%; } .search-input { flex:1; min-width:0; } .dev-extra .dev-cond { width:100%; } }
   </style>
 </head>
 <body>
@@ -196,7 +204,7 @@
 <nav class="sites-topnav">
   <div class="site-title"><div class="icon-wrap">💻</div>IT Facilities Dept.</div>
   <div class="nav-links">
-        <a class="nav-link" id="navHome" href="https://it-fah.github.io/FAH888/" target="_top">หน้าแรก</a>
+    <a class="nav-link" id="navHome" href="https://it-fah.github.io/FAH888/" target="_top">หน้าแรก</a>
     <a class="nav-link" href="accessories อุปกรณ์เสริม.html" target="_top">อุปกรณ์เสริม</a>
     <a class="nav-link">ประวัติ</a>
   </div>
@@ -252,6 +260,7 @@
             <th class="sortable" data-key="date">วันที่รับ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="sentDate">วันที่ส่ง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="type">ประเภท<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="condition">ลักษณะ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="serial">S/N<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="status">สถานะ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="operator">ผู้ดำเนินการ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
@@ -278,7 +287,7 @@
       <div class="list-summary"><span>จำนวน</span><span class="list-count" id="listCount">0</span><span>รายการ</span></div>
       <div class="list-scroll">
         <table class="list-table">
-          <thead><tr><th>#</th><th>วันที่รับ</th><th>วันที่ส่ง</th><th>S/N</th><th>สถานะ</th></tr></thead>
+          <thead><tr><th>#</th><th>วันที่รับ</th><th>วันที่ส่ง</th><th>S/N</th><th>ลักษณะ</th><th>ความจุ</th><th>สถานะ</th></tr></thead>
           <tbody id="listBody"></tbody>
         </table>
       </div>
@@ -375,7 +384,7 @@
   // ใส่ URL ของ Apps Script (เหมือนหน้าแรก) ถ้าปล่อยว่าง ระบบจะใช้ "ข้อมูลตัวอย่าง" ให้ดูหน้าตาก่อน
   const API_URL  = '';
   const SHEET    = 'accessories';          // ชื่อแท็บชีทที่เก็บอุปกรณ์เสริม
-  const HOME_URL = 'https://it-fah.github.io/FAH888/';                    // ลิงก์หน้าแรก (URL ของหน้าแรกใน Google Sites)
+  const HOME_URL = 'https://it-fah.github.io/FAH888/';
 
   // ประเภทอุปกรณ์ = ชื่อการ์ดในภาพรวม
   const TYPES = [
@@ -387,6 +396,8 @@
     { name:'Router SIM',        icon:'📱', color:'#e57399' },
     { name:'Harddisk',          icon:'💾', color:'#8d6e63' }
   ];
+  const HDD_TYPE   = 'Harddisk';            // ประเภทที่ต้องกรอกความจุ
+  const CONDITIONS = ['ใหม่', 'เก่า'];       // ลักษณะอุปกรณ์
 
   const navHomeEl = document.getElementById('navHome');
   if (navHomeEl) navHomeEl.href = HOME_URL;
@@ -407,7 +418,11 @@
     if (s === 'ดำเนินการเสร็จแล้ว') return `<span class="chip chip-green">✅ ${t}</span>`;
     return `<span class="chip chip-blue">${t}</span>`;
   }
-  // blank: ข้อความที่แสดงเมื่อไม่มีวันที่ (ค่าเริ่มต้น '—', ส่ง '' เพื่อให้ว่าง)
+  function condChip(c) {
+    if (c === 'ใหม่') return `<span class="chip chip-green">🆕 ใหม่</span>`;
+    if (c === 'เก่า') return `<span class="chip chip-orange">♻️ เก่า</span>`;
+    return '—';
+  }
   function formatDate(v, blank) {
     if (!v) return blank === undefined ? '—' : blank;
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
@@ -428,23 +443,23 @@
   }
   function showMsg(icon, msg) {
     document.getElementById('tableBody').innerHTML =
-      `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">${icon}</div><p>${msg}</p></div></td></tr>`;
+      `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">${icon}</div><p>${msg}</p></div></td></tr>`;
   }
 
   // ── API (มีโหมดตัวอย่างเมื่อไม่ได้ใส่ API_URL) ────────────────────────────
   function sampleData() {
     const d = new Date().toISOString();
     return [
-      { date:d, type:'DVR 8CH 4T',        serial:'DV8-0001', sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมชาย' },
-      { date:d, type:'DVR 8CH 4T',        serial:'DV8-0002', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
-      { date:d, type:'DVR 16CH 6T',       serial:'DV16-0001',sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมหญิง' },
-      { date:d, type:'Access Point(TP)',  serial:'TP-0101',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมหญิง' },
-      { date:d, type:'Access Point(TP)',  serial:'TP-0102',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
-      { date:d, type:'Access Point(OMD)', serial:'OMD-0001', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
-      { date:d, type:'Box VPN',           serial:'VPN-0001', sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมหญิง' },
-      { date:d, type:'Router SIM',        serial:'RS-0001',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
-      { date:d, type:'Harddisk',          serial:'HDD-0001', sentDate:'', status:'ดำเนินการเสร็จแล้ว', operator:'สมชาย' },
-      { date:d, type:'Harddisk',          serial:'HDD-0002', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมหญิง' }
+      { date:d, type:'DVR 8CH 4T',        condition:'ใหม่', capacity:'',      serial:'DV8-0001', sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมชาย' },
+      { date:d, type:'DVR 8CH 4T',        condition:'เก่า', capacity:'',      serial:'DV8-0002', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'DVR 16CH 6T',       condition:'ใหม่', capacity:'',      serial:'DV16-0001',sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมหญิง' },
+      { date:d, type:'Access Point(TP)',  condition:'ใหม่', capacity:'',      serial:'TP-0101',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมหญิง' },
+      { date:d, type:'Access Point(TP)',  condition:'เก่า', capacity:'',      serial:'TP-0102',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'Access Point(OMD)', condition:'ใหม่', capacity:'',      serial:'OMD-0001', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'Box VPN',           condition:'เก่า', capacity:'',      serial:'VPN-0001', sentDate:d,  status:'ดำเนินการเสร็จแล้ว', operator:'สมหญิง' },
+      { date:d, type:'Router SIM',        condition:'ใหม่', capacity:'',      serial:'RS-0001',  sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมชาย' },
+      { date:d, type:'Harddisk',          condition:'ใหม่', capacity:'4 TB',  serial:'HDD-0001', sentDate:'', status:'ดำเนินการเสร็จแล้ว', operator:'สมชาย' },
+      { date:d, type:'Harddisk',          condition:'เก่า', capacity:'500 GB',serial:'HDD-0002', sentDate:'', status:'กำลังรอดำเนินการ',   operator:'สมหญิง' }
     ];
   }
 
@@ -468,7 +483,8 @@
       const json = await res.json();
       if (json.status !== 'ok') throw new Error(json.message || 'error');
       tableData = json.data.map(r => ({
-        date: r.date || '', type: r.type || '', serial: r.serial || '', sentDate: r.sentDate || '', status: r.status || '', operator: r.operator || '',
+        date: r.date || '', type: r.type || '', condition: r.condition || '', capacity: r.capacity || '',
+        serial: r.serial || '', sentDate: r.sentDate || '', status: r.status || '', operator: r.operator || '',
         deleted: r.deleted === true
       }));
       renderAll();
@@ -496,7 +512,7 @@
     const q = searchTerm.toLowerCase();
     let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => !r.deleted)
       .filter(r => !typeFilter || r.type === typeFilter)
-      .filter(r => !q || [r.type, r.serial, r.operator].some(v => String(v || '').toLowerCase().includes(q)));
+      .filter(r => !q || [r.type, r.serial, r.operator, r.condition, r.capacity].some(v => String(v || '').toLowerCase().includes(q)));
 
     if (sortKey) {
       rows.sort((a, b) => {
@@ -504,7 +520,7 @@
         if (sortKey === 'date' || sortKey === 'sentDate') {
           const ta = va ? new Date(va).getTime() : NaN, tb = vb ? new Date(vb).getTime() : NaN;
           if (isNaN(ta) && isNaN(tb)) return 0;
-          if (isNaN(ta)) return 1;          // ไม่มีวันที่ → อยู่ท้ายเสมอ
+          if (isNaN(ta)) return 1;
           if (isNaN(tb)) return -1;
           return sortDir === 'asc' ? ta - tb : tb - ta;
         }
@@ -519,7 +535,8 @@
       <td>${i + 1}</td>
       <td>${formatDate(r.date)}</td>
       <td>${formatDate(r.sentDate, '')}</td>
-      <td><span class="type-tag">${escHtml(r.type) || '—'}</span></td>
+      <td><span class="type-tag">${escHtml(r.type) || '—'}</span>${r.capacity ? `<span class="cap-tag">${escHtml(r.capacity)}</span>` : ''}</td>
+      <td>${condChip(r.condition)}</td>
       <td>${escHtml(r.serial) || '—'}</td>
       <td>${statusChip(r.status)}</td>
       <td>${escHtml(r.operator) || '—'}</td>
@@ -584,10 +601,10 @@
     document.getElementById('listTitle').textContent = `${t.icon} ${t.name}`;
     document.getElementById('listCount').textContent = rows.length;
     document.getElementById('listBody').innerHTML = rows.length === 0
-      ? `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div><p>ยังไม่มีอุปกรณ์ในหมวดนี้</p></div></td></tr>`
+      ? `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>ยังไม่มีอุปกรณ์ในหมวดนี้</p></div></td></tr>`
       : rows.map((r, n) => `<tr>
           <td>${n + 1}</td><td>${formatDate(r.date)}</td><td>${formatDate(r.sentDate, '')}</td>
-          <td>${escHtml(r.serial) || '—'}</td><td>${statusChip(r.status)}</td>
+          <td>${escHtml(r.serial) || '—'}</td><td>${condChip(r.condition)}</td><td>${escHtml(r.capacity) || '—'}</td><td>${statusChip(r.status)}</td>
         </tr>`).join('');
     document.getElementById('listOverlay').classList.add('active');
   }
@@ -598,7 +615,6 @@
 
   // ── Add / Edit modal ──────────────────────────────────────────────────────
   const modalOverlay = document.getElementById('modalOverlay');
-  // ── Device rows (เพิ่มหลายเครื่องในครั้งเดียว) ──────────────────────────
   const devList = document.getElementById('devList');
   const saveBtnEl = document.getElementById('saveBtn');
 
@@ -606,9 +622,22 @@
     return '<option value="">-- ประเภท --</option>' +
       TYPES.map(t => `<option${t.name === sel ? ' selected' : ''}>${escHtml(t.name)}</option>`).join('');
   }
-  function lastDevType() {
-    const sel = devList.querySelectorAll('.dev-type');
-    return sel.length ? sel[sel.length - 1].value : '';
+  function condOptionsHtml(sel) {
+    return '<option value="">-- ลักษณะอุปกรณ์ --</option>' +
+      CONDITIONS.map(c => `<option${c === sel ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
+  }
+  function lastRow() {
+    const rows = devList.querySelectorAll('.dev-row');
+    return rows.length ? rows[rows.length - 1] : null;
+  }
+  // แสดง/ซ่อนช่องความจุตามประเภท
+  function syncCap(row) {
+    const isHdd = row.querySelector('.dev-type').value === HDD_TYPE;
+    row.querySelector('.dev-cap-wrap').style.display = isHdd ? 'flex' : 'none';
+  }
+  function parseCap(s) {
+    const m = /^\s*([\d.]+)\s*(GB|TB)\s*$/i.exec(String(s || ''));
+    return m ? { num: m[1], unit: m[2].toUpperCase() } : { num: '', unit: 'TB' };
   }
   function updateDevUi() {
     const isEdit = editingIdx !== null;
@@ -623,23 +652,43 @@
       saveBtnEl.innerHTML = isEdit ? '💾 บันทึกการแก้ไข' : (filled > 1 ? `➕ เพิ่ม ${filled} เครื่อง` : '➕ เพิ่มอุปกรณ์');
     }
   }
-  function addDevRow(type, serial, focus) {
+  // addDevRow(ประเภท, S/N, โฟกัส?, ลักษณะ, ความจุ)
+  function addDevRow(type, serial, focus, cond, cap) {
     const row = document.createElement('div');
     row.className = 'dev-row';
+    const c = parseCap(cap);
     row.innerHTML = `<select class="form-control dev-type">${typeOptionsHtml(type || '')}</select>` +
-          `<input class="form-control dev-serial" type="text" placeholder="รหัส / S/N" autocomplete="off"/>` +
+      `<input class="form-control dev-serial" type="text" placeholder="รหัส / S/N" autocomplete="off"/>` +
       `<button type="button" class="dev-scan" title="สแกนบาร์โค้ด">📷</button>` +
-      `<button type="button" class="dev-del" title="ลบแถวนี้">✕</button>`;
+      `<button type="button" class="dev-del" title="ลบแถวนี้">✕</button>` +
+      `<div class="dev-extra">` +
+        `<select class="form-control dev-cond">${condOptionsHtml(cond || '')}</select>` +
+        `<span class="dev-cap-wrap" style="display:none">` +
+          `<input class="form-control dev-cap" type="number" min="0" step="any" placeholder="ความจุ เช่น 4"/>` +
+          `<select class="form-control dev-capunit"><option${c.unit === 'GB' ? ' selected' : ''}>GB</option><option${c.unit === 'TB' ? ' selected' : ''}>TB</option></select>` +
+        `</span>` +
+      `</div>`;
     row.querySelector('.dev-serial').value = serial || '';
+    row.querySelector('.dev-cap').value = c.num;
     devList.appendChild(row);
+    syncCap(row);
     updateDevUi();
     if (focus) { row.querySelector('.dev-serial').focus(); row.scrollIntoView({ block: 'nearest' }); }
     return row;
   }
+  // สร้างแถวใหม่โดยคัดลอกประเภท / ลักษณะ / ความจุ จากแถวก่อนหน้า
+  function addDevRowLike(src, focus) {
+    if (!src) return addDevRow('', '', focus);
+    return addDevRow(
+      src.querySelector('.dev-type').value, '', focus,
+      src.querySelector('.dev-cond').value,
+      src.querySelector('.dev-cap').value ? src.querySelector('.dev-cap').value + ' ' + src.querySelector('.dev-capunit').value : ''
+    );
+  }
 
-  document.getElementById('addDevRow').addEventListener('click', () => addDevRow(lastDevType(), '', true));
+  document.getElementById('addDevRow').addEventListener('click', () => addDevRowLike(lastRow(), true));
 
-    devList.addEventListener('click', e => {
+  devList.addEventListener('click', e => {
     const scanBtn = e.target.closest('.dev-scan');
     if (scanBtn) { openScan(scanBtn.closest('.dev-row')); return; }
     const del = e.target.closest('.dev-del');
@@ -647,6 +696,7 @@
     del.closest('.dev-row').remove();
     updateDevUi();
   });
+  devList.addEventListener('change', e => { if (e.target.classList.contains('dev-type')) syncCap(e.target.closest('.dev-row')); });
   devList.addEventListener('input', e => { if (e.target.classList.contains('dev-serial')) updateDevUi(); });
   devList.addEventListener('keydown', e => {
     if (e.key !== 'Enter' || !e.target.classList.contains('dev-serial')) return;
@@ -656,7 +706,7 @@
     const cur = e.target.closest('.dev-row');
     const next = rows[rows.indexOf(cur) + 1];
     if (next) next.querySelector('.dev-serial').focus();
-    else addDevRow(cur.querySelector('.dev-type').value, '', true);
+    else addDevRowLike(cur, true);
   });
   // วางหลายบรรทัด → แตกเป็นหลายแถวอัตโนมัติ
   devList.addEventListener('paste', e => {
@@ -666,11 +716,11 @@
     if (parts.length < 2) return;
     e.preventDefault();
     const cur = e.target.closest('.dev-row');
-    const type = cur.querySelector('.dev-type').value;
     e.target.value = parts[0];
     let anchor = cur;
     parts.slice(1).forEach(sn => {
-      const r = addDevRow(type, sn, false);
+      const r = addDevRowLike(cur, false);
+      r.querySelector('.dev-serial').value = sn;
       anchor.after(r);
       anchor = r;
     });
@@ -686,7 +736,10 @@
     devList.innerHTML = '';
     addDevRow('', '', false);
   }
-  function closeModalFn() { closeScan(); resetModal(); modalOverlay.classList.remove('active'); }
+  function closeModalFn() {
+    closeScan();
+    resetModal(); modalOverlay.classList.remove('active');
+  }
 
   resetModal();
   document.getElementById('openModal').addEventListener('click', () => {
@@ -702,11 +755,11 @@
     editingIdx = idx;
     const r = tableData[idx];
     devList.innerHTML = '';
-    addDevRow(r.type || '', r.serial || '', false);
+    addDevRow(r.type || '', r.serial || '', false, r.condition || '', r.capacity || '');
     document.getElementById('f-sentdate').value = toInputDate(r.sentDate);
     const stSel = document.getElementById('f-status');
     stSel.value = r.status || '';
-    if (r.status && stSel.value !== r.status) {      // สถานะเก่าที่ไม่อยู่ในตัวเลือกใหม่ → คงค่าเดิมไว้ ไม่ให้หาย
+    if (r.status && stSel.value !== r.status) {
       const o = document.createElement('option'); o.textContent = r.status; o.dataset.legacy = '1';
       stSel.appendChild(o); stSel.value = r.status;
     }
@@ -718,15 +771,25 @@
 
   document.getElementById('saveBtn').addEventListener('click', async () => {
     const isEdit = editingIdx !== null;
-    let items = [...devList.querySelectorAll('.dev-row')].map(el => ({
-      el,
-      type: el.querySelector('.dev-type').value,
-      serial: el.querySelector('.dev-serial').value.trim()
-    }));
-    if (!isEdit) items = items.filter(x => x.serial);   // ข้ามแถวที่ยังไม่ได้กรอก S/N
+    let items = [...devList.querySelectorAll('.dev-row')].map(el => {
+      const type = el.querySelector('.dev-type').value;
+      const capNum = el.querySelector('.dev-cap').value.trim();
+      return {
+        el, type,
+        serial: el.querySelector('.dev-serial').value.trim(),
+        condition: el.querySelector('.dev-cond').value,
+        capNum,
+        capacity: (type === HDD_TYPE && capNum) ? `${capNum} ${el.querySelector('.dev-capunit').value}` : ''
+      };
+    });
+    if (!isEdit) items = items.filter(x => x.serial);
     if (!items.length) { alert('กรุณากรอกรหัส / S/N อย่างน้อย 1 เครื่อง'); return; }
-    const bad = items.findIndex(x => !x.type || !x.serial);
-    if (bad >= 0) { alert(`รายการที่ ${bad + 1}: กรุณาเลือกประเภทและกรอกรหัส / S/N ให้ครบ`); return; }
+    for (let i = 0; i < items.length; i++) {
+      const x = items[i];
+      if (!x.type || !x.serial) { alert(`รายการที่ ${i + 1}: กรุณาเลือกประเภทและกรอกรหัส / S/N ให้ครบ`); return; }
+      if (!x.condition) { alert(`รายการที่ ${i + 1}: กรุณาเลือกลักษณะอุปกรณ์ (ใหม่ / เก่า)`); return; }
+      if (x.type === HDD_TYPE && !(parseFloat(x.capNum) > 0)) { alert(`รายการที่ ${i + 1}: Harddisk ต้องกรอกความจุ`); return; }
+    }
 
     const seen = new Set();
     for (const x of items) {
@@ -751,12 +814,12 @@
     try {
       if (isEdit) {
         btn.textContent = '⏳ กำลังบันทึก...';
-        await apiPost({ action: 'edit', rowIndex: editingIdx, date: tableData[editingIdx].date, type: items[0].type, serial: items[0].serial, ...common });
+        await apiPost({ action: 'edit', rowIndex: editingIdx, date: tableData[editingIdx].date, type: items[0].type, condition: items[0].condition, capacity: items[0].capacity, serial: items[0].serial, ...common });
       } else {
         const now = new Date().toISOString();
         for (const it of items) {
           btn.textContent = `⏳ กำลังบันทึก ${done + 1}/${items.length}`;
-          await apiPost({ action: 'add', date: now, type: it.type, serial: it.serial, ...common });
+          await apiPost({ action: 'add', date: now, type: it.type, condition: it.condition, capacity: it.capacity, serial: it.serial, ...common });
           done++;
         }
       }
@@ -764,7 +827,7 @@
       await loadData();
     } catch (err) {
       if (done > 0) {
-        items.slice(0, done).forEach(x => x.el.remove());   // เอาแถวที่บันทึกสำเร็จแล้วออก เหลือไว้ให้ลองใหม่
+        items.slice(0, done).forEach(x => x.el.remove());
         alert(`บันทึกสำเร็จ ${done} จาก ${items.length} เครื่อง แล้วเกิดข้อผิดพลาด: ${err.message}\nแถวที่เหลือยังอยู่ในฟอร์ม กดบันทึกอีกครั้งเพื่อลองใหม่`);
         await loadData();
       } else {
@@ -800,7 +863,7 @@
   function askSend(idx) {
     pendingSendIdx = idx;
     const r = tableData[idx];
-    document.getElementById('sendName').textContent   = r.type || '—';
+    document.getElementById('sendName').textContent   = (r.type || '—') + (r.capacity ? ` (${r.capacity})` : '');
     document.getElementById('sendSerial').textContent = r.serial || '—';
     document.getElementById('sendNote').innerHTML = r.sentDate
       ? `<span style="color:var(--orange);font-weight:600">⚠️ ส่งไปแล้วเมื่อ ${formatDate(r.sentDate)} · ถ้ายืนยันจะเปลี่ยนเป็นวันนี้</span>`
@@ -819,7 +882,8 @@
       const r = tableData[pendingSendIdx];
       await apiPost({
         action: 'edit', rowIndex: pendingSendIdx,
-        date: r.date, type: r.type, serial: r.serial, sentDate: todayStr(),
+        date: r.date, type: r.type, condition: r.condition || '', capacity: r.capacity || '',
+        serial: r.serial, sentDate: todayStr(),
         status: r.status || '', operator: r.operator
       });
       closeSend();
@@ -828,8 +892,7 @@
     finally { btn.disabled = false; btn.innerHTML = '📤 ยืนยันส่งเครื่อง'; }
   });
 
-  // ── Init ──────────────────────────────────────────────────────────────────
-    // ── Barcode scanner (กล้องสแกน S/N) ───────────────────────────────────────
+  // ── Barcode scanner (กล้องสแกน S/N) — ขนาดกล้องเล็กลง ────────────────────
   const scanOverlay = document.getElementById('scanOverlay');
   const scanMsg = document.getElementById('scanMsg');
   let scanner = null, scanRow = null, lastCode = '', lastAt = 0, scanCount = 0, scanStarting = false;
@@ -856,7 +919,7 @@
     try {
       await inst.start(
         { facingMode: 'environment' },
-        { fps: 10, qrbox: (w, h) => ({ width: Math.floor(w * 0.9), height: Math.floor(Math.min(h * 0.6, 180)) }) },
+        { fps: 10, aspectRatio: 1.333, qrbox: (w, h) => ({ width: Math.floor(w * 0.85), height: Math.floor(Math.min(h * 0.5, 90)) }) },
         onScanOk, () => {}
       );
       if (!scanOverlay.classList.contains('active')) { try { await inst.stop(); } catch (e) {} return; }
@@ -882,7 +945,7 @@
     const code = String(text || '').trim();
     const now = Date.now();
     if (!code || !scanRow || !scanRow.isConnected) return;
-    if (code === lastCode && now - lastAt < 2000) return;      // กันอ่านซ้ำรัวๆ
+    if (code === lastCode && now - lastAt < 2000) return;
     lastCode = code; lastAt = now;
     const inp = scanRow.querySelector('.dev-serial');
     const dup = [...devList.querySelectorAll('.dev-serial')].some(i => i !== inp && i.value.trim().toLowerCase() === code.toLowerCase());
@@ -892,7 +955,7 @@
     if (navigator.vibrate) navigator.vibrate(60);
     updateDevUi();
     if (document.getElementById('scanContinuous').checked && editingIdx === null) {
-      scanRow = addDevRow(scanRow.querySelector('.dev-type').value, '', false);
+      scanRow = addDevRowLike(scanRow, false);
       scanRow.scrollIntoView({ block: 'nearest' });
       setScanMsg(`✅ ${code} · สแกนแล้ว ${scanCount} เครื่อง — สแกนเครื่องถัดไปได้เลย`);
     } else {
@@ -902,6 +965,8 @@
 
   document.getElementById('closeScanBtn').addEventListener('click', closeScan);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScan(); });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
   loadData();
 </script>
 </body>
