@@ -181,6 +181,15 @@
     .site-footer { background:#3a2425; color:#d1a8a6; text-align:center; padding:20px 24px; font-size:.82rem; line-height:1.7; }
     .site-footer strong { color:#fdecea; }
 
+    /* ── Popup สรุปหลังเพิ่มข้อมูล ── */
+    #doneOverlay { z-index:650; }
+    .done-box { width:420px; }
+    .done-head { background:linear-gradient(90deg,var(--green),var(--green-light)); color:#fff; padding:14px 20px; font-family:'Prompt',sans-serif; font-size:.95rem; font-weight:700; }
+    .done-body { padding:16px 20px 6px; max-height:56vh; overflow-y:auto; }
+    .done-item { border:1px solid var(--gray-border); border-left:4px solid var(--green-light); border-radius:10px; padding:10px 14px; margin-bottom:10px; background:#fffafa; }
+    .done-row { display:flex; justify-content:space-between; gap:12px; padding:3px 0; font-size:.88rem; }
+    .done-row span:first-child { color:var(--gray-text); white-space:nowrap; }
+    .done-row span:last-child { font-weight:700; text-align:right; word-break:break-word; }
     @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
 
     /* ── Barcode scanner (ขนาดเล็กลง) ── */
@@ -330,6 +339,15 @@
       <button class="btn btn-green" id="saveBtn">➕ เพิ่มอุปกรณ์</button>
       <button class="btn btn-gray" id="closeModal2">ยกเลิก</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ POPUP รายละเอียดหลังเพิ่มข้อมูล ══ -->
+<div class="confirm-overlay" id="doneOverlay">
+  <div class="confirm-box done-box">
+    <div class="done-head" id="doneTitle">✅ เพิ่มข้อมูลสำเร็จ</div>
+    <div class="done-body" id="doneBody"></div>
+    <div class="confirm-footer"><button class="btn btn-green" id="doneCloseBtn">ตกลง</button></div>
   </div>
 </div>
 
@@ -825,6 +843,7 @@
       }
       closeModalFn();
       await loadData();
+      if (!isEdit) showDone(items, common.operator, new Date().toISOString());
     } catch (err) {
       if (done > 0) {
         items.slice(0, done).forEach(x => x.el.remove());
@@ -835,6 +854,22 @@
       }
     } finally { btn.disabled = false; updateDevUi(); }
   });
+
+  // ── Popup รายละเอียดหลังเพิ่มข้อมูล ───────────────────────────────────────
+  function showDone(items, operator, dateIso) {
+    document.getElementById('doneTitle').textContent = `✅ เพิ่มข้อมูลสำเร็จ ${items.length} เครื่อง`;
+    document.getElementById('doneBody').innerHTML = items.map(x => `<div class="done-item">
+      <div class="done-row"><span>ชื่ออุปกรณ์</span><span>${escHtml(x.type)}${x.capacity ? ' (' + escHtml(x.capacity) + ')' : ''}</span></div>
+      <div class="done-row"><span>S/N</span><span>${escHtml(x.serial)}</span></div>
+      <div class="done-row"><span>คนรับเครื่อง</span><span>${escHtml(operator)}</span></div>
+      <div class="done-row"><span>วันที่รับเครื่อง</span><span>${formatDate(dateIso)}</span></div>
+    </div>`).join('');
+    document.getElementById('doneOverlay').classList.add('active');
+  }
+  function closeDone() { document.getElementById('doneOverlay').classList.remove('active'); }
+  document.getElementById('doneCloseBtn').addEventListener('click', closeDone);
+  document.getElementById('doneOverlay').addEventListener('click', e => { if (e.target.id === 'doneOverlay') closeDone(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDone(); });
 
   // ── Delete ────────────────────────────────────────────────────────────────
   function askDelete(idx) {
