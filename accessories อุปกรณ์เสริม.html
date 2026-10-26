@@ -198,9 +198,9 @@
     #scanOverlay { z-index:700; }
     .scan-box { width:340px; }
     .scan-body { padding:12px 14px 4px; }
-    .scan-wrap { position:relative; width:100%; max-width:260px; margin:0 auto; border-radius:10px; overflow:hidden; background:#1a1010; -webkit-tap-highlight-color:transparent; }
-    #scanReader { width:100%; min-height:120px; max-height:190px; cursor:crosshair; }
-    #scanReader video { max-height:190px !important; object-fit:cover; }
+    .scan-wrap { position:relative; width:100%; max-width:310px; margin:0 auto; border-radius:10px; overflow:hidden; background:#1a1010; -webkit-tap-highlight-color:transparent; }
+    #scanReader { width:100%; min-height:120px; max-height:240px; cursor:crosshair; }
+    #scanReader video { max-height:240px !important; object-fit:cover; }
     .focus-ring { position:absolute; width:60px; height:60px; margin:-30px 0 0 -30px; border:2px solid #ffeb3b; border-radius:50%; pointer-events:none; opacity:0; transform:scale(1.5); transition:transform .22s ease, opacity .22s ease; z-index:5; box-shadow:0 0 0 1px rgba(0,0,0,.35); }
     .focus-ring.show { opacity:1; transform:scale(1); }
     .focus-ring.fail { border-color:#ff7043; }
@@ -209,6 +209,13 @@
     .tool-row > span:first-child { white-space:nowrap; min-width:54px; font-weight:600; color:#5a2a2a; }
     .tool-row input[type=range] { flex:1; min-width:0; accent-color:var(--blue); }
     .tool-val { min-width:34px; text-align:right; color:var(--gray-text); font-size:.76rem; }
+    .scan-actions { margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+    .scan-actions .btn { justify-content:center; width:100%; padding:9px 12px; }
+    .scan-results { margin-top:8px; display:none; flex-direction:column; gap:6px; }
+    .scan-results .res-title { font-size:.8rem; font-weight:700; color:#5a2a2a; }
+    .code-chip { display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%; text-align:left; padding:8px 10px; border-radius:8px; border:1.5px solid var(--blue); background:var(--blue-pale); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:.86rem; font-weight:700; word-break:break-all; }
+    .code-chip small { font-weight:500; color:var(--gray-text); white-space:nowrap; }
+    .code-chip:hover { background:#fbd9d5; }
     .btn-xs { padding:4px 10px; font-size:.76rem; border-radius:6px; }
     .btn-xs.on { background:#ffeb3b; color:#333; border-color:#fbc02d; }
     .scan-msg { margin-top:8px; font-size:.82rem; color:var(--gray-text); text-align:center; min-height:1.3em; }
@@ -404,12 +411,19 @@
           <button type="button" class="btn btn-gray btn-xs" id="torchBtn">เปิด</button>
         </div>
       </div>
+      <div class="scan-actions">
+        <button type="button" class="btn btn-blue" id="grabBtn">📸 จับภาพนี้แล้วสแกน (แม่นกว่า)</button>
+        <button type="button" class="btn btn-outline" id="photoBtn">🖼️ ถ่ายด้วยกล้องเครื่อง / เลือกรูป</button>
+        <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none"/>
+      </div>
+      <div class="scan-results" id="scanResults"></div>
       <label class="scan-cont"><input type="checkbox" id="scanContinuous"/> สแกนต่อเนื่อง (เพิ่มแถวใหม่ให้อัตโนมัติ)</label>
     </div>
     <div class="confirm-footer"><button class="btn btn-gray" id="closeScanBtn">ปิดกล้อง</button></div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
 <!-- ══ CONFIRM DELETE ══ -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
@@ -1056,6 +1070,7 @@
   async function openScan(row) {
     if (scanStarting || scanner) return;
     scanRow = row; scanCount = 0; lastCode = ''; lastAt = 0;
+    if (typeof showResults === 'function') showResults([]);
     scanOverlay.classList.add('active');
     if (typeof Html5Qrcode === 'undefined') { setScanMsg('โหลดตัวสแกนไม่สำเร็จ (ตรวจอินเทอร์เน็ต) — พิมพ์ S/N เองได้', true); return; }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -1070,7 +1085,7 @@
       experimentalFeatures: { useBarCodeDetectorIfSupported: true }
     });
     scanner = inst;
-    const baseCfg = { fps: 10, aspectRatio: 1.333, qrbox: (w, h) => ({ width: Math.floor(w * 0.85), height: Math.floor(Math.min(h * 0.5, 90)) }) };
+    const baseCfg = { fps: 12, aspectRatio: 1.333 };   // ไม่กำหนด qrbox = สแกนทั้งเฟรม (บาร์โค้ดเล็กบนสติกเกอร์จะไม่หลุดกรอบ)
     try {
       try {
         // ขอภาพความละเอียดสูง (บาร์โค้ดเล็กต้องใช้ภาพละเอียด) + โฟกัสต่อเนื่อง
@@ -1089,7 +1104,7 @@
       }
       if (!scanOverlay.classList.contains('active')) { try { await inst.stop(); } catch (e) {} return; }
       initScanTools();
-      setScanMsg('แตะที่ภาพเพื่อโฟกัส · เล็งกล้องไปที่บาร์โค้ด');
+      setScanMsg('แตะที่ภาพเพื่อโฟกัส · ถ้าสแกนสดไม่ติด กด "จับภาพนี้แล้วสแกน"');
     } catch (err) {
       if (scanner === inst) scanner = null;
       const n = (err && err.name) || String(err);
@@ -1130,6 +1145,128 @@
       closeScan(); inp.focus();
     }
   }
+
+  // ── ถอดรหัสจากภาพนิ่ง (ความละเอียดเต็ม) ──────────────────────────────────
+  //  1) BarcodeDetector ของเบราว์เซอร์ (ถ้ามี)  2) ZXing แบบซอยภาพเป็นช่วงๆ + ขยาย เพื่อจับบาร์โค้ดเล็กบนสติกเกอร์
+  const scanResults = document.getElementById('scanResults');
+  const grabBtn = document.getElementById('grabBtn'), photoBtn = document.getElementById('photoBtn'), photoInput = document.getElementById('photoInput');
+  const tick = () => new Promise(r => setTimeout(r, 0));
+
+  function makeCanvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; }
+  function fitCanvas(src, sw, sh, maxSide) {          // ย่อถ้าใหญ่เกิน (กันเครื่องค้าง) แต่ไม่ย่อจนเล็ก
+    const k = Math.min(1, maxSide / Math.max(sw, sh));
+    const c = makeCanvas(sw * k, sh * k);
+    c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+    return c;
+  }
+  async function decodeCanvas(base) {
+    const found = new Map();
+    const add = (t, f) => { t = String(t || '').trim(); if (t && !found.has(t)) found.set(t, f || ''); };
+
+    if ('BarcodeDetector' in window) {
+      try { (await new BarcodeDetector().detect(base)).forEach(r => add(r.rawValue, r.format)); } catch (e) {}
+    }
+    if (typeof ZXing !== 'undefined') {
+      const Z = ZXing, hints = new Map();
+      hints.set(Z.DecodeHintType.TRY_HARDER, true);
+      hints.set(Z.DecodeHintType.POSSIBLE_FORMATS, [Z.BarcodeFormat.CODE_128, Z.BarcodeFormat.CODE_39, Z.BarcodeFormat.CODE_93,
+        Z.BarcodeFormat.EAN_13, Z.BarcodeFormat.EAN_8, Z.BarcodeFormat.UPC_A, Z.BarcodeFormat.UPC_E, Z.BarcodeFormat.ITF,
+        Z.BarcodeFormat.CODABAR, Z.BarcodeFormat.QR_CODE, Z.BarcodeFormat.DATA_MATRIX]);
+      const reader = new Z.MultiFormatReader(); reader.setHints(hints);
+      const tryCanvas = c => {
+        for (const B of [Z.HybridBinarizer, Z.GlobalHistogramBinarizer]) {
+          try {
+            const bm = new Z.BinaryBitmap(new B(new Z.HTMLCanvasElementLuminanceSource(c)));
+            const r = reader.decode(bm);
+            add(r.getText(), Z.BarcodeFormat[r.getBarcodeFormat()]);
+            return;
+          } catch (e) {}
+        }
+      };
+      const W = base.width, H = base.height;
+      for (const n of [1, 2, 3, 4]) {                    // ทั้งภาพ → ซอย 2×2 → 3×3 → 4×4 (ช่องซ้อนกัน)
+        const ww = n === 1 ? W : Math.min(W, (W / n) * 1.6), hh = n === 1 ? H : Math.min(H, (H / n) * 1.6);
+        for (let iy = 0; iy < n; iy++) for (let ix = 0; ix < n; ix++) {
+          const x = n === 1 ? 0 : (W - ww) * ix / (n - 1), y = n === 1 ? 0 : (H - hh) * iy / (n - 1);
+          const k = Math.min(3, Math.max(1, 1000 / ww));   // ขยายช่องเล็กให้บาร์โค้ดหนาพอ
+          const c = makeCanvas(ww * k, hh * k);
+          const g = c.getContext('2d'); g.imageSmoothingEnabled = true;
+          g.drawImage(base, x, y, ww, hh, 0, 0, c.width, c.height);
+          tryCanvas(c);
+          await tick();
+        }
+      }
+    }
+    return [...found].map(([text, format]) => ({ text, format }));
+  }
+
+  function showResults(list) {
+    scanResults.innerHTML = '';
+    scanResults.style.display = 'none';
+    if (!list.length) return;
+    scanResults.style.display = 'flex';
+    const t = document.createElement('div'); t.className = 'res-title'; t.textContent = `พบ ${list.length} รหัส — แตะอันที่เป็น S/N`;
+    scanResults.appendChild(t);
+    list.forEach(r => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'code-chip';
+      b.innerHTML = `<span>${escHtml(r.text)}</span><small>${escHtml(String(r.format).replace(/_/g, ' '))}</small>`;
+      b.addEventListener('click', () => { lastCode = ''; onScanOk(r.text); if (scanOverlay.classList.contains('active')) scanResults.style.display = 'none'; });
+      scanResults.appendChild(b);
+    });
+  }
+
+  async function runDecode(canvas) {
+    setScanMsg('⏳ กำลังอ่านบาร์โค้ดจากภาพ...');
+    grabBtn.disabled = photoBtn.disabled = true;
+    try {
+      const list = await decodeCanvas(canvas);
+      if (!scanOverlay.classList.contains('active')) return;
+      if (!list.length) {
+        showResults([]);
+        setScanMsg('อ่านไม่ได้ — ถือห่างสติกเกอร์ ~15–25 ซม. ให้บาร์โค้ดชัดและไม่สะท้อนแสง (เปิดไฟฉาย/หลบแสงสะท้อน) แล้วลองใหม่', true);
+      } else if (list.length === 1) {
+        showResults([]);
+        lastCode = ''; onScanOk(list[0].text);
+      } else {
+        setScanMsg('พบหลายบาร์โค้ดบนสติกเกอร์ — เลือกอันที่เป็น S/N');
+        showResults(list);
+      }
+    } catch (err) {
+      setScanMsg('อ่านภาพไม่สำเร็จ: ' + (err && err.message || err), true);
+    } finally { grabBtn.disabled = photoBtn.disabled = false; }
+  }
+
+  // จับภาพจากกล้องที่เปิดอยู่ (พยายามใช้ภาพถ่ายความละเอียดเต็มของเซนเซอร์ก่อน)
+  grabBtn.addEventListener('click', async () => {
+    const video = document.querySelector('#scanReader video');
+    if (!video || !video.videoWidth) { setScanMsg('กล้องยังไม่พร้อม', true); return; }
+    showResults([]);
+    setScanMsg('📸 กำลังจับภาพ... ถือนิ่งๆ');
+    let canvas = null;
+    const track = getTrack();
+    if (track && 'ImageCapture' in window) {
+      try {
+        const blob = await Promise.race([new ImageCapture(track).takePhoto(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))]);
+        const bmp = await createImageBitmap(blob);
+        canvas = fitCanvas(bmp, bmp.width, bmp.height, 2600);
+      } catch (e) { canvas = null; }
+    }
+    if (!canvas) canvas = fitCanvas(video, video.videoWidth, video.videoHeight, 2600);
+    runDecode(canvas);
+  });
+
+  // ถ่ายด้วยแอปกล้องของเครื่อง (โฟกัสอัตโนมัติ/ความละเอียดเต็ม) หรือเลือกรูปจากเครื่อง
+  photoBtn.addEventListener('click', () => { photoInput.value = ''; photoInput.click(); });
+  photoInput.addEventListener('change', async () => {
+    const f = photoInput.files && photoInput.files[0];
+    if (!f) return;
+    showResults([]);
+    setScanMsg('⏳ กำลังโหลดรูป...');
+    try {
+      const bmp = await createImageBitmap(f);
+      runDecode(fitCanvas(bmp, bmp.width, bmp.height, 2600));
+    } catch (e) { setScanMsg('เปิดรูปไม่ได้: ' + (e && e.message || e), true); }
+  });
 
   document.getElementById('closeScanBtn').addEventListener('click', closeScan);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScan(); });
