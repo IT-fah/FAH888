@@ -196,10 +196,21 @@
     .dev-scan { border:1.5px solid var(--blue); background:var(--blue-pale); border-radius:8px; cursor:pointer; font-size:1.05rem; }
     .dev-scan:hover { background:#fbd9d5; }
     #scanOverlay { z-index:700; }
-    .scan-box { width:320px; }
+    .scan-box { width:340px; }
     .scan-body { padding:12px 14px 4px; }
-    #scanReader { width:100%; max-width:260px; margin:0 auto; min-height:120px; max-height:190px; background:#1a1010; border-radius:10px; overflow:hidden; }
+    .scan-wrap { position:relative; width:100%; max-width:260px; margin:0 auto; border-radius:10px; overflow:hidden; background:#1a1010; -webkit-tap-highlight-color:transparent; }
+    #scanReader { width:100%; min-height:120px; max-height:190px; cursor:crosshair; }
     #scanReader video { max-height:190px !important; object-fit:cover; }
+    .focus-ring { position:absolute; width:60px; height:60px; margin:-30px 0 0 -30px; border:2px solid #ffeb3b; border-radius:50%; pointer-events:none; opacity:0; transform:scale(1.5); transition:transform .22s ease, opacity .22s ease; z-index:5; box-shadow:0 0 0 1px rgba(0,0,0,.35); }
+    .focus-ring.show { opacity:1; transform:scale(1); }
+    .focus-ring.fail { border-color:#ff7043; }
+    .scan-tools { margin-top:8px; padding:8px 10px; background:#fffafa; border:1px solid var(--gray-border); border-radius:10px; display:none; flex-direction:column; gap:6px; }
+    .tool-row { display:flex; align-items:center; gap:8px; font-size:.8rem; }
+    .tool-row > span:first-child { white-space:nowrap; min-width:54px; font-weight:600; color:#5a2a2a; }
+    .tool-row input[type=range] { flex:1; min-width:0; accent-color:var(--blue); }
+    .tool-val { min-width:34px; text-align:right; color:var(--gray-text); font-size:.76rem; }
+    .btn-xs { padding:4px 10px; font-size:.76rem; border-radius:6px; }
+    .btn-xs.on { background:#ffeb3b; color:#333; border-color:#fbc02d; }
     .scan-msg { margin-top:8px; font-size:.82rem; color:var(--gray-text); text-align:center; min-height:1.3em; }
     .scan-msg.bad { color:var(--red); font-weight:600; }
     .scan-cont { display:flex; align-items:center; gap:8px; margin-top:8px; font-size:.8rem; cursor:pointer; }
@@ -372,8 +383,27 @@
   <div class="confirm-box scan-box">
     <div class="confirm-header blue">📷 สแกนบาร์โค้ด S/N</div>
     <div class="scan-body">
-      <div id="scanReader"></div>
+      <div class="scan-wrap" id="scanWrap">
+        <div id="scanReader"></div>
+        <div class="focus-ring" id="focusRing"></div>
+      </div>
       <div id="scanMsg" class="scan-msg">กำลังเปิดกล้อง...</div>
+      <div class="scan-tools" id="scanTools">
+        <div class="tool-row" id="zoomRow" style="display:none">
+          <span>🔍 ซูม</span>
+          <input type="range" id="zoomSlider" min="1" max="1" step="0.1" value="1"/>
+          <span class="tool-val" id="zoomVal">1x</span>
+        </div>
+        <div class="tool-row" id="focusRow" style="display:none">
+          <span>🎯 โฟกัส</span>
+          <input type="range" id="focusSlider" min="0" max="1" step="0.01" value="0"/>
+          <button type="button" class="btn btn-outline btn-xs" id="autoFocusBtn">อัตโนมัติ</button>
+        </div>
+        <div class="tool-row" id="torchRow" style="display:none">
+          <span>🔦 ไฟฉาย</span>
+          <button type="button" class="btn btn-gray btn-xs" id="torchBtn">เปิด</button>
+        </div>
+      </div>
       <label class="scan-cont"><input type="checkbox" id="scanContinuous"/> สแกนต่อเนื่อง (เพิ่มแถวใหม่ให้อัตโนมัติ)</label>
     </div>
     <div class="confirm-footer"><button class="btn btn-gray" id="closeScanBtn">ปิดกล้อง</button></div>
@@ -934,6 +964,95 @@
 
   function setScanMsg(t, bad) { scanMsg.textContent = t; scanMsg.classList.toggle('bad', !!bad); }
 
+  // ── ปรับภาพกล้อง: แตะเพื่อโฟกัส / ซูม / โฟกัสมือ / ไฟฉาย ──
+  //  (ใช้ได้เท่าที่กล้อง+เบราว์เซอร์รองรับ — Chrome บน Android รองรับครบ, iPhone Safari รองรับน้อยกว่า)
+  const scanWrap = document.getElementById('scanWrap'), focusRing = document.getElementById('focusRing');
+  const scanTools = document.getElementById('scanTools');
+  const zoomRow = document.getElementById('zoomRow'), zoomSlider = document.getElementById('zoomSlider'), zoomVal = document.getElementById('zoomVal');
+  const focusRow = document.getElementById('focusRow'), focusSlider = document.getElementById('focusSlider');
+  const torchRow = document.getElementById('torchRow'), torchBtn = document.getElementById('torchBtn');
+  let scanCaps = {}, torchOn = false, focusTimer = null, ringTimer = null;
+
+  function getTrack() {
+    const v = document.querySelector('#scanReader video');
+    const st = v && v.srcObject;
+    return (st && st.getVideoTracks && st.getVideoTracks()[0]) || null;
+  }
+  async function applyAdv(obj) {
+    const t = getTrack();
+    if (!t || !t.applyConstraints) return false;
+    try { await t.applyConstraints({ advanced: [obj] }); return true; } catch (e) { return false; }
+  }
+  function initScanTools() {
+    zoomRow.style.display = focusRow.style.display = torchRow.style.display = 'none';
+    scanTools.style.display = 'none';
+    torchOn = false; torchBtn.textContent = 'เปิด'; torchBtn.classList.remove('on');
+    const t = getTrack();
+    scanCaps = (t && t.getCapabilities) ? t.getCapabilities() : {};
+    const st = (t && t.getSettings) ? t.getSettings() : {};
+    const modes = scanCaps.focusMode || [];
+    let any = false;
+    if (scanCaps.zoom && scanCaps.zoom.max > scanCaps.zoom.min) {
+      zoomSlider.min = scanCaps.zoom.min; zoomSlider.max = scanCaps.zoom.max; zoomSlider.step = scanCaps.zoom.step || 0.1;
+      zoomSlider.value = st.zoom || scanCaps.zoom.min;
+      zoomVal.textContent = (+zoomSlider.value).toFixed(1) + 'x';
+      zoomRow.style.display = 'flex'; any = true;
+    }
+    if (scanCaps.focusDistance && modes.includes('manual')) {
+      focusSlider.min = scanCaps.focusDistance.min; focusSlider.max = scanCaps.focusDistance.max; focusSlider.step = scanCaps.focusDistance.step || 0.01;
+      focusSlider.value = st.focusDistance || scanCaps.focusDistance.min;
+      focusRow.style.display = 'flex'; any = true;
+    }
+    if (scanCaps.torch) { torchRow.style.display = 'flex'; any = true; }
+    if (any) scanTools.style.display = 'flex';
+    if (modes.includes('continuous')) applyAdv({ focusMode: 'continuous' });
+  }
+  function showRing(x, y, ok) {
+    focusRing.style.left = x + 'px'; focusRing.style.top = y + 'px';
+    focusRing.classList.toggle('fail', !ok);
+    focusRing.classList.remove('show'); void focusRing.offsetWidth; focusRing.classList.add('show');
+    clearTimeout(ringTimer); ringTimer = setTimeout(() => focusRing.classList.remove('show'), 1200);
+  }
+  async function tapFocus(e) {
+    const video = document.querySelector('#scanReader video');
+    if (!video || !getTrack()) return;
+    const wr = scanWrap.getBoundingClientRect(), vr = video.getBoundingClientRect();
+    const nx = Math.min(1, Math.max(0, (e.clientX - vr.left) / vr.width));
+    const ny = Math.min(1, Math.max(0, (e.clientY - vr.top) / vr.height));
+    const modes = scanCaps.focusMode || [];
+    let ok = false;
+    if (modes.includes('single-shot') || modes.includes('continuous')) {
+      const adv = { focusMode: modes.includes('single-shot') ? 'single-shot' : 'continuous' };
+      if (scanCaps.pointsOfInterest) adv.pointsOfInterest = [{ x: nx, y: ny }];
+      ok = await applyAdv(adv);
+      if (!ok && adv.pointsOfInterest) { delete adv.pointsOfInterest; ok = await applyAdv(adv); }
+      if (ok && adv.focusMode === 'single-shot' && modes.includes('continuous')) {
+        clearTimeout(focusTimer);
+        focusTimer = setTimeout(() => applyAdv({ focusMode: 'continuous' }), 1800);
+      }
+    }
+    showRing(e.clientX - wr.left, e.clientY - wr.top, ok);
+    if (ok) setScanMsg('🎯 กำลังโฟกัส... ถือนิ่งๆ สักครู่');
+    else setScanMsg('เครื่องนี้ไม่รองรับสั่งโฟกัสจากหน้าเว็บ — ลองถือให้ห่างจากสติกเกอร์ประมาณ 15–25 ซม. แล้วรอให้ภาพชัด', true);
+  }
+  scanWrap.addEventListener('click', tapFocus);
+  zoomSlider.addEventListener('input', () => {
+    zoomVal.textContent = (+zoomSlider.value).toFixed(1) + 'x';
+    applyAdv({ zoom: +zoomSlider.value });
+  });
+  focusSlider.addEventListener('input', async () => {
+    clearTimeout(focusTimer);
+    if (!(await applyAdv({ focusMode: 'manual', focusDistance: +focusSlider.value }))) setScanMsg('ปรับโฟกัสมือไม่ได้บนกล้องนี้ — กด "อัตโนมัติ"', true);
+  });
+  document.getElementById('autoFocusBtn').addEventListener('click', () => {
+    clearTimeout(focusTimer); applyAdv({ focusMode: 'continuous' }); setScanMsg('กลับเป็นโฟกัสอัตโนมัติแล้ว');
+  });
+  torchBtn.addEventListener('click', async () => {
+    const want = !torchOn;
+    if (await applyAdv({ torch: want })) { torchOn = want; torchBtn.textContent = torchOn ? 'ปิด' : 'เปิด'; torchBtn.classList.toggle('on', torchOn); }
+    else setScanMsg('เปิดไฟฉายไม่ได้บนกล้องนี้', true);
+  });
+
   async function openScan(row) {
     if (scanStarting || scanner) return;
     scanRow = row; scanCount = 0; lastCode = ''; lastAt = 0;
@@ -951,14 +1070,26 @@
       experimentalFeatures: { useBarCodeDetectorIfSupported: true }
     });
     scanner = inst;
+    const baseCfg = { fps: 10, aspectRatio: 1.333, qrbox: (w, h) => ({ width: Math.floor(w * 0.85), height: Math.floor(Math.min(h * 0.5, 90)) }) };
     try {
-      await inst.start(
-        { facingMode: 'environment' },
-        { fps: 10, aspectRatio: 1.333, qrbox: (w, h) => ({ width: Math.floor(w * 0.85), height: Math.floor(Math.min(h * 0.5, 90)) }) },
-        onScanOk, () => {}
-      );
+      try {
+        // ขอภาพความละเอียดสูง (บาร์โค้ดเล็กต้องใช้ภาพละเอียด) + โฟกัสต่อเนื่อง
+        await inst.start(
+          { facingMode: 'environment' },
+          { ...baseCfg, videoConstraints: {
+              facingMode: { ideal: 'environment' },
+              width: { ideal: 1920 }, height: { ideal: 1080 },
+              advanced: [{ focusMode: 'continuous' }]
+          } },
+          onScanOk, () => {}
+        );
+      } catch (e1) {
+        if (/NotAllowed|Permission|NotFound|NotReadable/i.test((e1 && e1.name) || String(e1))) throw e1;
+        await inst.start({ facingMode: 'environment' }, baseCfg, onScanOk, () => {});
+      }
       if (!scanOverlay.classList.contains('active')) { try { await inst.stop(); } catch (e) {} return; }
-      setScanMsg('เล็งกล้องไปที่บาร์โค้ด');
+      initScanTools();
+      setScanMsg('แตะที่ภาพเพื่อโฟกัส · เล็งกล้องไปที่บาร์โค้ด');
     } catch (err) {
       if (scanner === inst) scanner = null;
       const n = (err && err.name) || String(err);
@@ -971,6 +1102,8 @@
 
   async function closeScan() {
     scanOverlay.classList.remove('active');
+    clearTimeout(focusTimer); clearTimeout(ringTimer);
+    focusRing.classList.remove('show'); scanTools.style.display = 'none'; scanCaps = {}; torchOn = false;
     const s = scanner; scanner = null; scanRow = null;
     if (s) { try { await s.stop(); } catch (e) {} try { s.clear(); } catch (e) {} }
     document.getElementById('scanReader').innerHTML = '';
