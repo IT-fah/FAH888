@@ -91,7 +91,7 @@
     /* ── Table ── */
     .table-card { background:#fff; border-radius:12px; box-shadow:var(--shadow-sm); overflow:hidden; }
     .table-scroll { overflow-x:auto; }
-    table { width:100%; border-collapse:collapse; min-width:860px; }
+    table { width:100%; border-collapse:collapse; min-width:1100px; }
     thead { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); color:#fff; }
     thead th { padding:13px 16px; text-align:left; font-size:.88rem; font-weight:600; white-space:nowrap; }
     thead th.sortable { cursor:pointer; user-select:none; transition:background .15s; }
@@ -299,6 +299,8 @@
             <th class="sortable" data-key="serial">S/N<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="status">สถานะ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="operator">ผู้ดำเนินการ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="receiver">ผู้รับเครื่อง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
+            <th class="sortable" data-key="sender">คนส่ง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th style="text-align:center;min-width:60px">จัดการ</th>
           </tr>
         </thead>
@@ -356,8 +358,16 @@
           </select>
         </div>
         <div class="form-group">
-          <label id="operatorLabel">ผู้รับ <span class="req">*</span></label>
-          <input class="form-control" id="f-operator" type="text" placeholder="ชื่อผู้รับเครื่อง" autocomplete="off"/>
+          <label>ผู้ดำเนินการ</label>
+          <input class="form-control" id="f-operator" type="text" placeholder="ชื่อผู้ดำเนินการ" autocomplete="off"/>
+        </div>
+        <div class="form-group">
+          <label>ผู้รับเครื่อง <span class="req">*</span></label>
+          <input class="form-control" id="f-receiver" type="text" placeholder="ชื่อผู้รับเครื่อง" autocomplete="off"/>
+        </div>
+        <div class="form-group" id="senderGroup" style="display:none">
+          <label id="senderLabel">คนส่ง</label>
+          <input class="form-control" id="f-senderEdit" type="text" placeholder="ชื่อคนส่งเครื่อง" autocomplete="off"/>
         </div>
         <div class="form-group full" id="noteGroup">
           <label>หมายเหตุ <span class="dev-count">(ไม่บังคับ · แสดงในสรุปและปุ่มคัดลอกเท่านั้น ไม่ได้บันทึกลงชีท)</span></label>
@@ -537,7 +547,7 @@
   }
   function showMsg(icon, msg) {
     document.getElementById('tableBody').innerHTML =
-      `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">${icon}</div><p>${msg}</p></div></td></tr>`;
+      `<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">${icon}</div><p>${msg}</p></div></td></tr>`;
   }
 
   // ── Popup ข้อผิดพลาด (แทน alert) ─────────────────────────────────────────
@@ -589,6 +599,7 @@
       tableData = json.data.map(r => ({
         date: r.date || '', type: r.type || '', condition: r.condition || '', capacity: r.capacity || '',
         serial: r.serial || '', sentDate: r.sentDate || '', status: r.status || '', operator: r.operator || '',
+        receiver: r.receiver || '', sender: r.sender || '',
         deleted: r.deleted === true
       }));
       renderAll();
@@ -616,7 +627,7 @@
     const q = searchTerm.toLowerCase();
     let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => !r.deleted)
       .filter(r => !typeFilter || r.type === typeFilter)
-      .filter(r => !q || [r.type, r.serial, r.operator, r.condition, r.capacity].some(v => String(v || '').toLowerCase().includes(q)));
+      .filter(r => !q || [r.type, r.serial, r.operator, r.receiver, r.sender, r.condition, r.capacity].some(v => String(v || '').toLowerCase().includes(q)));
 
     if (sortKey) {
       rows.sort((a, b) => {
@@ -644,6 +655,8 @@
       <td>${escHtml(r.serial) || '—'}</td>
       <td>${statusChip(r.status)}</td>
       <td>${escHtml(r.operator) || '—'}</td>
+      <td>${escHtml(r.receiver) || '—'}</td>
+      <td>${escHtml(r.sender) || '—'}</td>
       <td style="text-align:center">
         <div class="action-wrap">
           <button class="btn-dots" onclick="toggleDropdown(${r.origIdx}, event)" title="จัดการ">⋮</button>
@@ -751,8 +764,9 @@
     document.getElementById('devHint').style.display   = isEdit ? 'none' : '';
     document.getElementById('sentDateGroup').style.display = isEdit ? '' : 'none';
     document.getElementById('noteGroup').style.display = isEdit ? 'none' : '';
-    document.getElementById('operatorLabel').innerHTML = (isEdit ? 'ผู้ดำเนินการ' : 'ผู้รับ') + ' <span class="req">*</span>';
-    document.getElementById('f-operator').placeholder = isEdit ? 'ชื่อผู้ดำเนินการ' : 'ชื่อผู้รับเครื่อง';
+    document.getElementById('senderGroup').style.display = isEdit ? '' : 'none';
+    const hasSent = !!document.getElementById('f-sentdate').value;
+    document.getElementById('senderLabel').innerHTML = 'คนส่ง' + (hasSent ? ' <span class="req">*</span>' : '');
     const filled = [...devList.querySelectorAll('.dev-serial')].filter(i => i.value.trim()).length;
     document.getElementById('devCount').textContent = isEdit ? '' : `(${filled} เครื่อง)`;
     if (!saveBtnEl.disabled) {
@@ -839,7 +853,7 @@
     document.getElementById('modalTitle').textContent = '➕ เพิ่มอุปกรณ์เสริม';
     document.getElementById('saveBtn').innerHTML = '➕ เพิ่มอุปกรณ์';
     document.querySelectorAll('#f-status option[data-legacy]').forEach(o => o.remove());
-    ['f-sentdate','f-status','f-operator','f-note'].forEach(id => document.getElementById(id).value = '');
+    ['f-sentdate','f-status','f-operator','f-receiver','f-senderEdit','f-note'].forEach(id => document.getElementById(id).value = '');
     devList.innerHTML = '';
     addDevRow('', '', false);
   }
@@ -849,6 +863,7 @@
   }
 
   resetModal();
+  document.getElementById('f-sentdate').addEventListener('input', updateDevUi);   // มีวันที่ส่ง → ช่องคนส่งกลายเป็นบังคับ
   document.getElementById('openModal').addEventListener('click', () => {
     resetModal(); modalOverlay.classList.add('active');
     setTimeout(() => { const f = devList.querySelector('.dev-serial'); if (f) f.focus(); }, 120);
@@ -871,6 +886,8 @@
       stSel.appendChild(o); stSel.value = r.status;
     }
     document.getElementById('f-operator').value = (r.operator && r.operator !== '—') ? r.operator : '';
+    document.getElementById('f-receiver').value = r.receiver || '';
+    document.getElementById('f-senderEdit').value = r.sender || '';
     document.getElementById('modalTitle').textContent = '✏️ แก้ไขข้อมูล';
     document.getElementById('saveBtn').innerHTML = '💾 บันทึกการแก้ไข';
     updateDevUi();
@@ -900,11 +917,18 @@
       if (x.type === HDD_TYPE && !(parseFloat(x.capNum) > 0)) { showError(ERR_T, `รายการที่ ${i + 1}: Harddisk ต้องกรอกความจุ`); return; }
     }
 
-    // บังคับกรอกชื่อผู้รับ (ตอนเพิ่ม) / ผู้ดำเนินการ (ตอนแก้ไข) ทุกครั้ง
+    // บังคับกรอกชื่อ: เพิ่มใหม่ต้องมี "ผู้รับเครื่อง" · ถ้ามีวันที่ส่ง (แก้ไข) ต้องมี "คนส่ง"
     const operator = document.getElementById('f-operator').value.trim();
-    if (!operator) {
-      showError(ERR_T, isEdit ? 'กรุณากรอกชื่อผู้ดำเนินการ' : 'กรุณากรอกชื่อผู้รับเครื่อง');
-      document.getElementById('f-operator').focus();
+    const receiver = document.getElementById('f-receiver').value.trim();
+    const senderName = document.getElementById('f-senderEdit').value.trim();
+    if (!isEdit && !receiver) {
+      showError(ERR_T, 'กรุณากรอกชื่อผู้รับเครื่อง');
+      document.getElementById('f-receiver').focus();
+      return;
+    }
+    if (isEdit && document.getElementById('f-sentdate').value && !senderName) {
+      showError('ส่งอุปกรณ์ไม่สำเร็จ', 'มีวันที่ส่งแล้ว กรุณากรอกชื่อคนส่งด้วย');
+      document.getElementById('f-senderEdit').focus();
       return;
     }
 
@@ -922,7 +946,8 @@
     const common = {
       sentDate: document.getElementById('f-sentdate').value || '',
       status:   document.getElementById('f-status').value || '—',
-      operator
+      operator, receiver,
+      sender: senderName
     };
     const note = document.getElementById('f-note').value.trim();
 
@@ -943,7 +968,7 @@
       }
       closeModalFn();
       await loadData();
-      if (!isEdit) showSummary('add', items, operator, new Date().toISOString(), note);
+      if (!isEdit) showSummary('add', items, receiver, new Date().toISOString(), note);
     } catch (err) {
       if (done > 0) {
         items.slice(0, done).forEach(x => x.el.remove());
@@ -1070,7 +1095,8 @@
         action: 'edit', rowIndex: pendingSendIdx,
         date: r.date, type: r.type, condition: r.condition || '', capacity: r.capacity || '',
         serial: r.serial, sentDate: sendDate,
-        status: r.status || '', operator: sender      // ผู้ดำเนินการ = ผู้ส่งล่าสุด
+        status: r.status || '', operator: r.operator || '',
+        receiver: r.receiver || '', sender                // เก็บคนส่งแยกคอลัมน์ ไม่ทับผู้รับ/ผู้ดำเนินการ
       });
       closeSend();
       await loadData();
