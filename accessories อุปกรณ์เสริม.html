@@ -84,9 +84,23 @@
     .btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue)} .btn-outline:hover{background:var(--blue-pale)}
     .btn-gray{background:#f0f0f0;color:#555;border:1px solid #ddd} .btn-gray:hover{background:#e0e0e0}
     .btn-red{background:var(--red);color:#fff} .btn-red:hover{background:#b71c1c}
+    .btn-send{background:#fff;color:var(--blue);border:1.5px solid var(--blue)} .btn-send:hover{background:var(--blue-pale)}
+    .btn-send.on{background:var(--blue);color:#fff}
     .search-box { display:flex; align-items:center; gap:8px; margin-left:auto; }
     .search-input { padding:8px 14px; border-radius:8px; border:1.5px solid var(--gray-border); font-family:'Sarabun',sans-serif; font-size:.88rem; outline:none; transition:border .15s; min-width:220px; background:#fffafa; }
     .search-input:focus { border-color:var(--blue); background:#fff; }
+
+    /* ── แถบโหมดส่งเครื่อง (เลือกหลายเครื่อง) ── */
+    .bulk-bar { display:none; align-items:center; gap:10px; flex-wrap:wrap; background:var(--blue-pale); border:1.5px dashed var(--blue); border-radius:12px; padding:12px 18px; margin-bottom:16px; font-size:.9rem; }
+    .bulk-bar.active { display:flex; animation:fadeIn .18s ease; }
+    .bulk-bar .bulk-text { flex:1; min-width:220px; line-height:1.5; }
+    .bulk-bar .bulk-count { font-family:'Prompt',sans-serif; font-weight:800; color:var(--blue); font-size:1.05rem; }
+    .bulk-cb { width:18px; height:18px; accent-color:var(--blue); cursor:pointer; vertical-align:middle; }
+    .bulk-cb:disabled { cursor:not-allowed; opacity:.4; }
+    tbody tr.sel { background:#ffe9e7 !important; }
+    tbody tr.bulk-row { cursor:pointer; }
+    tbody tr.bulk-off { cursor:default; opacity:.55; }
+    .sent-mark { font-size:.7rem; color:var(--gray-text); display:block; }
 
     /* ── Table ── */
     .table-card { background:#fff; border-radius:12px; box-shadow:var(--shadow-sm); overflow:hidden; }
@@ -135,7 +149,7 @@
     .modal-overlay.active, .confirm-overlay.active { display:flex; animation:fadeIn .18s ease; }
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
     @keyframes slideUp { from{transform:translateY(28px);opacity:0} to{transform:translateY(0);opacity:1} }
-    #modalOverlay { z-index:500; } #listOverlay { z-index:500; } #confirmOverlay { z-index:600; } #sendOverlay { z-index:600; }
+    #modalOverlay { z-index:500; } #listOverlay { z-index:500; } #confirmOverlay { z-index:600; } #sendOverlay { z-index:600; } #bulkSendOverlay { z-index:600; }
     .modal { background:#fff; border-radius:14px; box-shadow:var(--shadow-lg); width:600px; max-width:95vw; animation:slideUp .22s cubic-bezier(.4,0,.2,1); overflow:hidden; }
     .list-modal { width:900px; }
     .modal-header { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); color:#fff; padding:16px 22px; display:flex; align-items:center; justify-content:space-between; font-family:'Prompt',sans-serif; font-size:1rem; font-weight:700; }
@@ -199,6 +213,7 @@
     /* ── ช่องกรอกในหน้าส่งเครื่อง ── */
     .send-fields { margin-top:14px; display:flex; flex-direction:column; gap:10px; text-align:left; }
     .send-fields label { font-size:.85rem; font-weight:600; color:#5a2a2a; display:flex; flex-direction:column; gap:5px; }
+    .bulk-list { margin-top:8px; max-height:150px; overflow-y:auto; background:#fffafa; border:1px solid var(--gray-border); border-radius:10px; padding:8px 12px; font-size:.84rem; line-height:1.7; }
 
     /* ── Barcode scanner (ขนาดเล็กลง) ── */
     .dev-scan { border:1.5px solid var(--blue); background:var(--blue-pale); border-radius:8px; cursor:pointer; font-size:1.05rem; }
@@ -279,6 +294,7 @@
   <div class="data-toolbar">
     <button class="btn btn-outline" id="showAllBtn">📦 ข้อมูลทั้งหมด</button>
     <button class="btn btn-green" id="openModal">➕ เพิ่มอุปกรณ์</button>
+    <button class="btn btn-send" id="bulkSendBtn">📤 ส่งเครื่อง</button>
     <button class="btn btn-gray" id="reloadBtn">🔄 โหลดข้อมูลใหม่</button>
     <div class="search-box">
       <input class="search-input" id="searchInput" type="text" placeholder="ค้นหาประเภท / รหัส / ผู้ดำเนินการ..." autocomplete="off"/>
@@ -286,12 +302,19 @@
     </div>
   </div>
 
+  <!-- แถบโหมดส่งเครื่อง -->
+  <div class="bulk-bar" id="bulkBar">
+    <div class="bulk-text">📤 <strong>โหมดส่งเครื่อง</strong> — ติ๊กเลือกเครื่องที่จะส่ง (ใช้ช่องค้นหาได้ รายการที่ติ๊กไว้จะไม่หาย) · เลือกแล้ว <span class="bulk-count" id="bulkCount">0</span> เครื่อง</div>
+    <button class="btn btn-blue" id="bulkConfirmBtn" disabled>✅ ยืนยันเครื่องที่เลือก</button>
+    <button class="btn btn-gray" id="bulkCancelBtn">ยกเลิก</button>
+  </div>
+
   <div class="table-card">
     <div class="table-scroll">
       <table>
         <thead>
           <tr>
-            <th>#</th>
+            <th id="thNum" style="width:52px">#</th>
             <th class="sortable" data-key="date">วันที่รับ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="sentDate">วันที่ส่ง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="type">ประเภท<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
@@ -403,7 +426,7 @@
   </div>
 </div>
 
-<!-- ══ SEND MACHINE ══ -->
+<!-- ══ SEND MACHINE (ทีละเครื่อง จากเมนู ⋮) ══ -->
 <div class="confirm-overlay" id="sendOverlay">
   <div class="confirm-box">
     <div class="confirm-header blue">📤 ส่งเครื่อง</div>
@@ -427,6 +450,31 @@
     </div>
   </div>
 </div>
+
+<!-- ══ SEND MACHINE หลายเครื่อง (จากปุ่ม ส่งเครื่อง ในแถบเครื่องมือ) ══ -->
+<div class="confirm-overlay" id="bulkSendOverlay">
+  <div class="confirm-box">
+    <div class="confirm-header blue">📤 ส่งเครื่อง <span id="bulkSendN"></span></div>
+    <div class="confirm-body" style="padding-bottom:16px">
+      <p style="color:var(--gray-text);font-size:.88rem">รายการที่จะส่ง</p>
+      <div class="bulk-list" id="bulkSendList"></div>
+      <p style="margin-top:10px;font-size:.85rem;color:var(--gray-text)">จะบันทึกวันที่ส่งเป็นวันนี้ (<span id="bulkSendDate"></span>)</p>
+      <div class="send-fields">
+        <label>ผู้ส่ง <span class="req">*</span>
+          <input class="form-control" id="f-bulkSender" type="text" placeholder="ชื่อผู้ส่งเครื่อง" autocomplete="off"/>
+        </label>
+        <label>ผู้ดำเนินการ <span class="req">*</span>
+          <input class="form-control" id="f-bulkOperator" type="text" placeholder="ชื่อผู้ดำเนินการ" autocomplete="off"/>
+        </label>
+      </div>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-blue" id="bulkSendOkBtn">📤 ยืนยันส่งเครื่อง</button>
+      <button class="btn btn-gray" id="bulkSendCancelBtn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ BARCODE SCANNER ══ -->
 <div class="confirm-overlay" id="scanOverlay">
   <div class="confirm-box scan-box">
@@ -511,6 +559,11 @@
   let searchTerm = '';
   let typeFilter = '';
   let editingIdx = null, pendingDeleteIdx = null;
+
+  // โหมดส่งเครื่องหลายเครื่อง
+  let bulkMode = false;
+  const bulkSel = new Set();      // เก็บ index จริงใน tableData (ไม่หายเมื่อค้นหา/เรียงใหม่)
+  let visibleRows = [];           // แถวที่แสดงอยู่ตอนนี้ (ใช้กับ "เลือกทั้งหมด")
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   function escHtml(s) {
@@ -644,10 +697,20 @@
       });
     }
 
-    if (!rows.length) { showMsg('📭', typeFilter ? `ไม่พบข้อมูลของ ${escHtml(typeFilter)}` : 'ไม่พบข้อมูล'); return; }
+    visibleRows = rows;
+    renderNumHeader();
 
-    document.getElementById('tableBody').innerHTML = rows.map((r, i) => `<tr>
-      <td>${i + 1}</td>
+    if (!rows.length) { showMsg('📭', typeFilter ? `ไม่พบข้อมูลของ ${escHtml(typeFilter)}` : 'ไม่พบข้อมูล'); updateBulkBar(); return; }
+
+    document.getElementById('tableBody').innerHTML = rows.map((r, i) => {
+      const selectable = !r.sentDate;                 // ส่งแล้วจะเลือกซ้ำไม่ได้ในโหมดนี้
+      const checked = bulkSel.has(r.origIdx);
+      const firstCell = bulkMode
+        ? `<input type="checkbox" class="bulk-cb" ${selectable ? '' : 'disabled'} ${checked && selectable ? 'checked' : ''} title="${selectable ? 'เลือกเครื่องนี้' : 'ส่งไปแล้ว'}"/>`
+        : String(i + 1);
+      const trCls = bulkMode ? (selectable ? 'bulk-row' : 'bulk-off') + (checked && selectable ? ' sel' : '') : '';
+      return `<tr data-idx="${r.origIdx}" class="${trCls}">
+      <td>${firstCell}</td>
       <td>${formatDate(r.date)}</td>
       <td>${formatDate(r.sentDate, '')}</td>
       <td><span class="type-tag">${escHtml(r.type) || '—'}</span>${r.capacity ? `<span class="cap-tag">${escHtml(r.capacity)}</span>` : ''}</td>
@@ -667,10 +730,131 @@
           </div>
         </div>
       </td>
-    </tr>`).join('');
+    </tr>`;
+    }).join('');
+    updateBulkBar();
   }
 
   function renderAll() { renderCards(); renderTable(); }
+
+  // หัวคอลัมน์ "#" → ในโหมดส่งเครื่องกลายเป็นช่องติ๊ก "เลือกทั้งหมดที่แสดงอยู่"
+  function renderNumHeader() {
+    const th = document.getElementById('thNum');
+    if (bulkMode) {
+      th.innerHTML = '<input type="checkbox" class="bulk-cb" id="bulkAll" title="เลือกทั้งหมดที่แสดงอยู่"/>';
+      document.getElementById('bulkAll').addEventListener('change', e => {
+        visibleRows.forEach(r => { if (r.sentDate) return; e.target.checked ? bulkSel.add(r.origIdx) : bulkSel.delete(r.origIdx); });
+        renderTable();
+      });
+    } else {
+      th.textContent = '#';
+    }
+  }
+
+  // ── โหมดส่งเครื่องหลายเครื่อง ─────────────────────────────────────────────
+  function updateBulkBar() {
+    // นับเฉพาะที่ยังเลือกได้จริง
+    for (const i of [...bulkSel]) { const r = tableData[i]; if (!r || r.deleted || r.sentDate) bulkSel.delete(i); }
+    document.getElementById('bulkCount').textContent = bulkSel.size;
+    document.getElementById('bulkConfirmBtn').disabled = bulkSel.size === 0;
+    const all = document.getElementById('bulkAll');
+    if (all) {
+      const sel = visibleRows.filter(r => !r.sentDate);
+      all.checked = sel.length > 0 && sel.every(r => bulkSel.has(r.origIdx));
+    }
+  }
+  function setBulkMode(on) {
+    bulkMode = on;
+    if (!on) bulkSel.clear();
+    document.getElementById('bulkBar').classList.toggle('active', on);
+    const b = document.getElementById('bulkSendBtn');
+    b.classList.toggle('on', on);
+    b.innerHTML = on ? '✖ ยกเลิกส่งเครื่อง' : '📤 ส่งเครื่อง';
+    closeAllDropdowns();
+    renderTable();
+  }
+  document.getElementById('bulkSendBtn').addEventListener('click', () => setBulkMode(!bulkMode));
+  document.getElementById('bulkCancelBtn').addEventListener('click', () => setBulkMode(false));
+
+  // ติ๊ก/เลิกติ๊ก (กดที่แถวก็ได้)
+  document.getElementById('tableBody').addEventListener('click', e => {
+    if (!bulkMode) return;
+    if (e.target.closest('.action-wrap')) return;
+    const tr = e.target.closest('tr[data-idx]');
+    if (!tr) return;
+    const cb = tr.querySelector('.bulk-cb');
+    if (!cb || cb.disabled) return;
+    if (e.target !== cb) cb.checked = !cb.checked;
+    const idx = +tr.dataset.idx;
+    if (cb.checked) bulkSel.add(idx); else bulkSel.delete(idx);
+    tr.classList.toggle('sel', cb.checked);
+    updateBulkBar();
+  });
+
+  // กดยืนยันเครื่องที่เลือก → popup ใส่ผู้ส่ง + ผู้ดำเนินการ
+  const bulkSendOverlay = document.getElementById('bulkSendOverlay');
+  document.getElementById('bulkConfirmBtn').addEventListener('click', () => {
+    if (!bulkSel.size) return;
+    const items = [...bulkSel].sort((a, b) => a - b).map(i => tableData[i]);
+    document.getElementById('bulkSendN').textContent = `(${items.length} เครื่อง)`;
+    document.getElementById('bulkSendList').innerHTML = items.map((r, n) =>
+      `${n + 1}. <strong>${escHtml(r.type)}${r.capacity ? ' ' + escHtml(r.capacity) : ''}</strong> — ${escHtml(r.serial) || '—'}`).join('<br>');
+    document.getElementById('bulkSendDate').textContent = formatDate(todayStr());
+    document.getElementById('f-bulkSender').value = '';
+    document.getElementById('f-bulkOperator').value = '';
+    bulkSendOverlay.classList.add('active');
+    setTimeout(() => document.getElementById('f-bulkSender').focus(), 120);
+  });
+  function closeBulkSend() { bulkSendOverlay.classList.remove('active'); }
+  document.getElementById('bulkSendCancelBtn').addEventListener('click', closeBulkSend);
+  bulkSendOverlay.addEventListener('click', e => { if (e.target === bulkSendOverlay) closeBulkSend(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBulkSend(); });
+  ['f-bulkSender', 'f-bulkOperator'].forEach(id => document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (id === 'f-bulkSender') document.getElementById('f-bulkOperator').focus();
+    else document.getElementById('bulkSendOkBtn').click();
+  }));
+
+  document.getElementById('bulkSendOkBtn').addEventListener('click', async () => {
+    const sender = document.getElementById('f-bulkSender').value.trim();
+    const operator = document.getElementById('f-bulkOperator').value.trim();
+    if (!sender)   { showError('ส่งอุปกรณ์ไม่สำเร็จ', 'กรุณากรอกชื่อผู้ส่ง'); document.getElementById('f-bulkSender').focus(); return; }
+    if (!operator) { showError('ส่งอุปกรณ์ไม่สำเร็จ', 'กรุณากรอกชื่อผู้ดำเนินการ'); document.getElementById('f-bulkOperator').focus(); return; }
+
+    const idxs = [...bulkSel].sort((a, b) => a - b);
+    const sendDate = todayStr();
+    const btn = document.getElementById('bulkSendOkBtn');
+    btn.disabled = true;
+    const sentItems = [];
+    try {
+      for (const i of idxs) {
+        btn.textContent = `⏳ กำลังบันทึก ${sentItems.length + 1}/${idxs.length}`;
+        const r = { ...tableData[i] };
+        await apiPost({
+          action: 'edit', rowIndex: i,
+          date: r.date, type: r.type, condition: r.condition || '', capacity: r.capacity || '',
+          serial: r.serial, sentDate: sendDate,
+          status: r.status || '', operator,
+          receiver: r.receiver || '', sender
+        });
+        sentItems.push({ idx: i, type: r.type, capacity: r.capacity || '', serial: r.serial });
+        bulkSel.delete(i);
+      }
+      closeBulkSend();
+      setBulkMode(false);
+      await loadData();
+      showSummary('send', sentItems, sender, sendDate, '');
+    } catch (err) {
+      if (sentItems.length) {
+        closeBulkSend();
+        await loadData();
+        showError('ส่งอุปกรณ์ไม่สำเร็จทั้งหมด', `ส่งสำเร็จ ${sentItems.length} จาก ${idxs.length} เครื่อง แล้วเกิดข้อผิดพลาด: ${err.message}\nเครื่องที่เหลือยังถูกเลือกไว้ กดยืนยันอีกครั้งเพื่อลองใหม่`);
+      } else {
+        showError('ส่งอุปกรณ์ไม่สำเร็จ', err.message);
+      }
+    } finally { btn.disabled = false; btn.innerHTML = '📤 ยืนยันส่งเครื่อง'; }
+  });
 
   // ── Dropdown ──────────────────────────────────────────────────────────────
   function closeAllDropdowns() {
@@ -1058,7 +1242,7 @@
     finally { btn.disabled = false; btn.innerHTML = '🗑️ ยืนยันลบข้อมูล'; }
   });
 
-  // ── Send machine ──────────────────────────────────────────────────────────
+  // ── Send machine (ทีละเครื่อง จากเมนู ⋮) ──────────────────────────────────
   let pendingSendIdx = null;
   function askSend(idx) {
     pendingSendIdx = idx;
