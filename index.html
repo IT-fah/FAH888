@@ -482,6 +482,23 @@
       .info-cards { grid-template-columns: 1fr; }
       .data-toolbar > .btn { flex: 1 1 100%; }
     }
+
+    /* ── ช่องแผนก (พิมพ์ค้นหา + ดรอปดาว) ── */
+    .dept-combo { position: relative; }
+    .dept-combo .form-control { width: 100%; padding-right: 30px; }
+    .dept-caret { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--gray-text); pointer-events: none; font-size: .8rem; }
+    .dept-list { display: none; position: absolute; left: 0; right: 0; top: calc(100% + 4px); max-height: 250px; overflow-y: auto; background: #fff; border: 1px solid #e3eaf5; border-radius: 10px; box-shadow: 0 6px 28px rgba(21,101,192,.18); z-index: 50; }
+    .dept-list.open { display: block; }
+    .dept-opt { padding: 9px 14px; font-size: .88rem; cursor: pointer; border-bottom: 1px solid #f0f4fa; display: flex; justify-content: space-between; gap: 8px; }
+    .dept-opt:last-child { border-bottom: none; }
+    .dept-opt:hover, .dept-opt.active { background: var(--blue-pale); }
+    .dept-opt.sel { font-weight: 700; color: var(--blue); }
+    .dept-opt.group { font-weight: 700; background: #f5f8fc; }
+    .dept-opt.sub { padding-left: 30px; }
+    .dept-opt mark { background: #fff59d; color: inherit; border-radius: 3px; padding: 0 1px; }
+    .dept-gh { padding: 6px 14px; font-size: .74rem; font-weight: 700; color: var(--gray-text); background: #f5f8fc; position: sticky; top: 0; }
+    .dept-gh.near { color: var(--orange); background: #fff8f0; }
+    .dept-empty { padding: 14px; text-align: center; font-size: .85rem; color: var(--gray-text); }
   </style>
 </head>
 <body>
@@ -712,7 +729,12 @@
         </div>
         <div class="form-group">
           <label>แผนก</label>
-          <input class="form-control" id="f-dept" type="text"/>
+          <div class="dept-combo" id="deptCombo">
+            <input class="form-control" id="f-dept-input" type="text" placeholder="พิมพ์ค้นหา หรือเลือกแผนก..." autocomplete="off"/>
+            <span class="dept-caret">▾</span>
+            <div class="dept-list" id="deptList"></div>
+          </div>
+          <input id="f-dept" type="hidden"/>
         </div>
         <div class="form-group">
           <label>ประเภทเครื่อง</label>
@@ -909,6 +931,174 @@
     return isNaN(d.getTime()) ? '' : `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
   function hasOp(r) { return !!(r.operator && String(r.operator).trim() && r.operator !== '—'); }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  ช่องแผนก: พิมพ์ค้นหาได้ (มีตัวใกล้เคียง) · กด "TFF" ในรายการเพื่อกางแผนกย่อย TFF
+  // ══════════════════════════════════════════════════════════════════════════
+  const DEPT_MAIN = [
+    "iCare Operation",
+    "Human Resources Management",
+    "Human Resources Development",
+    "Talent Acquisition",
+    "Bakery Treasury",
+    "Banana Franchise",
+    "Banana Group,Adept",
+    "Operation Banana",
+    "Operation Apple",
+    "Operation BKK",
+    "Operation Standard",
+    "Operation Admin",
+    "Operation Data Support",
+    "See Know How",
+    "ROD",
+    "E-Commerce(Supports&Center)",
+    "Operation Tesco Lotus",
+    "Marketing Communication Banana",
+    "Marketing Communication Apple",
+    "Marketing BKK & Samsung",
+    "Online Marketing",
+    "Creative Marketing",
+    "Merchandising Support",
+    "Retail Buyer",
+    "Retail Merchandiser",
+    "Rebate Center",
+    "Sale and Retail",
+    "Case Club",
+    "Event Marketing",
+    "EV7",
+    "TFF",
+    "Account",
+    "Finance",
+    "Management Information System",
+    "IT Facilities",
+    "MIS Fin Tech",
+    "MIS ERP",
+    "Enterprise Risk Management",
+    "Executive Office",
+    "Store Checker",
+    "Event",
+    "Apple Education and Enterprise",
+    "Logistic&Warehouse + Online Fulfillment",
+    "Online Fulfillment",
+    "Business Development",
+    "Internal Audit",
+    "Legal Office",
+    "Innovation",
+    "General Affairs",
+    "NON IT",
+    "InterVision",
+    "ITEC",
+    "True Operation",
+    "Organic Zone",
+    "4Paws",
+    "Service Center",
+    "Logistic&Warehouse",
+    "Service",
+    "GI"
+  ];
+  const DEPT_TFF  = [
+    "TFF-Marketing",
+    "TFF-Strategy Project",
+    "TFF-Business & Operations",
+    "TFF-Commercial",
+    "TFF-Collection",
+    "TFF-Customer Service",
+    "TFF-Audit and Compliance",
+    "TFF-Credit Analysis",
+    "TFF-Executive Office",
+    "TFF-Accounting"
+  ];
+  const DEPT_ALL  = DEPT_MAIN.filter(d => d !== 'TFF').concat(DEPT_TFF);
+
+  const deptInput = document.getElementById('f-dept-input');
+  const deptList  = document.getElementById('deptList');
+  const deptHid   = document.getElementById('f-dept');
+  let deptFilter = '', deptTffOpen = false, deptActive = -1;
+
+  function deptHl(text, q) {
+    const i = q ? text.toLowerCase().indexOf(q) : -1;
+    return i < 0 ? escHtml(text) : escHtml(text.slice(0, i)) + '<mark>' + escHtml(text.slice(i, i + q.length)) + '</mark>' + escHtml(text.slice(i + q.length));
+  }
+  function renderDept() {
+    const cur = deptHid.value;
+    const q = deptFilter.toLowerCase();
+    let html = '';
+    if (!q) {
+      const extra = (cur && !DEPT_ALL.includes(cur)) ? [cur] : [];           // ค่าเก่าที่ไม่อยู่ในรายการ
+      extra.concat(DEPT_MAIN).forEach(d => {
+        if (d === 'TFF') {
+          html += `<div class="dept-opt group" data-group="1"><span>TFF</span><span>${deptTffOpen ? '▾' : '▸'}</span></div>`;
+          if (deptTffOpen) DEPT_TFF.forEach(t => { html += `<div class="dept-opt sub${t === cur ? ' sel' : ''}" data-v="${escHtml(t)}">${escHtml(t)}</div>`; });
+        } else {
+          html += `<div class="dept-opt${d === cur ? ' sel' : ''}" data-v="${escHtml(d)}">${escHtml(d)}</div>`;
+        }
+      });
+    } else {
+      const res = DEPT_ALL.map(d => ({ d, sc: matchScore(q, d) })).filter(x => x.sc > 0).sort((x, y) => y.sc - x.sc);
+      const exact = res.filter(x => x.sc >= 60), near = res.filter(x => x.sc < 60).slice(0, 8);
+      if (exact.length) html += '<div class="dept-gh">✅ ตรงกัน</div>' + exact.map(x => `<div class="dept-opt${x.d === cur ? ' sel' : ''}" data-v="${escHtml(x.d)}">${deptHl(x.d, q)}</div>`).join('');
+      if (near.length)  html += '<div class="dept-gh near">🔎 ใกล้เคียง</div>' + near.map(x => `<div class="dept-opt" data-v="${escHtml(x.d)}">${escHtml(x.d)}</div>`).join('');
+      if (!html) html = '<div class="dept-empty">📭 ไม่พบแผนกที่ตรงหรือใกล้เคียง</div>';
+    }
+    deptList.innerHTML = html;
+    deptActive = -1;
+  }
+  function openDept()  { renderDept(); deptList.classList.add('open'); }
+  function closeDept() { deptList.classList.remove('open'); deptFilter = ''; }
+  function pickDept(v) {
+    deptHid.value = v; deptInput.value = v;
+    closeDept();
+  }
+  // ตั้งค่าช่องแผนกจากค่าที่บันทึกไว้ (ใช้ตอนแก้ไข/ล้างฟอร์ม)
+  function setDeptUI(value) {
+    const v = (value || '').trim();
+    deptHid.value = v; deptInput.value = v;
+    deptTffOpen = DEPT_TFF.includes(v);
+    closeDept();
+  }
+  deptInput.addEventListener('focus', () => { deptFilter = ''; openDept(); deptInput.select(); });
+  deptInput.addEventListener('click', () => { if (!deptList.classList.contains('open')) { deptFilter = ''; openDept(); } });
+  deptInput.addEventListener('input', () => { deptFilter = deptInput.value.trim(); openDept(); });
+  deptInput.addEventListener('blur', () => {
+    const t = deptInput.value.trim();
+    if (!t) deptHid.value = '';                                               // ลบข้อความ = ไม่ระบุแผนก
+    else {
+      const hit = DEPT_ALL.find(d => d.toLowerCase() === t.toLowerCase());
+      if (hit) deptHid.value = hit;                                           // พิมพ์ตรงชื่อ
+    }
+    deptInput.value = deptHid.value;                                          // พิมพ์ไม่ตรงรายการ → กลับเป็นค่าที่เลือกไว้
+    closeDept();
+  });
+  // mousedown (ไม่ใช่ click) เพื่อไม่ให้ช่องพิมพ์เสียโฟกัสก่อนเลือก
+  deptList.addEventListener('mousedown', e => {
+    e.preventDefault();
+    const el = e.target.closest('.dept-opt');
+    if (!el) return;
+    if (el.dataset.group) { deptTffOpen = !deptTffOpen; renderDept(); return; }
+    pickDept(el.dataset.v);
+  });
+  deptInput.addEventListener('keydown', e => {
+    const opts = [...deptList.querySelectorAll('.dept-opt')];
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!deptList.classList.contains('open')) { openDept(); return; }
+      if (!opts.length) return;
+      deptActive = (deptActive + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length;
+      opts.forEach((o, i) => o.classList.toggle('active', i === deptActive));
+      opts[deptActive].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      if (deptList.classList.contains('open')) {
+        e.preventDefault();
+        const o = opts[deptActive >= 0 ? deptActive : 0];
+        if (!o) return;
+        if (o.dataset.group) { deptTffOpen = !deptTffOpen; renderDept(); }
+        else pickDept(o.dataset.v);
+      }
+    } else if (e.key === 'Escape') {
+      if (deptList.classList.contains('open')) { e.stopPropagation(); deptInput.value = deptHid.value; closeDept(); }
+    }
+  });
+  setDeptUI('');
 
   // popup ข้อผิดพลาด (แทน alert)
   function showAlert(title, msg) {
@@ -1262,7 +1452,7 @@
     document.getElementById('f-id').value       = parts[0]                || '';
     document.getElementById('f-name').value     = parts.slice(1).join(' / ') || '';
     document.getElementById('f-machine').value  = r.machine  || '';
-    document.getElementById('f-dept').value     = r.dept     || '';
+    setDeptUI(r.dept || '');
     document.getElementById('f-type').value     = r.type     || '';
     document.getElementById('f-status').value   = r.status   || '';
     document.getElementById('f-cabinet').value  = r.cabinet  || '';
@@ -1293,6 +1483,7 @@
     ['f-id','f-name','f-machine','f-dept','f-operator','f-receiver','f-sentdate','f-senderEdit','f-note'].forEach(id => document.getElementById(id).value='');
     ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value='');
     document.getElementById('recvReq').style.display = '';
+    setDeptUI('');
     syncSenderReq();
   }
   // มีวันที่ส่ง → ช่อง "ชื่อคนส่งเครื่อง" กลายเป็นบังคับ
