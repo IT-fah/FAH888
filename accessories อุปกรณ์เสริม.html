@@ -246,6 +246,81 @@
     .scan-cont { display:flex; align-items:center; gap:8px; margin-top:8px; font-size:.8rem; cursor:pointer; }
     @media (max-width:640px) { .dev-row { grid-template-columns:1fr 40px 36px; } .dev-row .dev-type { grid-column:1 / -1; } }
     @media (max-width:640px) { .form-grid { grid-template-columns:1fr; } .search-box { margin-left:0; width:100%; } .search-input { flex:1; min-width:0; } .dev-extra .dev-cond { width:100%; } }
+
+    /* ══ รองรับโทรศัพท์ ══ */
+    @media (max-width:720px) {
+      html { -webkit-text-size-adjust:100%; }
+      .sites-topnav { padding:0 12px; height:54px; }
+      .site-title { font-size:.92rem; gap:8px; }
+      .icon-wrap { width:32px; height:32px; font-size:.95rem; }
+      .nav-link { padding:6px 10px; font-size:.78rem; }
+      .nav-links .nav-link:nth-child(3) { display:none; }
+      .hero { padding:28px 16px 26px; }
+      .hero-logo { width:64px; height:64px; font-size:1.8rem; margin-bottom:12px; }
+      .hero h1 { font-size:1.4rem; }
+      .hero-sub { font-size:.88rem; }
+      .hero-badges { gap:6px; margin-top:14px; }
+      .hero-badge { padding:4px 11px; font-size:.74rem; }
+      .contact-bar { flex-direction:column; align-items:flex-start; gap:10px; padding:12px 16px; }
+      .contact-bar .divider { display:none; }
+      .contact-item { font-size:.84rem; flex-wrap:wrap; }
+      .main-content { padding:18px 12px 40px; }
+      .section-title { font-size:.98rem; }
+      .info-cards { grid-template-columns:1fr 1fr; gap:10px; }
+      .info-card { padding:12px; }
+      .info-card .ic-emoji { width:32px; height:32px; font-size:1rem; }
+      .info-card .ic-label { font-size:.78rem; }
+      .info-card .ic-value { font-size:1.5rem; }
+      .info-card .ic-sub { font-size:.72rem; }
+
+      .data-toolbar { padding:12px; gap:8px; }
+      .data-toolbar > .btn { flex:1 1 calc(50% - 8px); justify-content:center; padding:10px 8px; }
+      .search-box { order:9; width:100%; margin-left:0; }
+      .search-input { flex:1; min-width:0; }
+      .bulk-bar { padding:12px; }
+      .bulk-bar .bulk-text { min-width:100%; }
+      .bulk-bar .btn { flex:1; justify-content:center; }
+
+      /* ตาราง → การ์ดต่อรายการ */
+      .table-card { background:transparent; box-shadow:none; overflow:visible; }
+      .table-scroll { overflow:visible; }
+      table { min-width:0 !important; display:block; }
+      thead { display:none; }
+      tbody { display:block; }
+      tbody tr { display:block; position:relative; background:#fff !important; border:1px solid var(--gray-border); border-radius:12px; box-shadow:var(--shadow-sm); padding:10px 14px; margin-bottom:10px; }
+      tbody tr.sel { background:#ffe9e7 !important; border-color:var(--blue); }
+      tbody td { display:block; padding:0; }
+      tbody td[data-label] { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:6px 0; border-bottom:1px dashed #f3dedc; text-align:right; font-size:.88rem; word-break:break-word; }
+      tbody td[data-label]::before { content:attr(data-label); font-weight:700; color:var(--gray-text); font-size:.78rem; text-align:left; flex-shrink:0; }
+      tbody td.cell-act { position:absolute; top:6px; right:8px; border:none; }
+      tbody td.cell-act + td, tbody td:last-child { border-bottom:none; }
+      tbody td[data-label="ลำดับ"], tbody td[data-label="เลือก"] { padding-right:46px; }
+      .bulk-cb { width:22px; height:22px; }
+      .dropdown-menu { min-width:170px; }
+      .btn-dots { width:38px; height:38px; }
+
+      /* popup */
+      .modal { width:100%; max-width:96vw; }
+      .modal-body { padding:18px 14px 10px; max-height:68vh; }
+      .modal-footer, .confirm-footer, .done-footer { flex-wrap:wrap; }
+      .modal-footer .btn, .confirm-footer .btn { flex:1; justify-content:center; padding:11px 12px; }
+      .confirm-box, .done-box, .scan-box { width:96vw; max-width:96vw; }
+      .done-body { padding:14px; }
+      .list-modal { width:96vw; }
+      .list-scroll { max-height:56vh; }
+      .dev-row { grid-template-columns:1fr 44px 40px; }
+      .dev-row .dev-type { grid-column:1 / -1; }
+      .dev-extra .dev-cond { flex:1; width:auto; }
+      .dev-cap-wrap { flex:1; }
+      .dev-cap-wrap .dev-cap { width:100%; }
+      /* กัน iOS ซูมเข้าเองตอนแตะช่องพิมพ์ */
+      input.form-control, select.form-control, .search-input { font-size:16px; }
+      .site-footer { padding:18px 14px; font-size:.78rem; }
+    }
+    @media (max-width:380px) {
+      .info-cards { grid-template-columns:1fr; }
+      .data-toolbar > .btn { flex:1 1 100%; }
+    }
   </style>
 </head>
 <body>
@@ -264,6 +339,7 @@
 <div class="hero">
   <div class="hero-logo">🔌</div>
   <h1>อุปกรณ์เสริม</h1>
+  <p class="hero-sub">ระบบจัดการและติดตามอุปกรณ์เครือข่ายและกล้องวงจรปิด</p>
   <div class="hero-badges">
     <span class="hero-badge">📹 DVR</span>
     <span class="hero-badge">📡 Access Point</span>
@@ -435,7 +511,7 @@
       <p style="margin-top:10px;font-size:.85rem;color:var(--gray-text)">รหัส / S/N: <strong id="sendSerial"></strong></p>
       <p id="sendNote" style="margin-top:10px;font-size:.85rem"></p>
       <div class="send-fields">
-        <label>ผู้ส่ง <span class="req">*</span>
+        <label><span>ผู้ส่ง <span class="req">*</span></span>
           <input class="form-control" id="f-sender" type="text" placeholder="ชื่อผู้ส่งเครื่อง" autocomplete="off"/>
         </label>
         <label>หมายเหตุ <span class="dev-count" style="margin-left:0">(ไม่บังคับ)</span>
@@ -459,7 +535,7 @@
       <div class="bulk-list" id="bulkSendList"></div>
       <p style="margin-top:10px;font-size:.85rem;color:var(--gray-text)">จะบันทึกวันที่ส่งเป็นวันนี้ (<span id="bulkSendDate"></span>)</p>
       <div class="send-fields">
-        <label>ผู้ส่ง <span class="req">*</span>
+        <label><span>ผู้ส่ง <span class="req">*</span></span>
           <input class="form-control" id="f-bulkSender" type="text" placeholder="ชื่อผู้ส่งเครื่อง" autocomplete="off"/>
         </label>
         <label><span>ผู้ดำเนินการ <span class="req" id="bulkOpReq">*</span></span>
@@ -710,17 +786,17 @@
         : String(i + 1);
       const trCls = bulkMode ? (selectable ? 'bulk-row' : 'bulk-off') + (checked && selectable ? ' sel' : '') : '';
       return `<tr data-idx="${r.origIdx}" class="${trCls}">
-      <td>${firstCell}</td>
-      <td>${formatDate(r.date)}</td>
-      <td>${formatDate(r.sentDate, '')}</td>
-      <td><span class="type-tag">${escHtml(r.type) || '—'}</span>${r.capacity ? `<span class="cap-tag">${escHtml(r.capacity)}</span>` : ''}</td>
-      <td>${condChip(r.condition)}</td>
-      <td>${escHtml(r.serial) || '—'}</td>
-      <td>${statusChip(r.status)}</td>
-      <td>${escHtml(r.operator) || '—'}</td>
-      <td>${escHtml(r.receiver) || '—'}</td>
-      <td>${escHtml(r.sender) || '—'}</td>
-      <td style="text-align:center">
+      <td data-label="${bulkMode ? 'เลือก' : 'ลำดับ'}">${firstCell}</td>
+      <td data-label="วันที่รับ">${formatDate(r.date)}</td>
+      <td data-label="วันที่ส่ง">${formatDate(r.sentDate, '—')}</td>
+      <td data-label="ประเภท"><span class="type-tag">${escHtml(r.type) || '—'}</span>${r.capacity ? `<span class="cap-tag">${escHtml(r.capacity)}</span>` : ''}</td>
+      <td data-label="ลักษณะ">${condChip(r.condition)}</td>
+      <td data-label="S/N">${escHtml(r.serial) || '—'}</td>
+      <td data-label="สถานะ">${statusChip(r.status)}</td>
+      <td data-label="ผู้ดำเนินการ">${escHtml(r.operator) || '—'}</td>
+      <td data-label="ผู้รับเครื่อง">${escHtml(r.receiver) || '—'}</td>
+      <td data-label="คนส่ง">${escHtml(r.sender) || '—'}</td>
+      <td class="cell-act" style="text-align:center">
         <div class="action-wrap">
           <button class="btn-dots" onclick="toggleDropdown(${r.origIdx}, event)" title="จัดการ">⋮</button>
           <div class="dropdown-menu" id="dd-${r.origIdx}">
