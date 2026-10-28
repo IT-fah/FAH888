@@ -1036,7 +1036,7 @@
     } else {
       const res = DEPT_ALL.map(d => ({ d, sc: matchScore(q, d) })).filter(x => x.sc > 0).sort((x, y) => y.sc - x.sc);
       const exact = res.filter(x => x.sc >= 60), near = res.filter(x => x.sc < 60).slice(0, 8);
-      if (exact.length) html += '<div class="dept-gh">✅ ตรงกัน</div>' + exact.map(x => `<div class="dept-opt${x.d === cur ? ' sel' : ''}" data-v="${escHtml(x.d)}">${deptHl(x.d, q)}</div>`).join('');
+      if (exact.length) html += '<div class="dept-gh">✅ ตรงกัน</div>' + exact.map(x => `<div class="dept-opt${x.d === cur ? ' sel' : ''}" data-v="${escHtml(x.d)}"><span>${deptHl(x.d, q)}</span></div>`).join('');
       if (near.length)  html += '<div class="dept-gh near">🔎 ใกล้เคียง</div>' + near.map(x => `<div class="dept-opt" data-v="${escHtml(x.d)}">${escHtml(x.d)}</div>`).join('');
       if (!html) html = '<div class="dept-empty">📭 ไม่พบแผนกที่ตรงหรือใกล้เคียง</div>';
     }
