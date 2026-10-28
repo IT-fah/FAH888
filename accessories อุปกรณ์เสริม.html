@@ -463,8 +463,9 @@
         <label>ผู้ส่ง <span class="req">*</span>
           <input class="form-control" id="f-bulkSender" type="text" placeholder="ชื่อผู้ส่งเครื่อง" autocomplete="off"/>
         </label>
-        <label>ผู้ดำเนินการ <span class="req">*</span>
+        <label><span>ผู้ดำเนินการ <span class="req" id="bulkOpReq">*</span></span>
           <input class="form-control" id="f-bulkOperator" type="text" placeholder="ชื่อผู้ดำเนินการ" autocomplete="off"/>
+          <span class="dev-hint" id="bulkOpHint"></span>
         </label>
       </div>
     </div>
@@ -802,9 +803,16 @@
     document.getElementById('bulkSendDate').textContent = formatDate(todayStr());
     document.getElementById('f-bulkSender').value = '';
     document.getElementById('f-bulkOperator').value = '';
+    // ผู้ดำเนินการ: เครื่องที่มีชื่ออยู่แล้วจะไม่ถูกเขียนทับ · ช่องนี้ใช้เติมให้เฉพาะเครื่องที่ยังว่าง
+    const noOp = items.filter(r => !hasOp(r)).length;
+    document.getElementById('bulkOpReq').style.display = noOp ? '' : 'none';
+    document.getElementById('bulkOpHint').textContent = noOp === 0
+      ? 'ทุกเครื่องมีผู้ดำเนินการอยู่แล้ว — ใช้ชื่อเดิม ไม่ต้องกรอก'
+      : (noOp === items.length ? '' : `มี ${noOp} เครื่องที่ยังไม่มีผู้ดำเนินการ จะเติมชื่อนี้ให้เฉพาะเครื่องเหล่านั้น (เครื่องที่มีชื่ออยู่แล้วใช้ชื่อเดิม)`);
     bulkSendOverlay.classList.add('active');
     setTimeout(() => document.getElementById('f-bulkSender').focus(), 120);
   });
+  function hasOp(r) { return !!(r.operator && String(r.operator).trim() && r.operator !== '—'); }
   function closeBulkSend() { bulkSendOverlay.classList.remove('active'); }
   document.getElementById('bulkSendCancelBtn').addEventListener('click', closeBulkSend);
   bulkSendOverlay.addEventListener('click', e => { if (e.target === bulkSendOverlay) closeBulkSend(); });
@@ -820,9 +828,9 @@
     const sender = document.getElementById('f-bulkSender').value.trim();
     const operator = document.getElementById('f-bulkOperator').value.trim();
     if (!sender)   { showError('ส่งอุปกรณ์ไม่สำเร็จ', 'กรุณากรอกชื่อผู้ส่ง'); document.getElementById('f-bulkSender').focus(); return; }
-    if (!operator) { showError('ส่งอุปกรณ์ไม่สำเร็จ', 'กรุณากรอกชื่อผู้ดำเนินการ'); document.getElementById('f-bulkOperator').focus(); return; }
-
     const idxs = [...bulkSel].sort((a, b) => a - b);
+    const needOp = idxs.filter(i => !hasOp(tableData[i])).length;
+    if (needOp && !operator) { showError('ส่งอุปกรณ์ไม่สำเร็จ', `มี ${needOp} เครื่องที่ยังไม่มีผู้ดำเนินการ กรุณากรอกชื่อผู้ดำเนินการ`); document.getElementById('f-bulkOperator').focus(); return; }
     const sendDate = todayStr();
     const btn = document.getElementById('bulkSendOkBtn');
     btn.disabled = true;
@@ -835,7 +843,7 @@
           action: 'edit', rowIndex: i,
           date: r.date, type: r.type, condition: r.condition || '', capacity: r.capacity || '',
           serial: r.serial, sentDate: sendDate,
-          status: r.status || '', operator,
+          status: r.status || '', operator: hasOp(r) ? r.operator : operator,   // มีชื่อเดิมอยู่แล้วไม่เขียนทับ
           receiver: r.receiver || '', sender
         });
         sentItems.push({ idx: i, type: r.type, capacity: r.capacity || '', serial: r.serial });
