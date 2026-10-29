@@ -771,6 +771,9 @@
           <input class="form-control" id="f-bulkOperator" type="text" placeholder="ชื่อผู้ดำเนินการ" autocomplete="off"/>
           <span class="dev-hint" id="bulkOpHint"></span>
         </label>
+        <label><span>หมายเหตุ <span class="dev-hint">(ไม่บังคับ · ใส่ให้ทุกเครื่องที่เลือก)</span></span>
+          <input class="form-control" id="f-bulkNote" type="text" autocomplete="off"/>
+        </label>
       </div>
     </div>
     <div class="confirm-footer">
@@ -1543,7 +1546,7 @@
     updateBulkBar();
   });
 
-  // กดยืนยันเครื่องที่เลือก → popup ใส่ผู้ส่ง + ผู้ดำเนินการ
+  // กดยืนยันเครื่องที่เลือก → popup ใส่ผู้ส่ง + ผู้ดำเนินการ + หมายเหตุ
   const bulkSendOverlay = document.getElementById('bulkSendOverlay');
   document.getElementById('bulkConfirmBtn').addEventListener('click', () => {
     if (!bulkSel.size) return;
@@ -1554,6 +1557,7 @@
     document.getElementById('bulkSendDate').textContent = formatDate(todayStr());
     document.getElementById('f-bulkSender').value = '';
     document.getElementById('f-bulkOperator').value = '';
+    document.getElementById('f-bulkNote').value = '';
     // ผู้ดำเนินการ: เครื่องที่มีชื่ออยู่แล้วจะไม่ถูกเขียนทับ · ช่องนี้ใช้เติมให้เฉพาะเครื่องที่ยังว่าง
     const noOp = items.filter(r => !hasOp(r)).length;
     document.getElementById('bulkOpReq').style.display = noOp ? '' : 'none';
@@ -1567,16 +1571,18 @@
   document.getElementById('bulkSendCancelBtn').addEventListener('click', closeBulkSend);
   bulkSendOverlay.addEventListener('click', e => { if (e.target === bulkSendOverlay) closeBulkSend(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBulkSend(); });
-  ['f-bulkSender', 'f-bulkOperator'].forEach(id => document.getElementById(id).addEventListener('keydown', e => {
+  ['f-bulkSender', 'f-bulkOperator', 'f-bulkNote'].forEach(id => document.getElementById(id).addEventListener('keydown', e => {
     if (e.key !== 'Enter') return;
     e.preventDefault();
     if (id === 'f-bulkSender') document.getElementById('f-bulkOperator').focus();
+    else if (id === 'f-bulkOperator') document.getElementById('f-bulkNote').focus();
     else document.getElementById('bulkSendOkBtn').click();
   }));
 
   document.getElementById('bulkSendOkBtn').addEventListener('click', async () => {
     const sender = document.getElementById('f-bulkSender').value.trim();
     const operator = document.getElementById('f-bulkOperator').value.trim();
+    const bulkNote = document.getElementById('f-bulkNote').value.trim();
     if (!sender) { showAlert('ส่งเครื่องไม่สำเร็จ', 'กรุณากรอกชื่อผู้ส่ง'); document.getElementById('f-bulkSender').focus(); return; }
     const idxs = [...bulkSel].sort((a, b) => a - b);
     const needOp = idxs.filter(i => !hasOp(tableData[i])).length;
@@ -1589,6 +1595,8 @@
       for (const i of idxs) {
         btn.textContent = `⏳ กำลังบันทึก ${sentItems.length + 1}/${idxs.length}`;
         const r = { ...tableData[i] };
+        // หมายเหตุใหม่ต่อท้ายหมายเหตุเดิมของแต่ละเครื่อง (ไม่เขียนทับ)
+        const newNote = bulkNote ? (r.note ? r.note + ' | ' + bulkNote : bulkNote) : (r.note || '');
         await apiPost({
           sheet: SHEET_NAME, action: 'edit', rowIndex: i,
           date: r.date, sentDate: sendDate,
@@ -1596,7 +1604,7 @@
           type: r.type, model: r.model, status: 'ส่งเครื่องแล้ว',
           receiver: r.receiver || '',
           operator: hasOp(r) ? r.operator : operator,       // มีชื่อเดิมอยู่แล้วไม่เขียนทับ
-          sender, note: r.note || ''
+          sender, note: newNote
         });
         sentItems.push({ shopId: r.shopId, withdrawType: r.withdrawType, type: r.type, model: r.model });
         bulkSel.delete(i);
@@ -1604,7 +1612,7 @@
       closeBulkSend();
       setBulkMode(false);
       await loadFromSheets();
-      showBulkSummary(sentItems, sender, sendDate);
+      showBulkSummary(sentItems, sender, sendDate, bulkNote);
     } catch (err) {
       if (sentItems.length) {
         closeBulkSend();
@@ -1627,7 +1635,7 @@
   }
 
   // สรุปการส่งหลายเครื่อง
-  function showBulkSummary(items, person, dateIso) {
+  function showBulkSummary(items, person, dateIso, note) {
     const lines = ['📦 สรุปการส่งเครื่องหน้าร้าน', ''];
     items.forEach((x, i) => {
       lines.push(`${i + 1}. ID ร้าน: ${x.shopId || '—'}`);
@@ -1637,6 +1645,7 @@
     lines.push('');
     lines.push(`ผู้ส่ง: ${person}`);
     lines.push(`วันที่ส่ง: ${formatDate(dateIso)}`);
+    lines.push(`หมายเหตุ: ${note || '-'}`);
     openDone(lines);
   }
 
