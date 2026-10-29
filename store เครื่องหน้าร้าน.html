@@ -325,6 +325,7 @@
     #listOverlay     { z-index: 500; }
     #confirmOverlay  { z-index: 600; }
     #sendOverlay     { z-index: 600; }
+    #bulkSendOverlay { z-index: 600; }
     #doneOverlay     { z-index: 650; }
     #passwordOverlay { z-index: 700; }
     #errOverlay      { z-index: 750; }
@@ -358,6 +359,21 @@
     .suggest-item .si-sub  { font-size: 0.76rem; color: var(--gray-text); margin-top: 2px; }
     .suggest-item mark { background: #fff59d; color: inherit; border-radius: 3px; padding: 0 1px; }
     .suggest-empty { padding: 18px; text-align: center; font-size: 0.85rem; color: var(--gray-text); }
+
+    /* ── โหมดส่งเครื่อง (เลือกหลายเครื่อง) ── */
+    .btn-send { background: #fff; color: var(--pri); border: 1.5px solid var(--pri); }
+    .btn-send:hover { background: var(--pri-pale); }
+    .btn-send.on { background: var(--pri); color: #fff; }
+    .bulk-bar { display: none; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--pri-pale); border: 1.5px dashed var(--pri); border-radius: 12px; padding: 12px 18px; margin-bottom: 16px; font-size: .9rem; }
+    .bulk-bar.active { display: flex; animation: fadeIn .18s ease; }
+    .bulk-bar .bulk-text { flex: 1; min-width: 220px; line-height: 1.5; }
+    .bulk-bar .bulk-count { font-family: 'Prompt', sans-serif; font-weight: 800; color: var(--pri); font-size: 1.05rem; }
+    .bulk-cb { width: 18px; height: 18px; accent-color: var(--pri); cursor: pointer; vertical-align: middle; }
+    .bulk-cb:disabled { cursor: not-allowed; opacity: .4; }
+    tbody tr.sel { background: #dcefde !important; }
+    tbody tr.bulk-row { cursor: pointer; }
+    tbody tr.bulk-off { cursor: default; opacity: .55; }
+    .bulk-list { margin-top: 8px; max-height: 150px; overflow-y: auto; background: #fafcfa; border: 1px solid var(--gray-border); border-radius: 10px; padding: 8px 12px; font-size: .84rem; line-height: 1.7; }
 
     /* ── Done popup ── */
     .done-box { width: 440px; }
@@ -407,7 +423,12 @@
       #mainTable tbody td { display: block; padding: 0; background: transparent !important; }
       #mainTable tbody td[data-label] { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; border-bottom: 1px dashed #e0eae3; text-align: right; font-size: .88rem; word-break: break-word; }
       #mainTable tbody td[data-label]::before { content: attr(data-label); font-weight: 700; color: var(--gray-text); font-size: .78rem; text-align: left; flex-shrink: 0; }
-      #mainTable tbody td[data-label="ลำดับ"] { padding-right: 46px; }
+      #mainTable tbody td[data-label="ลำดับ"], #mainTable tbody td[data-label="เลือก"] { padding-right: 46px; }
+      #mainTable tbody tr.sel { background: #dcefde !important; border-color: var(--pri); }
+      .bulk-bar { padding: 12px; }
+      .bulk-bar .bulk-text { min-width: 100%; }
+      .bulk-bar .btn { flex: 1; justify-content: center; }
+      .bulk-cb { width: 22px; height: 22px; }
       #mainTable tbody td.cell-act { position: absolute; top: 6px; right: 8px; }
       .btn-dots { width: 38px; height: 38px; }
       .dropdown-menu { min-width: 170px; }
@@ -514,6 +535,7 @@
   <div class="data-toolbar">
     <button class="btn btn-outline">🏪 ข้อมูลทั้งหมด</button>
     <button class="btn btn-green" id="openModal">➕ เพิ่มข้อมูล</button>
+    <button class="btn btn-send" id="bulkSendBtn">📤 ส่งเครื่อง</button>
     <button class="btn btn-gray" id="resetSort">🔄 โหลดข้อมูลใหม่</button>
     <div class="search-box">
       <div class="search-wrap">
@@ -524,12 +546,19 @@
     </div>
   </div>
 
+  <!-- แถบโหมดส่งเครื่อง -->
+  <div class="bulk-bar" id="bulkBar">
+    <div class="bulk-text">📤 <strong>โหมดส่งเครื่อง</strong> — ติ๊กเลือกเครื่องที่จะส่ง (ใช้ช่องค้นหาได้ รายการที่ติ๊กไว้จะไม่หาย) · เลือกแล้ว <span class="bulk-count" id="bulkCount">0</span> เครื่อง</div>
+    <button class="btn btn-pri" id="bulkConfirmBtn" disabled>✅ ยืนยันเครื่องที่เลือก</button>
+    <button class="btn btn-gray" id="bulkCancelBtn">ยกเลิก</button>
+  </div>
+
   <div class="table-card">
     <div class="table-scroll">
       <table id="mainTable">
         <thead>
           <tr>
-            <th>#</th>
+            <th id="thNum" style="width:52px">#</th>
             <th class="sortable" data-key="date"><span class="th-inner">วันที่รับเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span></th>
             <th class="sortable" data-key="sentDate"><span class="th-inner">วันที่ส่งเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span></th>
             <th class="sortable" data-key="shopId"><span class="th-inner">ID ร้าน <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span></th>
@@ -730,6 +759,31 @@
   </div>
 </div>
 
+<!-- 📤 SEND MACHINE หลายเครื่อง (จากปุ่ม ส่งเครื่อง ในแถบเครื่องมือ) -->
+<div class="confirm-overlay" id="bulkSendOverlay">
+  <div class="confirm-box">
+    <div class="confirm-header blue">📤 ส่งเครื่อง <span id="bulkSendN"></span></div>
+    <div class="confirm-body" style="padding-bottom:16px">
+      <p style="color:var(--gray-text);font-size:.88rem">รายการที่จะส่ง</p>
+      <div class="bulk-list" id="bulkSendList"></div>
+      <p style="margin-top:10px;font-size:.85rem;color:var(--gray-text)">จะบันทึกวันที่ส่งเป็นวันนี้ (<span id="bulkSendDate"></span>)</p>
+      <div class="send-fields">
+        <label><span>ผู้ส่ง <span class="req">*</span></span>
+          <input class="form-control" id="f-bulkSender" type="text" placeholder="ชื่อผู้ส่งเครื่อง" autocomplete="off"/>
+        </label>
+        <label><span>ผู้ดำเนินการ <span class="req" id="bulkOpReq">*</span></span>
+          <input class="form-control" id="f-bulkOperator" type="text" placeholder="ชื่อผู้ดำเนินการ" autocomplete="off"/>
+          <span class="dev-hint" id="bulkOpHint"></span>
+        </label>
+      </div>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-pri" id="bulkSendOkBtn">📤 ยืนยันส่งเครื่อง</button>
+      <button class="btn btn-gray" id="bulkSendCancelBtn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
 <!-- POPUP สรุป -->
 <div class="confirm-overlay" id="doneOverlay">
   <div class="confirm-box done-box">
@@ -797,6 +851,11 @@
   let pendingDeleteIdx = null;
   let pendingSendIdx   = null;
   let editingIdx       = null;
+
+  // โหมดส่งเครื่องหลายเครื่อง
+  let bulkMode = false;
+  const bulkSel = new Set();      // เก็บ index จริงใน tableData (ไม่หายเมื่อค้นหา/เรียงใหม่)
+  let visibleRows = [];           // แถวที่แสดงอยู่ตอนนี้ (ใช้กับ "เลือกทั้งหมด")
 
   let failCount   = parseInt(sessionStorage.getItem('pwFail') || '0');
   let lockedUntil = parseInt(sessionStorage.getItem('pwLock') || '0');
@@ -929,15 +988,24 @@
       });
     }
 
+    visibleRows = rows;
+    renderNumHeader();
+
     if (rows.length === 0) {
       body.innerHTML = `<tr><td colspan="13"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูล</p></div></td></tr>`;
-      updateStats(); return;
+      updateStats(); updateBulkBar(); return;
     }
 
     body.innerHTML = rows.map((r, i) => {
       const sc = k => sortKey === k ? 'sorted-col' : '';
-      return `<tr>
-        <td data-label="ลำดับ">${i+1}</td>
+      const selectable = !r.sentDate;                 // ส่งแล้วจะเลือกซ้ำไม่ได้ในโหมดนี้
+      const checked = bulkSel.has(r.origIdx);
+      const firstCell = bulkMode
+        ? `<input type="checkbox" class="bulk-cb" ${selectable ? '' : 'disabled'} ${checked && selectable ? 'checked' : ''} title="${selectable ? 'เลือกเครื่องนี้' : 'ส่งไปแล้ว'}"/>`
+        : String(i + 1);
+      const trCls = bulkMode ? (selectable ? 'bulk-row' : 'bulk-off') + (checked && selectable ? ' sel' : '') : '';
+      return `<tr data-idx="${r.origIdx}" class="${trCls}">
+        <td data-label="${bulkMode ? 'เลือก' : 'ลำดับ'}">${firstCell}</td>
         <td data-label="วันที่รับเครื่อง" class="${sc('date')}">${formatDate(r.date)}</td>
         <td data-label="วันที่ส่งเครื่อง" class="${sc('sentDate')}">${formatDate(r.sentDate)}</td>
         <td data-label="ID ร้าน" class="${sc('shopId')}">${escHtml(r.shopId) || '—'}</td>
@@ -968,6 +1036,7 @@
       </tr>`;
     }).join('');
     updateStats();
+    updateBulkBar();
   }
 
   function updateHeaders() {
@@ -1280,6 +1349,158 @@
     document.getElementById('searchInput').value='';
     updateHeaders(); loadFromSheets();
   });
+
+  // ══ โหมดส่งเครื่องหลายเครื่อง ══
+  async function apiPost(body) {
+    const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message || 'error');
+    return json;
+  }
+
+  // หัวคอลัมน์ "#" → ในโหมดส่งเครื่องกลายเป็นช่องติ๊ก "เลือกทั้งหมดที่แสดงอยู่"
+  function renderNumHeader() {
+    const th = document.getElementById('thNum');
+    if (bulkMode) {
+      th.innerHTML = '<input type="checkbox" class="bulk-cb" id="bulkAll" title="เลือกทั้งหมดที่แสดงอยู่"/>';
+      document.getElementById('bulkAll').addEventListener('change', e => {
+        visibleRows.forEach(r => { if (r.sentDate) return; e.target.checked ? bulkSel.add(r.origIdx) : bulkSel.delete(r.origIdx); });
+        renderTable();
+      });
+    } else {
+      th.textContent = '#';
+    }
+  }
+
+  function updateBulkBar() {
+    // นับเฉพาะที่ยังเลือกได้จริง
+    for (const i of [...bulkSel]) { const r = tableData[i]; if (!r || r.deleted || r.sentDate) bulkSel.delete(i); }
+    document.getElementById('bulkCount').textContent = bulkSel.size;
+    document.getElementById('bulkConfirmBtn').disabled = bulkSel.size === 0;
+    const all = document.getElementById('bulkAll');
+    if (all) {
+      const sel = visibleRows.filter(r => !r.sentDate);
+      all.checked = sel.length > 0 && sel.every(r => bulkSel.has(r.origIdx));
+    }
+  }
+  function setBulkMode(on) {
+    bulkMode = on;
+    if (!on) bulkSel.clear();
+    document.getElementById('bulkBar').classList.toggle('active', on);
+    const b = document.getElementById('bulkSendBtn');
+    b.classList.toggle('on', on);
+    b.innerHTML = on ? '✖ ยกเลิกส่งเครื่อง' : '📤 ส่งเครื่อง';
+    closeAllDropdowns();
+    renderTable();
+  }
+  document.getElementById('bulkSendBtn').addEventListener('click', () => setBulkMode(!bulkMode));
+  document.getElementById('bulkCancelBtn').addEventListener('click', () => setBulkMode(false));
+
+  // ติ๊ก/เลิกติ๊ก (กดที่แถวก็ได้)
+  document.getElementById('tableBody').addEventListener('click', e => {
+    if (!bulkMode) return;
+    if (e.target.closest('.action-wrap')) return;
+    const tr = e.target.closest('tr[data-idx]');
+    if (!tr) return;
+    const cb = tr.querySelector('.bulk-cb');
+    if (!cb || cb.disabled) return;
+    if (e.target !== cb) cb.checked = !cb.checked;
+    const idx = +tr.dataset.idx;
+    if (cb.checked) bulkSel.add(idx); else bulkSel.delete(idx);
+    tr.classList.toggle('sel', cb.checked);
+    updateBulkBar();
+  });
+
+  // กดยืนยันเครื่องที่เลือก → popup ใส่ผู้ส่ง + ผู้ดำเนินการ
+  const bulkSendOverlay = document.getElementById('bulkSendOverlay');
+  document.getElementById('bulkConfirmBtn').addEventListener('click', () => {
+    if (!bulkSel.size) return;
+    const items = [...bulkSel].sort((a, b) => a - b).map(i => tableData[i]);
+    document.getElementById('bulkSendN').textContent = `(${items.length} เครื่อง)`;
+    document.getElementById('bulkSendList').innerHTML = items.map((r, n) =>
+      `${n + 1}. <strong>ร้าน ${escHtml(r.shopId) || '—'}</strong> — ${escHtml(r.type) || '—'}${r.model ? ' ' + escHtml(r.model) : ''}`).join('<br>');
+    document.getElementById('bulkSendDate').textContent = formatDate(todayStr());
+    document.getElementById('f-bulkSender').value = '';
+    document.getElementById('f-bulkOperator').value = '';
+    // ผู้ดำเนินการ: เครื่องที่มีชื่ออยู่แล้วจะไม่ถูกเขียนทับ · ช่องนี้ใช้เติมให้เฉพาะเครื่องที่ยังว่าง
+    const noOp = items.filter(r => !hasOp(r)).length;
+    document.getElementById('bulkOpReq').style.display = noOp ? '' : 'none';
+    document.getElementById('bulkOpHint').textContent = noOp === 0
+      ? 'ทุกเครื่องมีผู้ดำเนินการอยู่แล้ว — ใช้ชื่อเดิม ไม่ต้องกรอก'
+      : (noOp === items.length ? '' : `มี ${noOp} เครื่องที่ยังไม่มีผู้ดำเนินการ จะเติมชื่อนี้ให้เฉพาะเครื่องเหล่านั้น (เครื่องที่มีชื่ออยู่แล้วใช้ชื่อเดิม)`);
+    bulkSendOverlay.classList.add('active');
+    setTimeout(() => document.getElementById('f-bulkSender').focus(), 120);
+  });
+  function closeBulkSend() { bulkSendOverlay.classList.remove('active'); }
+  document.getElementById('bulkSendCancelBtn').addEventListener('click', closeBulkSend);
+  bulkSendOverlay.addEventListener('click', e => { if (e.target === bulkSendOverlay) closeBulkSend(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBulkSend(); });
+  ['f-bulkSender', 'f-bulkOperator'].forEach(id => document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (id === 'f-bulkSender') document.getElementById('f-bulkOperator').focus();
+    else document.getElementById('bulkSendOkBtn').click();
+  }));
+
+  document.getElementById('bulkSendOkBtn').addEventListener('click', async () => {
+    const sender = document.getElementById('f-bulkSender').value.trim();
+    const operator = document.getElementById('f-bulkOperator').value.trim();
+    if (!sender) { showAlert('ส่งเครื่องไม่สำเร็จ', 'กรุณากรอกชื่อผู้ส่ง'); document.getElementById('f-bulkSender').focus(); return; }
+    const idxs = [...bulkSel].sort((a, b) => a - b);
+    const needOp = idxs.filter(i => !hasOp(tableData[i])).length;
+    if (needOp && !operator) { showAlert('ส่งเครื่องไม่สำเร็จ', `มี ${needOp} เครื่องที่ยังไม่มีผู้ดำเนินการ กรุณากรอกชื่อผู้ดำเนินการ`); document.getElementById('f-bulkOperator').focus(); return; }
+    const sendDate = todayStr();
+    const btn = document.getElementById('bulkSendOkBtn');
+    btn.disabled = true;
+    const sentItems = [];
+    try {
+      for (const i of idxs) {
+        btn.textContent = `⏳ กำลังบันทึก ${sentItems.length + 1}/${idxs.length}`;
+        const r = { ...tableData[i] };
+        await apiPost({
+          sheet: SHEET_NAME, action: 'edit', rowIndex: i,
+          date: r.date, sentDate: sendDate,
+          shopId: r.shopId, withdrawType: r.withdrawType,
+          type: r.type, model: r.model, status: 'ส่งเครื่องแล้ว',
+          receiver: r.receiver || '',
+          operator: hasOp(r) ? r.operator : operator,       // มีชื่อเดิมอยู่แล้วไม่เขียนทับ
+          sender, note: r.note || ''
+        });
+        sentItems.push({ shopId: r.shopId, withdrawType: r.withdrawType, type: r.type, model: r.model });
+        bulkSel.delete(i);
+      }
+      closeBulkSend();
+      setBulkMode(false);
+      await loadFromSheets();
+      showBulkSummary(sentItems, sender, sendDate);
+    } catch (err) {
+      if (sentItems.length) {
+        closeBulkSend();
+        await loadFromSheets();
+        showAlert('ส่งเครื่องไม่สำเร็จทั้งหมด', `ส่งสำเร็จ ${sentItems.length} จาก ${idxs.length} เครื่อง แล้วเกิดข้อผิดพลาด: ${err.message}\nเครื่องที่เหลือยังถูกเลือกไว้ กดยืนยันอีกครั้งเพื่อลองใหม่`);
+      } else {
+        showAlert('ส่งเครื่องไม่สำเร็จ', err.message);
+      }
+    } finally { btn.disabled = false; btn.innerHTML = '📤 ยืนยันส่งเครื่อง'; }
+  });
+
+  // สรุปการส่งหลายเครื่อง (ใช้ popup สรุปเดิม)
+  function showBulkSummary(items, person, dateIso) {
+    const lines = ['📦 สรุปการส่งเครื่องหน้าร้าน', ''];
+    items.forEach((x, i) => {
+      lines.push(`${i + 1}. ID ร้าน: ${x.shopId || '—'}`);
+      lines.push(`   ประเภทการเบิก: ${x.withdrawType || '—'}`);
+      lines.push(`   เครื่อง: ${x.type || '—'}${x.model ? ' ' + x.model : ''}`);
+    });
+    lines.push('');
+    lines.push(`ผู้ส่ง: ${person}`);
+    lines.push(`วันที่ส่ง: ${formatDate(dateIso)}`);
+    summaryText = lines.join('\n');
+    document.getElementById('doneTitle').textContent = lines[0];
+    document.getElementById('doneText').textContent  = lines.slice(2).join('\n');
+    document.getElementById('copyBtn').innerHTML = '📋 คัดลอก';
+    document.getElementById('doneOverlay').classList.add('active');
+  }
 
   // ══ STAT CARD → LIST MODAL ══
   const STAT_GROUPS = {
