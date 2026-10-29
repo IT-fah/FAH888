@@ -196,7 +196,7 @@
     .site-footer { background:#3a2425; color:#d1a8a6; text-align:center; padding:20px 24px; font-size:.82rem; line-height:1.7; }
     .site-footer strong { color:#fdecea; }
 
-    /* ── Popup สรุป (หลังเพิ่ม / หลังส่งเครื่อง) ── */
+    /* ── Popup สรุป (หลังเพิ่ม / แก้ไข / ส่งเครื่อง) ── */
     #doneOverlay { z-index:650; }
     .done-box { width:440px; }
     .done-head { background:linear-gradient(90deg,var(--green),var(--green-light)); color:#fff; padding:14px 20px; font-family:'Prompt',sans-serif; font-size:.95rem; font-weight:700; }
@@ -475,7 +475,7 @@
   </div>
 </div>
 
-<!-- ══ POPUP สรุป (หลังเพิ่มข้อมูล / หลังส่งเครื่อง) ══ -->
+<!-- ══ POPUP สรุป (หลังเพิ่มข้อมูล / แก้ไขข้อมูล / ส่งเครื่อง) ══ -->
 <div class="confirm-overlay" id="doneOverlay">
   <div class="confirm-box done-box">
     <div class="done-head" id="doneTitle">📦 สรุปการรับอุปกรณ์เสริม</div>
@@ -1230,7 +1230,14 @@
       }
       closeModalFn();
       await loadData();
-      if (!isEdit) showSummary('add', items, receiver, new Date().toISOString(), note);
+      if (!isEdit) {
+        showSummary('add', items, receiver, new Date().toISOString(), note);
+      } else {
+        showSummary('edit',
+          [{ type: items[0].type, capacity: items[0].capacity, serial: items[0].serial }],
+          receiver, common.sentDate, '',
+          { condition: items[0].condition, status: common.status, operator, receiver, sender: senderName, sentDate: common.sentDate });
+      }
     } catch (err) {
       if (done > 0) {
         items.slice(0, done).forEach(x => x.el.remove());
@@ -1243,9 +1250,9 @@
   });
 
   // ── Popup สรุป + ปุ่มคัดลอก ───────────────────────────────────────────────
-  //  mode: 'add' = สรุปการรับ (ผู้รับ / วันที่รับ) · 'send' = สรุปการส่ง (ผู้ส่ง / วันที่ส่ง)
-  function buildSummary(mode, items, person, dateIso, note) {
-    const isSend = mode === 'send';
+  //  mode: 'add' = สรุปการรับ · 'send' = สรุปการส่ง · 'edit' = สรุปการแก้ไข
+  function buildSummary(mode, items, person, dateIso, note, extra) {
+    const isSend = mode === 'send', isEdit = mode === 'edit';
     // จัดกลุ่มตามชนิด (+ความจุ) ให้ S/N ของชนิดเดียวกันอยู่ด้วยกัน
     const groups = [];
     items.forEach(x => {
@@ -1255,26 +1262,36 @@
       g.serials.push(x.serial);
     });
     const dateTxt = formatDate(dateIso).replace(/&[a-z#0-9]+;/g, '');
-    const lines = [isSend ? '📦 สรุปการส่งอุปกรณ์เสริม' : '📦 สรุปการรับอุปกรณ์เสริม', ''];
+    const lines = [isEdit ? '✏️ สรุปการแก้ไขอุปกรณ์เสริม' : isSend ? '📦 สรุปการส่งอุปกรณ์เสริม' : '📦 สรุปการรับอุปกรณ์เสริม', ''];
     groups.forEach((g, i) => {
-      lines.push(`${i + 1}.`);
-      lines.push(`ชนิด: ${g.name}`);
+      lines.push(`${i + 1}. ${g.name}`);                 // เลขข้อกับชื่อชนิดอยู่บรรทัดเดียวกัน ไม่เว้นบรรทัด
       g.serials.forEach(sn => lines.push(`SN: ${sn}`));
-      lines.push(`${isSend ? 'ผู้ส่ง' : 'ผู้รับ'}: ${person}`);
-      lines.push(`${isSend ? 'วันที่ส่ง' : 'วันที่รับ'}: ${dateTxt}`);
-      lines.push(`หมายเหตุ: ${note || '-'}`);
+      if (isEdit) {
+        const e = extra || {};
+        if (e.condition) lines.push(`ลักษณะ: ${e.condition}`);
+        lines.push(`สถานะ: ${e.status || '-'}`);
+        lines.push(`ผู้ดำเนินการ: ${e.operator || '-'}`);
+        lines.push(`ผู้รับ: ${e.receiver || '-'}`);
+        if (e.sentDate) {
+          lines.push(`ผู้ส่ง: ${e.sender || '-'}`);
+          lines.push(`วันที่ส่ง: ${formatDate(e.sentDate).replace(/&[a-z#0-9]+;/g, '')}`);
+        }
+      } else {
+        lines.push(`${isSend ? 'ผู้ส่ง' : 'ผู้รับ'}: ${person}`);
+        lines.push(`${isSend ? 'วันที่ส่ง' : 'วันที่รับ'}: ${dateTxt}`);
+        lines.push(`หมายเหตุ: ${note || '-'}`);
+      }
       lines.push('');
     });
     return lines.join('\n').trim();
   }
   let summaryText = '';
-  function showSummary(mode, items, person, dateIso, note) {
-    summaryText = buildSummary(mode, items, person, dateIso, note);
+  function showSummary(mode, items, person, dateIso, note, extra) {
+    summaryText = buildSummary(mode, items, person, dateIso, note, extra);
     const idx = summaryText.indexOf('\n');
     document.getElementById('doneTitle').textContent = summaryText.slice(0, idx);
     document.getElementById('doneText').textContent = summaryText.slice(idx + 1).replace(/^\n/, '');
-    const cb = document.getElementById('copyBtn');
-    cb.innerHTML = '📋 คัดลอก';
+    document.getElementById('copyBtn').innerHTML = '📋 คัดลอก';
     document.getElementById('doneOverlay').classList.add('active');
   }
   function closeDone() { document.getElementById('doneOverlay').classList.remove('active'); }
