@@ -241,7 +241,7 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .modal {
       background: white; border-radius: 14px; box-shadow: var(--shadow-lg);
-      width: 540px; max-width: 95vw;
+      width: 580px; max-width: 95vw;
       animation: slideUp .22s cubic-bezier(.4,0,.2,1); overflow: hidden;
     }
     @keyframes slideUp { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -253,8 +253,8 @@
     }
     .modal-close { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 2px 7px; border-radius: 5px; transition: background .15s; }
     .modal-close:hover { background: rgba(255,255,255,.2); }
-    .modal-body { padding: 24px 22px 16px; max-height: 70vh; overflow-y: auto; }
-    .form-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .modal-body { padding: 22px 22px 14px; max-height: 70vh; overflow-y: auto; }
+    .form-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group.full { grid-column: 1 / -1; }
     .form-group label { font-size: 0.85rem; font-weight: 600; color: #1b4d2a; }
@@ -268,6 +268,31 @@
     .modal-footer { padding: 12px 22px 20px; display: flex; gap: 8px; }
     .req { color: var(--red); }
     .dev-hint { font-size: .76rem; color: var(--gray-text); font-weight: 400; }
+
+    /* ── หัวข้อกลุ่มในฟอร์ม + รายการเครื่อง ── */
+    .sec-label {
+      font-family: 'Prompt', sans-serif; font-size: .8rem; font-weight: 700; color: var(--pri);
+      margin: 20px 0 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .sec-label:first-child { margin-top: 0; }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--gray-border); }
+    .dev-count { font-weight: 500; color: var(--gray-text); }
+    .dev-list { display: flex; flex-direction: column; gap: 8px; max-height: 230px; overflow-y: auto; padding: 2px; }
+    .dev-row { display: grid; grid-template-columns: 1fr 1fr 36px; gap: 8px; align-items: center; }
+    .dev-del { height: 100%; min-height: 36px; border: 1.5px solid var(--gray-border); background: #fff; border-radius: 8px; color: var(--red); cursor: pointer; font-weight: 700; }
+    .dev-del:hover { background: #ffebee; }
+    .btn-sm { padding: 6px 14px; font-size: .84rem; margin-top: 8px; }
+
+
+    /* ── บล็อกร้าน (หลาย ID ต่อครั้ง) ── */
+    .shop-list { display: flex; flex-direction: column; }
+    .shop-block { border: 1.5px solid var(--gray-border); background: #fbfdfb; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+    .shop-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .shop-title { font-family: 'Prompt', sans-serif; font-weight: 700; font-size: .88rem; color: var(--pri); }
+    .shop-del { border: none; background: none; color: var(--red); font-size: .78rem; font-weight: 600; cursor: pointer; font-family: 'Sarabun', sans-serif; padding: 3px 8px; border-radius: 6px; }
+    .shop-del:hover { background: #ffebee; }
+    .dev-label { font-size: .82rem; font-weight: 600; color: #1b4d2a; margin: 12px 0 6px; }
+    .shop-block .dev-list { max-height: none; overflow: visible; padding: 0; }
 
     /* ── Confirm modals ── */
     .confirm-box {
@@ -436,6 +461,8 @@
       .modal, .list-modal { width: 100%; max-width: 96vw; }
       .modal-body { padding: 18px 14px 10px; max-height: 68vh; }
       .form-grid { grid-template-columns: 1fr; }
+      .dev-row { grid-template-columns: 1fr 40px; }
+      .dev-row .dev-type { grid-column: 1 / -1; }
       .modal-footer, .confirm-footer, .done-footer { flex-wrap: wrap; }
       .modal-footer .btn, .confirm-footer .btn { flex: 1; justify-content: center; padding: 11px 12px; }
       .confirm-box, .done-box { width: 96vw; max-width: 96vw; }
@@ -644,54 +671,24 @@
       <button class="modal-close" id="closeModal">✕</button>
     </div>
     <div class="modal-body">
+
+      <!-- 1) ร้าน (เพิ่มได้หลาย ID) และเครื่องในแต่ละร้าน -->
+      <div class="sec-label">🏬 ร้านและเครื่อง <span class="dev-count" id="devCount"></span></div>
+      <div class="shop-list" id="shopList"></div>
+      <button type="button" class="btn btn-outline btn-sm" id="addShopBtn">➕ เพิ่มร้าน (ID ใหม่)</button>
+
+      <!-- 3) ผู้เกี่ยวข้อง -->
+      <div class="sec-label">👤 ผู้รับ / ผู้ดำเนินการ</div>
       <div class="form-grid">
         <div class="form-group">
-          <label>ID ร้าน <span class="req">*</span></label>
-          <input class="form-control" id="f-shop" type="text" autocomplete="off"/>
+          <label>ชื่อผู้รับเครื่อง <span class="req" id="recvReq">*</span></label>
+          <input class="form-control" id="f-receiver" type="text" autocomplete="off"/>
         </div>
         <div class="form-group">
-          <label>ประเภทการเบิก</label>
-          <select class="form-control" id="f-withdraw">
-            <option value="">-- เลือกประเภทการเบิก --</option>
-            <option>ร้านใหม่</option>
-            <option>เบิกเพิ่ม</option>
-            <option>ทดแทน</option>
-            <option>NPI</option>
-          </select>
-          <input class="form-control" id="f-npiyear" type="text" inputmode="numeric" maxlength="4" placeholder="ระบุปี NPI เช่น 2026" autocomplete="off" style="display:none;margin-top:6px"/>
+          <label>ผู้ดำเนินการ</label>
+          <input class="form-control" id="f-operator" type="text" autocomplete="off"/>
         </div>
-        <div class="form-group">
-          <label>ประเภทเครื่อง</label>
-          <select class="form-control" id="f-type">
-            <option value="">-- เลือกประเภทเครื่อง --</option>
-            <option>NB</option>
-            <option>PC</option>
-            <option>MACBook</option>
-            <option>IMAC</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>รุ่นเครื่อง</label>
-          <select class="form-control" id="f-model">
-            <option value="">-- เลือกรุ่นเครื่อง --</option>
-            <option>HP</option>
-            <option>Lenovo</option>
-            <option>Dell</option>
-            <option>ASUS</option>
-            <option>Acer</option>
-            <option>Apple</option>
-            <option>MSI</option>
-            <option>Samsung</option>
-            <option>LG</option>
-            <option>Microsoft</option>
-            <option>Gigabyte</option>
-            <option>Fujitsu</option>
-            <option>Huawei</option>
-            <option>Xiaomi</option>
-            <option>HONOR</option>
-          </select>
-        </div>
-        <div class="form-group">
+        <div class="form-group full">
           <label>สถานะ</label>
           <select class="form-control" id="f-status">
             <option value="">-- เลือกสถานะ --</option>
@@ -701,27 +698,26 @@
             <option>ส่งเครื่องแล้ว</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>ชื่อผู้รับเครื่อง <span class="req" id="recvReq">*</span></label>
-          <input class="form-control" id="f-receiver" type="text" autocomplete="off"/>
-        </div>
-        <div class="form-group">
-          <label>ผู้ดำเนินการ</label>
-          <input class="form-control" id="f-operator" type="text" autocomplete="off"/>
-        </div>
-        <div class="form-group">
-          <label>วันที่ส่งเครื่อง <span class="dev-hint">(เว้นว่าง = ยังไม่ได้ส่ง)</span></label>
-          <input class="form-control" id="f-sentdate" type="date"/>
-        </div>
-        <div class="form-group">
-          <label>ชื่อคนส่งเครื่อง <span class="req" id="senderReq" style="display:none">*</span></label>
-          <input class="form-control" id="f-senderEdit" type="text" autocomplete="off"/>
-        </div>
-        <div class="form-group full">
-          <label>หมายเหตุ <span class="dev-hint">(ไม่บังคับ)</span></label>
-          <input class="form-control" id="f-note" type="text" autocomplete="off"/>
+      </div>
+
+      <!-- 4) การส่งเครื่อง (แสดงเฉพาะตอนแก้ไข — ตอนเพิ่มใหม่ยังไม่ต้องกรอก) -->
+      <div id="sendSec" style="display:none">
+        <div class="sec-label">📤 การส่งเครื่อง</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>วันที่ส่งเครื่อง <span class="dev-hint">(เว้นว่าง = ยังไม่ได้ส่ง)</span></label>
+            <input class="form-control" id="f-sentdate" type="date"/>
+          </div>
+          <div class="form-group">
+            <label>ชื่อคนส่งเครื่อง <span class="req" id="senderReq" style="display:none">*</span></label>
+            <input class="form-control" id="f-senderEdit" type="text" autocomplete="off"/>
+          </div>
         </div>
       </div>
+
+      <!-- 5) หมายเหตุ -->
+      <div class="sec-label">📝 หมายเหตุ <span class="dev-count">(ไม่บังคับ)</span></div>
+      <input class="form-control" id="f-note" type="text" autocomplete="off" style="width:100%"/>
     </div>
     <div class="modal-footer">
       <button class="btn btn-green" id="addRowBtn">➕ เพิ่มข้อมูล</button>
@@ -841,6 +837,10 @@
   const MAX_ATTEMPTS    = 5;
   const LOCKOUT_MS      = 5 * 60 * 1000;
 
+  // ตัวเลือกในฟอร์มเพิ่ม/แก้ไข
+  const TYPE_LIST  = ['NB', 'PC', 'MACBook', 'IMAC'];
+  const MODEL_LIST = ['HP', 'Lenovo', 'Dell', 'ASUS', 'Acer', 'Apple', 'MSI', 'Samsung', 'LG', 'Microsoft', 'Gigabyte', 'Fujitsu', 'Huawei', 'Xiaomi', 'HONOR'];
+
   // ประเภทการเบิก = ร้านใหม่ / เบิกเพิ่ม / ทดแทน / NPI  (NPI เก็บในชีทเป็น "NPI ปี" เช่น NPI 2026)
   const NPI_YEAR_RE = /^\d{4}$/;
 
@@ -860,26 +860,6 @@
   let failCount   = parseInt(sessionStorage.getItem('pwFail') || '0');
   let lockedUntil = parseInt(sessionStorage.getItem('pwLock') || '0');
   let lockTimer   = null;
-
-  // ช่องประเภทการเบิก: เลือก NPI แล้วต้องใส่ปี
-  function syncNpi() {
-    const on = document.getElementById('f-withdraw').value === 'NPI';
-    document.getElementById('f-npiyear').style.display = on ? '' : 'none';
-  }
-  function getWithdraw() {
-    const v = document.getElementById('f-withdraw').value;
-    return v === 'NPI' ? 'NPI ' + document.getElementById('f-npiyear').value.trim() : v;
-  }
-  function setWithdraw(v) {
-    const m = /^NPI\s*(.*)$/i.exec(v || '');
-    setSelect('f-withdraw', m ? 'NPI' : v);
-    document.getElementById('f-npiyear').value = m ? m[1].trim() : '';
-    syncNpi();
-  }
-  document.getElementById('f-withdraw').addEventListener('change', () => {
-    syncNpi();
-    if (document.getElementById('f-withdraw').value === 'NPI') document.getElementById('f-npiyear').focus();
-  });
 
   // ══ HELPERS ══
   function escHtml(s) {
@@ -1247,14 +1227,118 @@
     if (e.target===document.getElementById('sendOverlay')) { pendingSendIdx=null; document.getElementById('sendOverlay').classList.remove('active'); }
   });
 
+  // ══ ร้าน (เพิ่มได้หลาย ID) + เครื่องในแต่ละร้าน ══
+  const WITHDRAW_LIST = ['ร้านใหม่', 'เบิกเพิ่ม', 'ทดแทน', 'NPI'];
+  const shopList = document.getElementById('shopList');
+  const addBtnEl = document.getElementById('addRowBtn');
+
+  function optHtml(list, sel, placeholder) {
+    const arr = (sel && sel !== '—' && !list.includes(sel)) ? [...list, sel] : list;   // คงค่าเดิมที่ไม่อยู่ในตัวเลือก
+    return `<option value="">${placeholder}</option>` +
+      arr.map(v => `<option${v === sel ? ' selected' : ''}>${escHtml(v)}</option>`).join('');
+  }
+  function blockWithdraw(block) {            // ค่าประเภทการเบิกของร้านนั้น (NPI → "NPI 2026")
+    const v = block.querySelector('.shop-withdraw').value;
+    return v === 'NPI' ? 'NPI ' + block.querySelector('.shop-npi').value.trim() : v;
+  }
+  function addShopBlock(shopId, withdrawType) {
+    const m = /^NPI\s*(.*)$/i.exec(withdrawType || '');
+    const wSel = m ? 'NPI' : (withdrawType || '');
+    const block = document.createElement('div');
+    block.className = 'shop-block';
+    block.innerHTML =
+      `<div class="shop-head"><span class="shop-title"></span><button type="button" class="shop-del">🗑️ ลบร้านนี้</button></div>` +
+      `<div class="form-grid">` +
+        `<div class="form-group"><label>ID ร้าน <span class="req">*</span></label><input class="form-control shop-id" type="text" autocomplete="off"/></div>` +
+        `<div class="form-group"><label>ประเภทการเบิก</label>` +
+          `<select class="form-control shop-withdraw">${optHtml(WITHDRAW_LIST, wSel, '-- เลือกประเภทการเบิก --')}</select>` +
+          `<input class="form-control shop-npi" type="text" inputmode="numeric" maxlength="4" placeholder="ระบุปี NPI เช่น 2026" autocomplete="off" style="display:none;margin-top:6px"/>` +
+        `</div>` +
+      `</div>` +
+      `<div class="dev-label">💻 เครื่อง <span class="dev-count shop-count"></span></div>` +
+      `<div class="dev-list"></div>` +
+      `<button type="button" class="btn btn-outline btn-sm add-dev">➕ เพิ่มเครื่อง</button>`;
+    block.querySelector('.shop-id').value = shopId || '';
+    block.querySelector('.shop-npi').value = m ? m[1].trim() : '';
+    block.querySelector('.shop-npi').style.display = wSel === 'NPI' ? '' : 'none';
+    shopList.appendChild(block);
+    return block;
+  }
+  function addDevRow(block, type, model, focus) {
+    const row = document.createElement('div');
+    row.className = 'dev-row';
+    row.innerHTML =
+      `<select class="form-control dev-type">${optHtml(TYPE_LIST, type, '-- ประเภทเครื่อง --')}</select>` +
+      `<select class="form-control dev-model">${optHtml(MODEL_LIST, model, '-- รุ่นเครื่อง --')}</select>` +
+      `<button type="button" class="dev-del" title="ลบแถวนี้">✕</button>`;
+    block.querySelector('.dev-list').appendChild(row);
+    updateDevUi();
+    if (focus) { row.querySelector('.dev-type').focus(); row.scrollIntoView({ block: 'nearest' }); }
+    return row;
+  }
+  // แถวใหม่คัดลอกประเภท/รุ่นจากแถวสุดท้ายของร้านนั้น (เพิ่มเครื่องรุ่นเดียวกันได้เร็ว)
+  function addDevRowLike(block, focus) {
+    const rows = block.querySelectorAll('.dev-row');
+    const last = rows[rows.length - 1];
+    return last ? addDevRow(block, last.querySelector('.dev-type').value, last.querySelector('.dev-model').value, focus)
+                : addDevRow(block, '', '', focus);
+  }
+  function updateDevUi() {
+    const isEdit = editingIdx !== null;
+    const blocks = [...shopList.querySelectorAll('.shop-block')];
+    let total = 0;
+    blocks.forEach((b, i) => {
+      const rows = b.querySelectorAll('.dev-row');
+      total += rows.length;
+      b.querySelector('.shop-title').textContent = `🏬 ร้านที่ ${i + 1}`;
+      b.querySelector('.shop-head').style.display = isEdit ? 'none' : '';
+      b.querySelector('.shop-del').style.display = blocks.length <= 1 ? 'none' : '';
+      b.querySelector('.add-dev').style.display = isEdit ? 'none' : '';
+      b.querySelector('.shop-count').textContent = isEdit ? '' : `(${rows.length} เครื่อง)`;
+      rows.forEach(r => { r.querySelector('.dev-del').style.visibility = (isEdit || rows.length <= 1) ? 'hidden' : 'visible'; });
+    });
+    document.getElementById('addShopBtn').style.display = isEdit ? 'none' : '';
+    document.getElementById('devCount').textContent    = isEdit ? '' : `(${blocks.length} ร้าน · ${total} เครื่อง)`;
+    document.getElementById('sendSec').style.display   = isEdit ? '' : 'none';   // วันที่ส่ง/คนส่ง โชว์เฉพาะตอนแก้ไข
+    if (!addBtnEl.disabled) {
+      addBtnEl.innerHTML = isEdit ? '💾 บันทึกการแก้ไข'
+        : (total > 1 ? `➕ เพิ่ม ${total} เครื่อง${blocks.length > 1 ? ` (${blocks.length} ร้าน)` : ''}` : '➕ เพิ่มข้อมูล');
+    }
+  }
+
+  document.getElementById('addShopBtn').addEventListener('click', () => {
+    const blocks = shopList.querySelectorAll('.shop-block');
+    const prev = blocks[blocks.length - 1];
+    const b = addShopBlock('', prev ? blockWithdraw(prev) : '');     // ร้านใหม่คัดลอกประเภทการเบิก + ประเภท/รุ่นเครื่องจากร้านก่อนหน้า
+    const pr = prev ? prev.querySelectorAll('.dev-row') : [];
+    const last = pr[pr.length - 1];
+    addDevRow(b, last ? last.querySelector('.dev-type').value : '', last ? last.querySelector('.dev-model').value : '', false);
+    b.querySelector('.shop-id').focus();
+    b.scrollIntoView({ block: 'nearest' });
+  });
+  shopList.addEventListener('click', e => {
+    const block = e.target.closest('.shop-block');
+    if (!block) return;
+    if (e.target.closest('.shop-del'))  { block.remove(); updateDevUi(); return; }
+    if (e.target.closest('.add-dev'))   { addDevRowLike(block, true); return; }
+    const del = e.target.closest('.dev-del');
+    if (del) { del.closest('.dev-row').remove(); updateDevUi(); }
+  });
+  shopList.addEventListener('change', e => {
+    if (!e.target.classList.contains('shop-withdraw')) return;
+    const block = e.target.closest('.shop-block');
+    const npi = block.querySelector('.shop-npi');
+    npi.style.display = e.target.value === 'NPI' ? '' : 'none';
+    if (e.target.value === 'NPI') npi.focus();
+  });
+
   // ══ EDIT FLOW ══
   function openEdit(origIdx) {
     editingIdx = origIdx;
     const r = tableData[origIdx];
-    document.getElementById('f-shop').value      = r.shopId || '';
-    setWithdraw(r.withdrawType);
-    setSelect('f-type',   r.type);
-    setSelect('f-model',  r.model);
+    shopList.innerHTML = '';
+    const b = addShopBlock(r.shopId, r.withdrawType);
+    addDevRow(b, r.type, r.model, false);
     setSelect('f-status', r.status);
     document.getElementById('f-operator').value  = hasOp(r) ? r.operator : '';
     document.getElementById('f-receiver').value  = r.receiver || '';
@@ -1264,18 +1348,21 @@
     document.getElementById('recvReq').style.display = 'none';
     syncSenderReq();
     document.getElementById('modalTitle').textContent = '✏️ แก้ไขข้อมูล';
-    document.getElementById('addRowBtn').innerHTML    = '💾 บันทึกการแก้ไข';
+    updateDevUi();
     document.getElementById('modalOverlay').classList.add('active');
   }
 
   function resetModal() {
     editingIdx = null;
     document.getElementById('modalTitle').textContent = '➕ เพิ่มข้อมูลเครื่องหน้าร้าน';
-    document.getElementById('addRowBtn').innerHTML    = '➕ เพิ่มข้อมูล';
-    ['f-shop','f-withdraw','f-operator','f-receiver','f-sentdate','f-senderEdit','f-note'].forEach(id => document.getElementById(id).value='');
-    setWithdraw(''); setSelect('f-type', ''); setSelect('f-model', ''); setSelect('f-status', '');
+    ['f-operator','f-receiver','f-sentdate','f-senderEdit','f-note'].forEach(id => document.getElementById(id).value='');
+    setSelect('f-status', '');
+    shopList.innerHTML = '';
+    const b = addShopBlock('', '');
+    addDevRow(b, '', '', false);
     document.getElementById('recvReq').style.display = '';
     syncSenderReq();
+    updateDevUi();
   }
   function syncSenderReq() {
     document.getElementById('senderReq').style.display = document.getElementById('f-sentdate').value ? '' : 'none';
@@ -1285,62 +1372,107 @@
   // ══ ADD / EDIT MODAL ══
   const addOverlay = document.getElementById('modalOverlay');
   const closeAdd = () => { resetModal(); addOverlay.classList.remove('active'); };
-  document.getElementById('openModal').addEventListener('click',   () => { resetModal(); addOverlay.classList.add('active'); });
+  document.getElementById('openModal').addEventListener('click',   () => {
+    resetModal(); addOverlay.classList.add('active');
+    setTimeout(() => { const f = shopList.querySelector('.shop-id'); if (f) f.focus(); }, 120);
+  });
   document.getElementById('closeModal').addEventListener('click',  closeAdd);
   document.getElementById('closeModal2').addEventListener('click', closeAdd);
   addOverlay.addEventListener('click', e => { if(e.target===addOverlay) closeAdd(); });
   document.addEventListener('keydown', e => { if(e.key==='Escape' && addOverlay.classList.contains('active')) closeAdd(); });
 
-  document.getElementById('addRowBtn').addEventListener('click', async () => {
-    const shopId       = document.getElementById('f-shop').value.trim();
-    const withdrawType = getWithdraw();
-    const model        = document.getElementById('f-model').value;
-    const type         = document.getElementById('f-type').value;
-    const status       = document.getElementById('f-status').value;
-    const operator     = document.getElementById('f-operator').value.trim();
-    const receiver     = document.getElementById('f-receiver').value.trim();
-    const sentDate     = document.getElementById('f-sentdate').value;
-    const sender       = document.getElementById('f-senderEdit').value.trim();
-    const note         = document.getElementById('f-note').value.trim();
+  addBtnEl.addEventListener('click', async () => {
+    const isEdit   = editingIdx !== null;
+    const status   = document.getElementById('f-status').value;
+    const operator = document.getElementById('f-operator').value.trim();
+    const receiver = document.getElementById('f-receiver').value.trim();
+    const sentDate = isEdit ? document.getElementById('f-sentdate').value : '';      // ตอนเพิ่มใหม่ไม่มีวันที่ส่ง
+    const sender   = isEdit ? document.getElementById('f-senderEdit').value.trim() : '';
+    const note     = document.getElementById('f-note').value.trim();
+    const ERR_T = 'บันทึกไม่สำเร็จ';
 
-    if (!shopId) { showAlert('บันทึกไม่สำเร็จ', 'กรุณากรอก ID ร้าน'); return; }
-    if (document.getElementById('f-withdraw').value === 'NPI' && !NPI_YEAR_RE.test(document.getElementById('f-npiyear').value.trim())) {
-      showAlert('บันทึกไม่สำเร็จ', 'เลือก NPI แล้ว กรุณาระบุปี (ตัวเลข 4 หลัก เช่น 2026)');
-      document.getElementById('f-npiyear').focus(); return;
+    // รวมทุกร้าน/ทุกเครื่องเป็นรายการเดียว (1 เครื่อง = 1 แถวในชีท)
+    const blocks = [...shopList.querySelectorAll('.shop-block')];
+    const items = [];
+    for (let bi = 0; bi < blocks.length; bi++) {
+      const b = blocks[bi];
+      const label = isEdit ? '' : `ร้านที่ ${bi + 1}: `;
+      const shopId = b.querySelector('.shop-id').value.trim();
+      const wSel   = b.querySelector('.shop-withdraw').value;
+      const npi    = b.querySelector('.shop-npi').value.trim();
+      let rows = [...b.querySelectorAll('.dev-row')].map(el => ({ el, type: el.querySelector('.dev-type').value, model: el.querySelector('.dev-model').value }));
+      if (!isEdit) rows = rows.filter(x => x.type || x.model);                       // ข้ามแถวที่ปล่อยว่างทั้งแถว
+      if (!isEdit && blocks.length > 1 && !shopId && !rows.length) continue;         // ข้ามร้านที่ปล่อยว่างทั้งร้าน
+      if (!shopId) { showAlert(ERR_T, label + 'กรุณากรอก ID ร้าน'); b.querySelector('.shop-id').focus(); return; }
+      if (wSel === 'NPI' && !NPI_YEAR_RE.test(npi)) {
+        showAlert(ERR_T, label + 'เลือก NPI แล้ว กรุณาระบุปี (ตัวเลข 4 หลัก เช่น 2026)');
+        b.querySelector('.shop-npi').focus(); return;
+      }
+      if (!isEdit) {
+        if (!rows.length) { showAlert(ERR_T, label + 'กรุณาเลือกประเภทเครื่องอย่างน้อย 1 เครื่อง'); return; }
+        for (let i = 0; i < rows.length; i++) {
+          if (!rows[i].type) { showAlert(ERR_T, `${label}เครื่องที่ ${i + 1}: กรุณาเลือกประเภทเครื่อง`); return; }
+        }
+      }
+      const withdrawType = wSel === 'NPI' ? 'NPI ' + npi : wSel;
+      rows.forEach(r => items.push({ ...r, block: b, shopId, withdrawType }));
     }
-    if (editingIdx === null && !receiver) { showAlert('บันทึกไม่สำเร็จ', 'กรุณากรอกชื่อผู้รับเครื่อง'); document.getElementById('f-receiver').focus(); return; }
-    if (sentDate && !sender) { showAlert('บันทึกไม่สำเร็จ', 'มีวันที่ส่งเครื่องแล้ว กรุณากรอกชื่อคนส่งเครื่องด้วย'); document.getElementById('f-senderEdit').focus(); return; }
+    if (!items.length) { showAlert(ERR_T, 'กรุณากรอก ID ร้านและเลือกประเภทเครื่องอย่างน้อย 1 เครื่อง'); return; }
+    if (!isEdit && !receiver) { showAlert(ERR_T, 'กรุณากรอกชื่อผู้รับเครื่อง'); document.getElementById('f-receiver').focus(); return; }
+    if (isEdit && sentDate && !sender) { showAlert(ERR_T, 'มีวันที่ส่งเครื่องแล้ว กรุณากรอกชื่อคนส่งเครื่องด้วย'); document.getElementById('f-senderEdit').focus(); return; }
 
     const t = new Date();
     const dateStr = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}T${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:00`;
 
-    const addBtn = document.getElementById('addRowBtn');
-    addBtn.disabled=true; addBtn.textContent='⏳ กำลังบันทึก...';
-
+    addBtnEl.disabled = true;
+    let done = 0;
     try {
-      const isEdit = editingIdx !== null;
-      const body = {
-        sheet:   SHEET_NAME,
-        action:  isEdit ? 'edit' : 'add',
-        date:    isEdit ? tableData[editingIdx].date : dateStr,
-        shopId, withdrawType,
-        type:    type   || '—',
-        model:   model  || '',
-        status:  status || '—',
-        receiver, operator, sentDate, sender, note
-      };
-      if (isEdit) body.rowIndex = editingIdx;
-
-      const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
-      const json = await res.json();
-      if (json.status!=='ok') throw new Error(json.message||'error');
-
-      const addedRow = { shopId, withdrawType, type: body.type, model };
-      closeAdd();
-      await loadFromSheets();
-      if (!isEdit) showSummary('add', addedRow, receiver, body.date, note);
-    } catch(err) { showAlert('บันทึกไม่สำเร็จ', err.message); }
-    finally { addBtn.disabled=false; }
+      if (isEdit) {
+        const x = items[0];
+        addBtnEl.textContent = '⏳ กำลังบันทึก...';
+        await apiPost({
+          sheet: SHEET_NAME, action: 'edit', rowIndex: editingIdx,
+          date: tableData[editingIdx].date,
+          shopId: x.shopId, withdrawType: x.withdrawType,
+          type: x.type || '—', model: x.model || '',
+          status: status || '—',
+          receiver, operator, sentDate, sender, note
+        });
+        closeAdd();
+        await loadFromSheets();
+      } else {
+        for (const it of items) {
+          addBtnEl.textContent = `⏳ กำลังบันทึก ${done + 1}/${items.length}`;
+          await apiPost({
+            sheet: SHEET_NAME, action: 'add', date: dateStr,
+            shopId: it.shopId, withdrawType: it.withdrawType,
+            type: it.type, model: it.model || '',
+            status: status || '—',
+            receiver, operator, sentDate: '', sender: '', note
+          });
+          done++;
+        }
+        // จัดกลุ่มตามร้านสำหรับ popup สรุป
+        const shops = [];
+        items.forEach(x => {
+          let g = shops.find(k => k.block === x.block);
+          if (!g) { g = { block: x.block, shopId: x.shopId, withdrawType: x.withdrawType, machines: [] }; shops.push(g); }
+          g.machines.push({ type: x.type, model: x.model });
+        });
+        closeAdd();
+        await loadFromSheets();
+        showAddSummary(shops, receiver, dateStr, note);
+      }
+    } catch(err) {
+      if (done > 0) {
+        // เอาเครื่องที่บันทึกสำเร็จแล้วออกจากฟอร์ม เหลือเฉพาะที่ยังไม่ได้บันทึก
+        items.slice(0, done).forEach(x => { x.el.remove(); if (!x.block.querySelector('.dev-row')) x.block.remove(); });
+        showAlert(ERR_T, `บันทึกสำเร็จ ${done} จาก ${items.length} เครื่อง แล้วเกิดข้อผิดพลาด: ${err.message}\nแถวที่เหลือยังอยู่ในฟอร์ม กดบันทึกอีกครั้งเพื่อลองใหม่`);
+        await loadFromSheets();
+      } else {
+        showAlert(ERR_T, err.message);
+      }
+    } finally { addBtnEl.disabled = false; updateDevUi(); }
   });
 
   // ── Refresh ──
@@ -1484,7 +1616,17 @@
     } finally { btn.disabled = false; btn.innerHTML = '📤 ยืนยันส่งเครื่อง'; }
   });
 
-  // สรุปการส่งหลายเครื่อง (ใช้ popup สรุปเดิม)
+  // ══ POPUP สรุป + คัดลอก ══
+  let summaryText = '';
+  function openDone(lines) {
+    summaryText = lines.join('\n');
+    document.getElementById('doneTitle').textContent = lines[0];
+    document.getElementById('doneText').textContent  = lines.slice(2).join('\n');
+    document.getElementById('copyBtn').innerHTML = '📋 คัดลอก';
+    document.getElementById('doneOverlay').classList.add('active');
+  }
+
+  // สรุปการส่งหลายเครื่อง
   function showBulkSummary(items, person, dateIso) {
     const lines = ['📦 สรุปการส่งเครื่องหน้าร้าน', ''];
     items.forEach((x, i) => {
@@ -1495,12 +1637,59 @@
     lines.push('');
     lines.push(`ผู้ส่ง: ${person}`);
     lines.push(`วันที่ส่ง: ${formatDate(dateIso)}`);
-    summaryText = lines.join('\n');
-    document.getElementById('doneTitle').textContent = lines[0];
-    document.getElementById('doneText').textContent  = lines.slice(2).join('\n');
-    document.getElementById('copyBtn').innerHTML = '📋 คัดลอก';
-    document.getElementById('doneOverlay').classList.add('active');
+    openDone(lines);
   }
+
+  // สรุปการเพิ่ม: 1 ร้าน 1 เครื่อง = รูปแบบเดิม · นอกนั้นแยกเป็นร้านๆ แล้วไล่รายการเครื่องเป็นข้อๆ
+  function showAddSummary(shops, person, dateIso, note) {
+    if (shops.length === 1 && shops[0].machines.length === 1) {
+      const g = shops[0];
+      showSummary('add', { shopId: g.shopId, withdrawType: g.withdrawType, type: g.machines[0].type, model: g.machines[0].model }, person, dateIso, note);
+      return;
+    }
+    const lines = ['📦 สรุปการรับเครื่องหน้าร้าน', ''];
+    shops.forEach(g => {
+      lines.push(`ID ร้าน: ${g.shopId || '—'}`);
+      lines.push(`ประเภทการเบิก: ${g.withdrawType || '—'}`);
+      g.machines.forEach((m, i) => lines.push(`${i + 1}. ${m.type || '—'}${m.model ? ' ' + m.model : ''}`));
+      lines.push('');
+    });
+    lines.push(`ผู้รับ: ${person}`);
+    lines.push(`วันที่รับ: ${formatDate(dateIso)}`);
+    lines.push(`หมายเหตุ: ${note || '-'}`);
+    openDone(lines);
+  }
+
+  function showSummary(mode, r, person, dateIso, note) {
+    const isSend = mode === 'send';
+    openDone([
+      isSend ? '📦 สรุปการส่งเครื่องหน้าร้าน' : '📦 สรุปการรับเครื่องหน้าร้าน', '',
+      `ID ร้าน: ${r.shopId || '—'}`,
+      `ประเภทการเบิก: ${r.withdrawType || '—'}`,
+      `ประเภทเครื่อง: ${r.type || '—'}`,
+      `รุ่นเครื่อง: ${r.model || '—'}`,
+      `${isSend ? 'ผู้ส่ง' : 'ผู้รับ'}: ${person}`,
+      `${isSend ? 'วันที่ส่ง' : 'วันที่รับ'}: ${formatDate(dateIso)}`,
+      `หมายเหตุ: ${note || '-'}`
+    ]);
+  }
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy'); ta.remove(); return ok;
+    } catch (e) { return false; }
+  }
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const cb = document.getElementById('copyBtn');
+    cb.innerHTML = (await copyText(summaryText)) ? '✅ คัดลอกแล้ว' : '⚠️ คัดลอกไม่ได้';
+    setTimeout(() => { cb.innerHTML = '📋 คัดลอก'; }, 2000);
+  });
+  const closeDone = () => document.getElementById('doneOverlay').classList.remove('active');
+  document.getElementById('doneCloseBtn').addEventListener('click', closeDone);
+  document.getElementById('doneOverlay').addEventListener('click', e => { if (e.target.id === 'doneOverlay') closeDone(); });
 
   // ══ STAT CARD → LIST MODAL ══
   const STAT_GROUPS = {
@@ -1649,45 +1838,8 @@
   document.getElementById('searchBtn').addEventListener('click', hideSuggest);
   document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) hideSuggest(); });
 
-  // ══ POPUP สรุป + คัดลอก ══
-  let summaryText = '';
-  function showSummary(mode, r, person, dateIso, note) {
-    const isSend = mode === 'send';
-    const lines = [
-      isSend ? '📦 สรุปการส่งเครื่องหน้าร้าน' : '📦 สรุปการรับเครื่องหน้าร้าน', '',
-      `ID ร้าน: ${r.shopId || '—'}`,
-      `ประเภทการเบิก: ${r.withdrawType || '—'}`,
-      `ประเภทเครื่อง: ${r.type || '—'}`,
-      `รุ่นเครื่อง: ${r.model || '—'}`,
-      `${isSend ? 'ผู้ส่ง' : 'ผู้รับ'}: ${person}`,
-      `${isSend ? 'วันที่ส่ง' : 'วันที่รับ'}: ${formatDate(dateIso)}`,
-      `หมายเหตุ: ${note || '-'}`
-    ];
-    summaryText = lines.join('\n');
-    document.getElementById('doneTitle').textContent = lines[0];
-    document.getElementById('doneText').textContent  = lines.slice(2).join('\n');
-    document.getElementById('copyBtn').innerHTML = '📋 คัดลอก';
-    document.getElementById('doneOverlay').classList.add('active');
-  }
-  async function copyText(text) {
-    try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      const ok = document.execCommand('copy'); ta.remove(); return ok;
-    } catch (e) { return false; }
-  }
-  document.getElementById('copyBtn').addEventListener('click', async () => {
-    const cb = document.getElementById('copyBtn');
-    cb.innerHTML = (await copyText(summaryText)) ? '✅ คัดลอกแล้ว' : '⚠️ คัดลอกไม่ได้';
-    setTimeout(() => { cb.innerHTML = '📋 คัดลอก'; }, 2000);
-  });
-  const closeDone = () => document.getElementById('doneOverlay').classList.remove('active');
-  document.getElementById('doneCloseBtn').addEventListener('click', closeDone);
-  document.getElementById('doneOverlay').addEventListener('click', e => { if (e.target.id === 'doneOverlay') closeDone(); });
-
   // ── Init ──
+  resetModal();
   if (isLockedOut()) startLockDisplay();
   loadFromSheets();
 </script>
