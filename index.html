@@ -376,7 +376,7 @@
     .search-wrap { position: relative; }
     .suggest-box {
       display: none; position: absolute; right: 0; top: calc(100% + 6px);
-      width: 400px; max-width: 90vw; max-height: 380px; overflow-y: auto;
+      width: 440px; max-width: 90vw; max-height: 380px; overflow-y: auto;
       background: white; border-radius: 10px; border: 1px solid #e3eaf5;
       box-shadow: 0 6px 28px rgba(21,101,192,.18); z-index: 250;
     }
@@ -393,10 +393,20 @@
     }
     .suggest-item:last-child { border-bottom: none; }
     .suggest-item:hover, .suggest-item.active { background: var(--blue-pale); }
+    .suggest-item .si-body { flex: 1; min-width: 0; }
     .suggest-item .si-main { font-size: 0.88rem; font-weight: 700; color: var(--text); }
     .suggest-item .si-sub  { font-size: 0.76rem; color: var(--gray-text); margin-top: 2px; }
     .suggest-item mark { background: #fff59d; color: inherit; border-radius: 3px; padding: 0 1px; }
     .suggest-empty { padding: 18px; text-align: center; font-size: 0.85rem; color: var(--gray-text); }
+
+    /* บรรทัดรอง: ป้ายเบอร์เครื่อง + ตู้ที่ (เด่น) · แผนก/ประเภท (จาง) */
+    .si-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+    .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 6px; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+    .pill-mc  { background: var(--blue-pale); color: var(--blue); }
+    .pill-cab { background: #eceff1; color: #455a64; }
+    .pill-cab.out { background: #fff3e0; color: var(--orange); }
+    .si-dept { font-size: .74rem; color: var(--gray-text); }
+
     /* ── Footer ── */
     .site-footer { background: #1a2332; color: #8fa3b8; text-align: center; padding: 20px 24px; font-size: 0.82rem; line-height: 1.7; }
     .site-footer strong { color: #e3f2fd; }
@@ -420,6 +430,22 @@
     .sum-text { background: #fafbfc; border: 1px solid var(--gray-border); border-radius: 10px; padding: 14px 16px; font-size: .93rem; line-height: 1.75; white-space: pre-wrap; word-break: break-word; }
     .done-footer { padding: 10px 20px 18px; display: flex; gap: 8px; }
     .done-footer .btn { flex: 1; justify-content: center; }
+
+    /* ── ฟอร์มเพิ่มหลายคน (บล็อกพนักงาน) ── */
+    .add-modal { width: 620px; }
+    .sec-label {
+      font-family: 'Prompt', sans-serif; font-size: .8rem; font-weight: 700; color: var(--blue);
+      margin: 20px 0 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .sec-label:first-child { margin-top: 0; }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--gray-border); }
+    .dev-count { font-weight: 500; color: var(--gray-text); }
+    .emp-block { border: 1.5px solid var(--gray-border); background: #fbfcfe; border-radius: 12px; padding: 12px 14px 14px; margin-bottom: 10px; }
+    .emp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .emp-title { font-family: 'Prompt', sans-serif; font-weight: 700; font-size: .88rem; color: var(--blue); }
+    .emp-del { border: none; background: none; color: var(--red); font-size: .78rem; font-weight: 600; cursor: pointer; font-family: 'Sarabun', sans-serif; padding: 3px 8px; border-radius: 6px; }
+    .emp-del:hover { background: #ffebee; }
+    .btn-sm { padding: 6px 14px; font-size: .84rem; }
 
     /* ══ รองรับโทรศัพท์ ══ */
     @media (max-width: 720px) {
@@ -466,7 +492,7 @@
       .dropdown-menu { min-width: 170px; }
 
       /* popup */
-      .modal, .list-modal { width: 100%; max-width: 96vw; }
+      .modal, .list-modal, .add-modal { width: 100%; max-width: 96vw; }
       .modal-body { padding: 18px 14px 10px; max-height: 68vh; }
       .form-grid { grid-template-columns: 1fr; }
       .modal-footer, .confirm-footer, .done-footer { flex-wrap: wrap; }
@@ -706,73 +732,31 @@
 </div>
 
 <!-- ══════════════════════════════════════════
-     ➕ ADD / EDIT RECORD MODAL
+     ➕ ADD / EDIT RECORD MODAL (เพิ่มได้หลายคน)
 ══════════════════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
+  <div class="modal add-modal">
     <div class="modal-header">
       <span id="modalTitle">➕ เพิ่มข้อมูลส่งเครื่องพนักงาน</span>
       <button class="modal-close" id="closeModal">✕</button>
     </div>
     <div class="modal-body">
+
+      <!-- 1) พนักงานและเครื่อง (เพิ่มได้หลายคน) -->
+      <div class="sec-label">👥 พนักงานและเครื่อง <span class="dev-count" id="empCount"></span></div>
+      <div id="empList"></div>
+      <button type="button" class="btn btn-outline btn-sm" id="addEmpBtn">➕ เพิ่มพนักงานอีกคน</button>
+
+      <!-- 2) ผู้รับ / ผู้ดำเนินการ (ใช้ร่วมกันทุกคน) -->
+      <div class="sec-label">👤 ผู้รับ / ผู้ดำเนินการ <span class="dev-count" id="sharedHint"></span></div>
       <div class="form-grid">
         <div class="form-group">
-          <label>ID พนักงาน</label>
-          <input class="form-control" id="f-id" type="text"/>
-        </div>
-        <div class="form-group">
-          <label>เบอร์เครื่อง</label>
-          <input class="form-control" id="f-machine" type="text"/>
-        </div>
-        <div class="form-group">
-          <label>ชื่อ – สกุล</label>
-          <input class="form-control" id="f-name" type="text"/>
-        </div>
-        <div class="form-group">
-          <label>แผนก</label>
-          <div class="dept-combo" id="deptCombo">
-            <input class="form-control" id="f-dept-input" type="text" placeholder="พิมพ์ค้นหา หรือเลือกแผนก..." autocomplete="off"/>
-            <span class="dept-caret">▾</span>
-            <div class="dept-list" id="deptList"></div>
-          </div>
-          <input id="f-dept" type="hidden"/>
-        </div>
-        <div class="form-group">
-          <label>ประเภทเครื่อง</label>
-          <select class="form-control" id="f-type">
-            <option value="">-- เลือกประเภทเครื่อง --</option>
-            <option>NB </option>
-            <option>PC </option>
-            <option>MACBook</option>
-            <option>IMAC</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>สถานะ</label>
-          <select class="form-control" id="f-status">
-            <option value="">-- เลือกสถานะ --</option>
-            <option>พร้อมใช้งาน</option>
-            <option>ขาดเมล์+WiFi</option>
-            <option>อยู่ระหว่างรอดำเนินการ</option>
-            <option>ส่งเครื่องแล้ว</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>ตู้ที่</label>
-          <select class="form-control" id="f-cabinet">
-            <option value="">-- เลือกตู้ --</option>
-            <option>ตู้ที่1</option>
-            <option>ตู้ที่2</option>
-            <option>อยู่นอกตู้</option>
-          </select>
+          <label>ชื่อผู้รับเครื่อง <span class="req" id="recvReq">*</span></label>
+          <input class="form-control" id="f-receiver" type="text" autocomplete="off"/>
         </div>
         <div class="form-group">
           <label>ผู้ดำเนินการ</label>
           <input class="form-control" id="f-operator" type="text" autocomplete="off"/>
-        </div>
-        <div class="form-group">
-          <label>ชื่อผู้รับเครื่อง <span class="req" id="recvReq">*</span></label>
-          <input class="form-control" id="f-receiver" type="text" autocomplete="off"/>
         </div>
         <div class="form-group">
           <label>วันที่ส่งเครื่อง <span class="dev-hint">(เว้นว่าง = ยังไม่ได้ส่ง)</span></label>
@@ -885,6 +869,11 @@
   const MAX_ATTEMPTS    = 5;
   const LOCKOUT_MS      = 5 * 60 * 1000;
 
+  // ตัวเลือกในฟอร์มเพิ่ม/แก้ไข
+  const TYPE_LIST    = ['NB', 'PC', 'MACBook', 'IMAC'];
+  const STATUS_LIST  = ['พร้อมใช้งาน', 'ขาดเมล์+WiFi', 'อยู่ระหว่างรอดำเนินการ', 'ส่งเครื่องแล้ว'];
+  const CABINET_LIST = ['ตู้ที่1', 'ตู้ที่2', 'อยู่นอกตู้'];
+
   let tableData        = [];
   let sortKey          = null;
   let sortDir          = null;
@@ -901,6 +890,10 @@
   // ══════════════════════════════════════════════════════════════════════════
   //  HELPERS
   // ══════════════════════════════════════════════════════════════════════════
+  function escHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
   function statusChip(s) {
     if (s === 'พร้อมใช้งาน')  return `<span class="chip chip-green">✅ ${s}</span>`;
     if (s === 'ขาดเมล์+WiFi') return `<span class="chip chip-red">⚠️ ${s}</span>`;
@@ -914,8 +907,6 @@
     if (ym) return `${ym[3]}/${ym[2]}/${ym[1]}`;
     const d = new Date(dateStr);
     if (isNaN(d.getTime())) return dateStr;
-    const hh  = String(d.getHours()).padStart(2,'0');
-    const mm  = String(d.getMinutes()).padStart(2,'0');
     const dd  = String(d.getDate()).padStart(2,'0');
     const mo  = String(d.getMonth()+1).padStart(2,'0');
     return `${dd}/${mo}/${d.getFullYear()}`;
@@ -932,9 +923,18 @@
     return isNaN(d.getTime()) ? '' : `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
   function hasOp(r) { return !!(r.operator && String(r.operator).trim() && r.operator !== '—'); }
+  function isBlank(v) { return !v || String(v).trim() === '' || v === '—'; }
+
+  async function apiPost(body) {
+    const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message || 'error');
+    return json;
+  }
 
   // ══════════════════════════════════════════════════════════════════════════
   //  ช่องแผนก: พิมพ์ค้นหาได้ (มีตัวใกล้เคียง) · กด "TFF" ในรายการเพื่อกางแผนกย่อย TFF
+  //  (สร้างได้หลายช่อง — 1 ช่องต่อพนักงาน 1 คน)
   // ══════════════════════════════════════════════════════════════════════════
   const DEPT_MAIN = [
     "iCare Operation",
@@ -1011,95 +1011,99 @@
   ];
   const DEPT_ALL  = DEPT_MAIN.filter(d => d !== 'TFF').concat(DEPT_TFF);
 
-  const deptInput = document.getElementById('f-dept-input');
-  const deptList  = document.getElementById('deptList');
-  const deptHid   = document.getElementById('f-dept');
-  let deptFilter = '', deptTffOpen = false, deptActive = -1;
-
   function deptHl(text, q) {
     const i = q ? text.toLowerCase().indexOf(q) : -1;
     return i < 0 ? escHtml(text) : escHtml(text.slice(0, i)) + '<mark>' + escHtml(text.slice(i, i + q.length)) + '</mark>' + escHtml(text.slice(i + q.length));
   }
-  function renderDept() {
-    const cur = deptHid.value;
-    const q = deptFilter.toLowerCase();
-    let html = '';
-    if (!q) {
-      const extra = (cur && !DEPT_ALL.includes(cur)) ? [cur] : [];           // ค่าเก่าที่ไม่อยู่ในรายการ
-      extra.concat(DEPT_MAIN).forEach(d => {
-        if (d === 'TFF') {
-          html += `<div class="dept-opt group" data-group="1"><span>TFF</span><span>${deptTffOpen ? '▾' : '▸'}</span></div>`;
-          if (deptTffOpen) DEPT_TFF.forEach(t => { html += `<div class="dept-opt sub${t === cur ? ' sel' : ''}" data-v="${escHtml(t)}">${escHtml(t)}</div>`; });
-        } else {
-          html += `<div class="dept-opt${d === cur ? ' sel' : ''}" data-v="${escHtml(d)}">${escHtml(d)}</div>`;
-        }
-      });
-    } else {
-      const res = DEPT_ALL.map(d => ({ d, sc: matchScore(q, d) })).filter(x => x.sc > 0).sort((x, y) => y.sc - x.sc);
-      const exact = res.filter(x => x.sc >= 60), near = res.filter(x => x.sc < 60).slice(0, 8);
-      if (exact.length) html += '<div class="dept-gh">✅ ตรงกัน</div>' + exact.map(x => `<div class="dept-opt${x.d === cur ? ' sel' : ''}" data-v="${escHtml(x.d)}"><span>${deptHl(x.d, q)}</span></div>`).join('');
-      if (near.length)  html += '<div class="dept-gh near">🔎 ใกล้เคียง</div>' + near.map(x => `<div class="dept-opt" data-v="${escHtml(x.d)}">${escHtml(x.d)}</div>`).join('');
-      if (!html) html = '<div class="dept-empty">📭 ไม่พบแผนกที่ตรงหรือใกล้เคียง</div>';
-    }
-    deptList.innerHTML = html;
-    deptActive = -1;
-  }
-  function openDept()  { renderDept(); deptList.classList.add('open'); }
-  function closeDept() { deptList.classList.remove('open'); deptFilter = ''; }
-  function pickDept(v) {
-    deptHid.value = v; deptInput.value = v;
-    closeDept();
-  }
-  // ตั้งค่าช่องแผนกจากค่าที่บันทึกไว้ (ใช้ตอนแก้ไข/ล้างฟอร์ม)
-  function setDeptUI(value) {
-    const v = (value || '').trim();
-    deptHid.value = v; deptInput.value = v;
-    deptTffOpen = DEPT_TFF.includes(v);
-    closeDept();
-  }
-  deptInput.addEventListener('focus', () => { deptFilter = ''; openDept(); deptInput.select(); });
-  deptInput.addEventListener('click', () => { if (!deptList.classList.contains('open')) { deptFilter = ''; openDept(); } });
-  deptInput.addEventListener('input', () => { deptFilter = deptInput.value.trim(); openDept(); });
-  deptInput.addEventListener('blur', () => {
-    const t = deptInput.value.trim();
-    if (!t) deptHid.value = '';                                               // ลบข้อความ = ไม่ระบุแผนก
-    else {
-      const hit = DEPT_ALL.find(d => d.toLowerCase() === t.toLowerCase());
-      if (hit) deptHid.value = hit;                                           // พิมพ์ตรงชื่อ
-    }
-    deptInput.value = deptHid.value;                                          // พิมพ์ไม่ตรงรายการ → กลับเป็นค่าที่เลือกไว้
-    closeDept();
-  });
-  // mousedown (ไม่ใช่ click) เพื่อไม่ให้ช่องพิมพ์เสียโฟกัสก่อนเลือก
-  deptList.addEventListener('mousedown', e => {
-    e.preventDefault();
-    const el = e.target.closest('.dept-opt');
-    if (!el) return;
-    if (el.dataset.group) { deptTffOpen = !deptTffOpen; renderDept(); return; }
-    pickDept(el.dataset.v);
-  });
-  deptInput.addEventListener('keydown', e => {
-    const opts = [...deptList.querySelectorAll('.dept-opt')];
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (!deptList.classList.contains('open')) { openDept(); return; }
-      if (!opts.length) return;
-      deptActive = (deptActive + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length;
-      opts.forEach((o, i) => o.classList.toggle('active', i === deptActive));
-      opts[deptActive].scrollIntoView({ block: 'nearest' });
-    } else if (e.key === 'Enter') {
-      if (deptList.classList.contains('open')) {
-        e.preventDefault();
-        const o = opts[deptActive >= 0 ? deptActive : 0];
-        if (!o) return;
-        if (o.dataset.group) { deptTffOpen = !deptTffOpen; renderDept(); }
-        else pickDept(o.dataset.v);
+
+  // root = .dept-combo ของพนักงาน 1 คน · ผูก API ไว้ที่ root._dept (get / set)
+  function initDeptCombo(root, value) {
+    const input = root.querySelector('.dept-input');
+    const list  = root.querySelector('.dept-list');
+    const hid   = root.querySelector('.dept-val');
+    let filter = '', tffOpen = false, active = -1;
+    const isOpen = () => list.classList.contains('open');
+
+    function render() {
+      const cur = hid.value;
+      const q = filter.toLowerCase();
+      let html = '';
+      if (!q) {
+        const extra = (cur && !DEPT_ALL.includes(cur)) ? [cur] : [];           // ค่าเก่าที่ไม่อยู่ในรายการ
+        extra.concat(DEPT_MAIN).forEach(d => {
+          if (d === 'TFF') {
+            html += `<div class="dept-opt group" data-group="1"><span>TFF</span><span>${tffOpen ? '▾' : '▸'}</span></div>`;
+            if (tffOpen) DEPT_TFF.forEach(t => { html += `<div class="dept-opt sub${t === cur ? ' sel' : ''}" data-v="${escHtml(t)}">${escHtml(t)}</div>`; });
+          } else {
+            html += `<div class="dept-opt${d === cur ? ' sel' : ''}" data-v="${escHtml(d)}">${escHtml(d)}</div>`;
+          }
+        });
+      } else {
+        const res = DEPT_ALL.map(d => ({ d, sc: matchScore(q, d) })).filter(x => x.sc > 0).sort((x, y) => y.sc - x.sc);
+        const exact = res.filter(x => x.sc >= 60), near = res.filter(x => x.sc < 60).slice(0, 8);
+        if (exact.length) html += '<div class="dept-gh">✅ ตรงกัน</div>' + exact.map(x => `<div class="dept-opt${x.d === cur ? ' sel' : ''}" data-v="${escHtml(x.d)}"><span>${deptHl(x.d, q)}</span></div>`).join('');
+        if (near.length)  html += '<div class="dept-gh near">🔎 ใกล้เคียง</div>' + near.map(x => `<div class="dept-opt" data-v="${escHtml(x.d)}">${escHtml(x.d)}</div>`).join('');
+        if (!html) html = '<div class="dept-empty">📭 ไม่พบแผนกที่ตรงหรือใกล้เคียง</div>';
       }
-    } else if (e.key === 'Escape') {
-      if (deptList.classList.contains('open')) { e.stopPropagation(); deptInput.value = deptHid.value; closeDept(); }
+      list.innerHTML = html;
+      active = -1;
     }
-  });
-  setDeptUI('');
+    function open()  { render(); list.classList.add('open'); }
+    function close() { list.classList.remove('open'); filter = ''; }
+    function pick(v) { hid.value = v; input.value = v; close(); }
+    function set(value) {
+      const v = (value || '').trim();
+      hid.value = v; input.value = v;
+      tffOpen = DEPT_TFF.includes(v);
+      close();
+    }
+
+    input.addEventListener('focus', () => { filter = ''; open(); input.select(); });
+    input.addEventListener('click', () => { if (!isOpen()) { filter = ''; open(); } });
+    input.addEventListener('input', () => { filter = input.value.trim(); open(); });
+    input.addEventListener('blur', () => {
+      const t = input.value.trim();
+      if (!t) hid.value = '';                                                   // ลบข้อความ = ไม่ระบุแผนก
+      else {
+        const hit = DEPT_ALL.find(d => d.toLowerCase() === t.toLowerCase());
+        if (hit) hid.value = hit;                                               // พิมพ์ตรงชื่อ
+      }
+      input.value = hid.value;                                                  // พิมพ์ไม่ตรงรายการ → กลับเป็นค่าที่เลือกไว้
+      close();
+    });
+    // mousedown (ไม่ใช่ click) เพื่อไม่ให้ช่องพิมพ์เสียโฟกัสก่อนเลือก
+    list.addEventListener('mousedown', e => {
+      e.preventDefault();
+      const el = e.target.closest('.dept-opt');
+      if (!el) return;
+      if (el.dataset.group) { tffOpen = !tffOpen; render(); return; }
+      pick(el.dataset.v);
+    });
+    input.addEventListener('keydown', e => {
+      const opts = [...list.querySelectorAll('.dept-opt')];
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!isOpen()) { open(); return; }
+        if (!opts.length) return;
+        active = (active + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length;
+        opts.forEach((o, i) => o.classList.toggle('active', i === active));
+        opts[active].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        if (isOpen()) {
+          e.preventDefault();
+          const o = opts[active >= 0 ? active : 0];
+          if (!o) return;
+          if (o.dataset.group) { tffOpen = !tffOpen; render(); }
+          else pick(o.dataset.v);
+        }
+      } else if (e.key === 'Escape') {
+        if (isOpen()) { e.stopPropagation(); input.value = hid.value; close(); }
+      }
+    });
+
+    root._dept = { get: () => hid.value, set };
+    set(value);
+  }
 
   // popup ข้อผิดพลาด (แทน alert)
   function showAlert(title, msg) {
@@ -1368,9 +1372,7 @@
     const btn = document.getElementById('confirmDeleteBtn');
     btn.disabled=true; btn.textContent='⏳ กำลังลบ...';
     try {
-      const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action:'delete', rowIndex: pendingDeleteIdx }) });
-      const json = await res.json();
-      if (json.status!=='ok') throw new Error(json.message||'error');
+      await apiPost({ action:'delete', rowIndex: pendingDeleteIdx });
       pendingDeleteIdx=null;
       document.getElementById('confirmOverlay').classList.remove('active');
       await loadFromSheets();
@@ -1416,19 +1418,14 @@
       const r = { ...tableData[pendingSendIdx] };
       const sendDate = todayStr();
       const newNote = note ? (r.note ? r.note + ' | ' + note : note) : (r.note || '');
-      const res  = await fetch(API_URL, {
-        method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({
-          action:'edit', rowIndex: pendingSendIdx,
-          date: r.date, sentDate: sendDate,
-          idName: r.idName, machine: r.machine,
-          dept: r.dept, type: r.type, status: 'ส่งเครื่องแล้ว',
-          cabinet: r.cabinet, receiver: r.receiver || '',
-          operator, sender, note: newNote
-        })
+      await apiPost({
+        action:'edit', rowIndex: pendingSendIdx,
+        date: r.date, sentDate: sendDate,
+        idName: r.idName, machine: r.machine,
+        dept: r.dept, type: r.type, status: 'ส่งเครื่องแล้ว',
+        cabinet: r.cabinet, receiver: r.receiver || '',
+        operator, sender, note: newNote
       });
-      const json = await res.json();
-      if (json.status!=='ok') throw new Error(json.message||'error');
       pendingSendIdx=null;
       document.getElementById('sendOverlay').classList.remove('active');
       await loadFromSheets();
@@ -1444,25 +1441,106 @@
   });
 
   // ══════════════════════════════════════════════════════════════════════════
+  //  ฟอร์มเพิ่ม/แก้ไข — บล็อกพนักงาน (เพิ่มได้หลายคนต่อครั้ง)
+  // ══════════════════════════════════════════════════════════════════════════
+  const empList   = document.getElementById('empList');
+  const addRowBtn = document.getElementById('addRowBtn');
+
+  function optHtml(list, sel, placeholder) {
+    const arr = (sel && sel !== '—' && !list.includes(sel)) ? [...list, sel] : list;   // คงค่าเดิมที่ไม่อยู่ในตัวเลือก
+    return `<option value="">${placeholder}</option>` +
+      arr.map(v => `<option${v === sel ? ' selected' : ''}>${escHtml(v)}</option>`).join('');
+  }
+
+  function addEmpBlock(d) {
+    d = d || {};
+    const block = document.createElement('div');
+    block.className = 'emp-block';
+    block.innerHTML =
+      `<div class="emp-head"><span class="emp-title"></span><button type="button" class="emp-del">🗑️ ลบคนนี้</button></div>` +
+      `<div class="form-grid">` +
+        `<div class="form-group"><label>ID พนักงาน</label><input class="form-control emp-id" type="text" autocomplete="off"/></div>` +
+        `<div class="form-group"><label>เบอร์เครื่อง</label><input class="form-control emp-machine" type="text" autocomplete="off"/></div>` +
+        `<div class="form-group"><label>ชื่อ – สกุล</label><input class="form-control emp-name" type="text" autocomplete="off"/></div>` +
+        `<div class="form-group"><label>แผนก</label>` +
+          `<div class="dept-combo">` +
+            `<input class="form-control dept-input" type="text" placeholder="พิมพ์ค้นหา หรือเลือกแผนก..." autocomplete="off"/>` +
+            `<span class="dept-caret">▾</span>` +
+            `<div class="dept-list"></div>` +
+            `<input class="dept-val" type="hidden"/>` +
+          `</div>` +
+        `</div>` +
+        `<div class="form-group"><label>ประเภทเครื่อง</label><select class="form-control emp-type">${optHtml(TYPE_LIST, d.type, '-- เลือกประเภทเครื่อง --')}</select></div>` +
+        `<div class="form-group"><label>สถานะ</label><select class="form-control emp-status">${optHtml(STATUS_LIST, d.status, '-- เลือกสถานะ --')}</select></div>` +
+        `<div class="form-group"><label>ตู้ที่</label><select class="form-control emp-cabinet">${optHtml(CABINET_LIST, d.cabinet, '-- เลือกตู้ --')}</select></div>` +
+      `</div>`;
+    block.querySelector('.emp-id').value      = d.id || '';
+    block.querySelector('.emp-name').value    = d.name || '';
+    block.querySelector('.emp-machine').value = d.machine || '';
+    empList.appendChild(block);
+    initDeptCombo(block.querySelector('.dept-combo'), d.dept || '');
+    return block;
+  }
+
+  function getEmpData(block) {
+    return {
+      id:      block.querySelector('.emp-id').value.trim(),
+      name:    block.querySelector('.emp-name').value.trim(),
+      machine: block.querySelector('.emp-machine').value.trim(),
+      dept:    block.querySelector('.dept-combo')._dept.get().trim(),
+      type:    block.querySelector('.emp-type').value,
+      status:  block.querySelector('.emp-status').value,
+      cabinet: block.querySelector('.emp-cabinet').value
+    };
+  }
+
+  function updateEmpUi() {
+    const isEdit = editingIdx !== null;
+    const blocks = [...empList.querySelectorAll('.emp-block')];
+    blocks.forEach((b, i) => {
+      b.querySelector('.emp-title').textContent = `👤 พนักงานคนที่ ${i + 1}`;
+      b.querySelector('.emp-head').style.display = (isEdit || blocks.length <= 1) ? 'none' : '';
+    });
+    document.getElementById('addEmpBtn').style.display = isEdit ? 'none' : '';
+    document.getElementById('empCount').textContent    = (isEdit || blocks.length <= 1) ? '' : `(${blocks.length} คน)`;
+    document.getElementById('sharedHint').textContent  = (!isEdit && blocks.length > 1) ? '(ใช้ร่วมกันทุกคน)' : '';
+    if (!addRowBtn.disabled) {
+      addRowBtn.innerHTML = isEdit ? '💾 บันทึกการแก้ไข'
+        : (blocks.length > 1 ? `➕ เพิ่ม ${blocks.length} คน` : '👤+ เพิ่มข้อมูล');
+    }
+  }
+
+  // คนใหม่คัดลอกแผนก/ประเภท/สถานะ/ตู้จากคนก่อนหน้า (ID / ชื่อ / เบอร์เครื่อง เว้นว่างให้กรอกใหม่)
+  document.getElementById('addEmpBtn').addEventListener('click', () => {
+    const blocks = empList.querySelectorAll('.emp-block');
+    const prev = blocks[blocks.length - 1];
+    const p = prev ? getEmpData(prev) : {};
+    const b = addEmpBlock({ dept: p.dept, type: p.type, status: p.status, cabinet: p.cabinet });
+    updateEmpUi();
+    b.querySelector('.emp-id').focus();
+    b.scrollIntoView({ block: 'nearest' });
+  });
+  empList.addEventListener('click', e => {
+    const del = e.target.closest('.emp-del');
+    if (!del) return;
+    del.closest('.emp-block').remove();
+    updateEmpUi();
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
   //  EDIT FLOW
   // ══════════════════════════════════════════════════════════════════════════
   function openEdit(origIdx) {
     editingIdx = origIdx;
     const r    = tableData[origIdx];
     const parts = (r.idName||'').split(' / ');
-    document.getElementById('f-id').value       = parts[0]                || '';
-    document.getElementById('f-name').value     = parts.slice(1).join(' / ') || '';
-    document.getElementById('f-machine').value  = r.machine  || '';
-    setDeptUI(r.dept || '');
-    document.getElementById('f-type').value     = r.type     || '';
-    document.getElementById('f-status').value   = r.status   || '';
-    document.getElementById('f-cabinet').value  = r.cabinet  || '';
-    const stSel = document.getElementById('f-status');
-    if (r.status && stSel.value !== r.status) {              // สถานะที่ไม่อยู่ในตัวเลือก ให้คงค่าเดิมไว้
-      const o = document.createElement('option'); o.textContent = r.status; o.dataset.legacy = '1';
-      stSel.appendChild(o); stSel.value = r.status;
-    }
-    document.getElementById('f-operator').value = hasOp(r) ? r.operator : '';
+    empList.innerHTML = '';
+    addEmpBlock({
+      id: parts[0] || '', name: parts.slice(1).join(' / ') || '',
+      machine: r.machine || '', dept: r.dept || '',
+      type: r.type, status: r.status, cabinet: r.cabinet
+    });
+    document.getElementById('f-operator').value   = hasOp(r) ? r.operator : '';
     document.getElementById('f-receiver').value   = r.receiver || '';
     document.getElementById('f-sentdate').value   = toInputDate(r.sentDate);
     document.getElementById('f-senderEdit').value = r.sender || '';
@@ -1471,7 +1549,7 @@
     syncSenderReq();
 
     document.getElementById('modalTitle').textContent = '✏️ แก้ไขข้อมูล';
-    document.getElementById('addRowBtn').innerHTML    = '💾 บันทึกการแก้ไข';
+    updateEmpUi();
     document.getElementById('modalOverlay').classList.add('active');
   }
 
@@ -1479,13 +1557,12 @@
   function resetModal() {
     editingIdx = null;
     document.getElementById('modalTitle').textContent = '➕ เพิ่มข้อมูลส่งเครื่องพนักงาน';
-    document.getElementById('addRowBtn').innerHTML    = '👤+ เพิ่มข้อมูล';
-    document.querySelectorAll('#f-status option[data-legacy]').forEach(o => o.remove());
-    ['f-id','f-name','f-machine','f-dept','f-operator','f-receiver','f-sentdate','f-senderEdit','f-note'].forEach(id => document.getElementById(id).value='');
-    ['f-type','f-status','f-cabinet'].forEach(id => document.getElementById(id).value='');
+    ['f-operator','f-receiver','f-sentdate','f-senderEdit','f-note'].forEach(id => document.getElementById(id).value='');
+    empList.innerHTML = '';
+    addEmpBlock({});
     document.getElementById('recvReq').style.display = '';
-    setDeptUI('');
     syncSenderReq();
+    updateEmpUi();
   }
   // มีวันที่ส่ง → ช่อง "ชื่อคนส่งเครื่อง" กลายเป็นบังคับ
   function syncSenderReq() {
@@ -1497,62 +1574,81 @@
   //  ADD / EDIT MODAL — open / close
   // ══════════════════════════════════════════════════════════════════════════
   const addOverlay = document.getElementById('modalOverlay');
-  document.getElementById('openModal').addEventListener('click',   () => { resetModal(); addOverlay.classList.add('active'); });
-  document.getElementById('closeModal').addEventListener('click',  () => { resetModal(); addOverlay.classList.remove('active'); });
-  document.getElementById('closeModal2').addEventListener('click', () => { resetModal(); addOverlay.classList.remove('active'); });
-  addOverlay.addEventListener('click', e => { if(e.target===addOverlay) { resetModal(); addOverlay.classList.remove('active'); } });
-  document.addEventListener('keydown', e => { if(e.key==='Escape') { resetModal(); addOverlay.classList.remove('active'); } });
+  const closeAdd = () => { resetModal(); addOverlay.classList.remove('active'); };
+  document.getElementById('openModal').addEventListener('click', () => {
+    resetModal(); addOverlay.classList.add('active');
+    setTimeout(() => { const f = empList.querySelector('.emp-id'); if (f) f.focus(); }, 120);
+  });
+  document.getElementById('closeModal').addEventListener('click',  closeAdd);
+  document.getElementById('closeModal2').addEventListener('click', closeAdd);
+  addOverlay.addEventListener('click', e => { if(e.target===addOverlay) closeAdd(); });
+  document.addEventListener('keydown', e => { if(e.key==='Escape' && addOverlay.classList.contains('active')) closeAdd(); });
 
-  // ── Save (ADD or EDIT) ───────────────────────────────────────────────────
-  document.getElementById('addRowBtn').addEventListener('click', async () => {
-    const id       = document.getElementById('f-id').value.trim();
-    const name     = document.getElementById('f-name').value.trim();
-    const machine  = document.getElementById('f-machine').value.trim();
-    const dept     = document.getElementById('f-dept').value.trim();
-    const type     = document.getElementById('f-type').value;
-    const status   = document.getElementById('f-status').value;
-    const cabinet  = document.getElementById('f-cabinet').value;
-    const operator = document.getElementById('f-operator').value.trim();
+  // ── Save (ADD หลายคน หรือ EDIT 1 คน) ─────────────────────────────────────
+  addRowBtn.addEventListener('click', async () => {
+    const isEdit   = editingIdx !== null;
     const receiver = document.getElementById('f-receiver').value.trim();
+    const operator = document.getElementById('f-operator').value.trim();
     const sentDate = document.getElementById('f-sentdate').value;
     const sender   = document.getElementById('f-senderEdit').value.trim();
     const note     = document.getElementById('f-note').value.trim();
+    const ERR_T    = 'บันทึกไม่สำเร็จ';
 
-    if (!id || !name || !machine) { showAlert('บันทึกไม่สำเร็จ', 'กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง'); return; }
-    if (editingIdx === null && !receiver) { showAlert('บันทึกไม่สำเร็จ', 'กรุณากรอกชื่อผู้รับเครื่อง'); document.getElementById('f-receiver').focus(); return; }
-    if (sentDate && !sender) { showAlert('บันทึกไม่สำเร็จ', 'มีวันที่ส่งเครื่องแล้ว กรุณากรอกชื่อคนส่งเครื่องด้วย'); document.getElementById('f-senderEdit').focus(); return; }
+    // รวมพนักงานทุกคนเป็นรายการเดียว (1 คน = 1 แถวในชีท)
+    const blocks = [...empList.querySelectorAll('.emp-block')];
+    const items = [];
+    for (let bi = 0; bi < blocks.length; bi++) {
+      const b = blocks[bi];
+      const d = getEmpData(b);
+      const label = (isEdit || blocks.length === 1) ? '' : `คนที่ ${bi + 1}: `;
+      if (!isEdit && blocks.length > 1 && !d.id && !d.name && !d.machine) continue;   // ข้ามคนที่ปล่อยว่างทั้งบล็อก
+      if (!d.id || !d.name || !d.machine) {
+        showAlert(ERR_T, label + 'กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่อง');
+        (b.querySelector(!d.id ? '.emp-id' : !d.name ? '.emp-name' : '.emp-machine')).focus();
+        return;
+      }
+      items.push({ ...d, block: b });
+    }
+    if (!items.length) { showAlert(ERR_T, 'กรุณากรอก ID, ชื่อ-สกุล และเบอร์เครื่องอย่างน้อย 1 คน'); return; }
+    if (!isEdit && !receiver) { showAlert(ERR_T, 'กรุณากรอกชื่อผู้รับเครื่อง'); document.getElementById('f-receiver').focus(); return; }
+    if (sentDate && !sender) { showAlert(ERR_T, 'มีวันที่ส่งเครื่องแล้ว กรุณากรอกชื่อคนส่งเครื่องด้วย'); document.getElementById('f-senderEdit').focus(); return; }
 
-    const today   = new Date();
-    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}T${String(today.getHours()).padStart(2,'0')}:${String(today.getMinutes()).padStart(2,'0')}:00`;
+    const t = new Date();
+    const dateStr = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}T${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:00`;
 
-    const addBtn = document.getElementById('addRowBtn');
-    addBtn.disabled=true; addBtn.textContent='⏳ กำลังบันทึก...';
-
+    addRowBtn.disabled = true;
+    let done = 0;
     try {
-      const isEdit = editingIdx !== null;
-      const body = {
-        action:   isEdit ? 'edit' : 'add',
-        date:     isEdit ? tableData[editingIdx].date : dateStr,  // edit คงวันที่เดิม
-        idName:   `${id} / ${name}`,
-        machine, dept,
-        type:     type    || '—',
-        status:   status  || '—',
-        cabinet:  cabinet || '—',
-        receiver, operator, sentDate, sender, note
-      };
-      if (isEdit) body.rowIndex = editingIdx;
-
-      const res  = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
-      const json = await res.json();
-      if (json.status!=='ok') throw new Error(json.message||'error');
-
-      const addedRow = { idName: body.idName, machine, dept, type: body.type };
-      resetModal();
-      addOverlay.classList.remove('active');
+      for (const it of items) {
+        addRowBtn.textContent = (isEdit || items.length === 1) ? '⏳ กำลังบันทึก...' : `⏳ กำลังบันทึก ${done + 1}/${items.length}`;
+        const body = {
+          action:   isEdit ? 'edit' : 'add',
+          date:     isEdit ? tableData[editingIdx].date : dateStr,   // edit คงวันที่เดิม
+          idName:   `${it.id} / ${it.name}`,
+          machine:  it.machine, dept: it.dept,
+          type:     it.type    || '—',
+          status:   it.status  || '—',
+          cabinet:  it.cabinet || '—',
+          receiver, operator, sentDate, sender, note
+        };
+        if (isEdit) body.rowIndex = editingIdx;
+        await apiPost(body);
+        done++;
+      }
+      closeAdd();
       await loadFromSheets();
-      if (!isEdit) showSummary('add', addedRow, receiver, body.date, note);
-    } catch(err) { showAlert('บันทึกไม่สำเร็จ', err.message); }
-    finally { addBtn.disabled=false; }
+      if (!isEdit) showAddSummary(items, receiver, dateStr, note);
+    } catch(err) {
+      if (done > 0 && !isEdit) {
+        // เอาคนที่บันทึกสำเร็จแล้วออกจากฟอร์ม เหลือเฉพาะที่ยังไม่ได้บันทึก
+        items.slice(0, done).forEach(x => x.block.remove());
+        updateEmpUi();
+        showAlert(ERR_T, `บันทึกสำเร็จ ${done} จาก ${items.length} คน แล้วเกิดข้อผิดพลาด: ${err.message}\nคนที่เหลือยังอยู่ในฟอร์ม กดบันทึกอีกครั้งเพื่อลองใหม่`);
+        await loadFromSheets();
+      } else {
+        showAlert(ERR_T, err.message);
+      }
+    } finally { addRowBtn.disabled = false; updateEmpUi(); }
   });
 
   // ── Refresh ───────────────────────────────────────────────────────────────
@@ -1570,10 +1666,6 @@
     issue:  { title: '⚠️ ขาดเมล์ / WiFi',        match: r => r.status === 'ขาดเมล์+WiFi' },
     repair: { title: '🔧 รอดำเนินการ',          match: r => r.status === 'อยู่ระหว่างรอดำเนินการ' || r.status === 'ซ่อม' }
   };
-
-  function escHtml(s) {
-    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
 
   function openStatList(key) {
     const g = STAT_GROUPS[key];
@@ -1704,10 +1796,17 @@
         lastGroup = group;
       }
       const r = it.row;
+      const mc  = isBlank(r.machine) ? '' : String(r.machine).trim();
+      const cab = isBlank(r.cabinet) ? '' : String(r.cabinet).trim();
+      const rest = [isBlank(r.dept) ? '' : hl(r.dept, q), isBlank(r.type) ? '' : escHtml(String(r.type).trim())].filter(Boolean).join(' · ');
       html += `<div class="suggest-item" data-i="${i}">
-        <div>
+        <div class="si-body">
           <div class="si-main">${hl(r.idName, q)}</div>
-          <div class="si-sub">🖥️ ${hl(r.machine, q)} · ${hl(r.dept, q)} · ${escHtml(r.type) || '—'}</div>
+          <div class="si-meta">
+            ${mc  ? `<span class="pill pill-mc">🖥️ เครื่อง ${hl(mc, q)}</span>` : ''}
+            ${cab ? `<span class="pill pill-cab${cab === 'อยู่นอกตู้' ? ' out' : ''}">🗄️ ${escHtml(cab)}</span>` : ''}
+            ${rest ? `<span class="si-dept">${rest}</span>` : ''}
+          </div>
         </div>
         ${statusChip(r.status)}
       </div>`;
@@ -1758,23 +1857,42 @@
   //  POPUP สรุป + ปุ่มคัดลอก   (mode: 'add' = รับเครื่อง · 'send' = ส่งเครื่อง)
   // ══════════════════════════════════════════════════════════════════════════
   let summaryText = '';
-  function showSummary(mode, r, person, dateIso, note) {
-    const isSend = mode === 'send';
-    const dateTxt = formatDate(dateIso);
-    const lines = [
-      isSend ? '📦 สรุปการส่งเครื่องพนักงาน' : '📦 สรุปการรับเครื่องพนักงาน', '',
-      `พนักงาน: ${r.idName || '—'}`,
-      `เบอร์เครื่อง: ${r.machine || '—'}`,
-      `ประเภท: ${r.type || '—'}`,
-      `${isSend ? 'ผู้ส่ง' : 'ผู้รับ'}: ${person}`,
-      `${isSend ? 'วันที่ส่ง' : 'วันที่รับ'}: ${dateTxt}`,
-      `หมายเหตุ: ${note || '-'}`
-    ];
+  function openDone(lines) {
     summaryText = lines.join('\n');
     document.getElementById('doneTitle').textContent = lines[0];
     document.getElementById('doneText').textContent  = lines.slice(2).join('\n');
     document.getElementById('copyBtn').innerHTML = '📋 คัดลอก';
     document.getElementById('doneOverlay').classList.add('active');
+  }
+  function showSummary(mode, r, person, dateIso, note) {
+    const isSend = mode === 'send';
+    openDone([
+      isSend ? '📦 สรุปการส่งเครื่องพนักงาน' : '📦 สรุปการรับเครื่องพนักงาน', '',
+      `พนักงาน: ${r.idName || '—'}`,
+      `เบอร์เครื่อง: ${r.machine || '—'}`,
+      `ประเภท: ${r.type || '—'}`,
+      `${isSend ? 'ผู้ส่ง' : 'ผู้รับ'}: ${person}`,
+      `${isSend ? 'วันที่ส่ง' : 'วันที่รับ'}: ${formatDate(dateIso)}`,
+      `หมายเหตุ: ${note || '-'}`
+    ]);
+  }
+  // สรุปการเพิ่ม: 1 คน = รูปแบบเดิม · หลายคน = ไล่เป็นข้อๆ
+  function showAddSummary(items, person, dateIso, note) {
+    if (items.length === 1) {
+      const x = items[0];
+      showSummary('add', { idName: `${x.id} / ${x.name}`, machine: x.machine, type: x.type }, person, dateIso, note);
+      return;
+    }
+    const lines = ['📦 สรุปการรับเครื่องพนักงาน', ''];
+    items.forEach((x, i) => {
+      lines.push(`${i + 1}. ${x.id} / ${x.name}`);
+      lines.push(`   เบอร์เครื่อง: ${x.machine}${x.type ? ' · ' + x.type : ''}`);
+    });
+    lines.push('');
+    lines.push(`ผู้รับ: ${person}`);
+    lines.push(`วันที่รับ: ${formatDate(dateIso)}`);
+    lines.push(`หมายเหตุ: ${note || '-'}`);
+    openDone(lines);
   }
   async function copyText(text) {
     try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
@@ -1798,6 +1916,7 @@
   if (isLockedOut()) startLockDisplay();
 
   // ── Init ──────────────────────────────────────────────────────────────────
+  resetModal();
   loadFromSheets();
 </script>
 </body>
