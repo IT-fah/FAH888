@@ -141,12 +141,24 @@
     }
     .search-input:focus { border-color: var(--blue); background: white; }
 
+    /* ── แถบเลือกมุมมอง / เรียงลำดับ ── */
+    .view-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .seg { display: inline-flex; background: #fff; border: 1.5px solid var(--gray-border); border-radius: 10px; overflow: hidden; }
+    .seg button { border: none; background: none; padding: 8px 16px; font-family: 'Sarabun', sans-serif; font-size: .86rem; font-weight: 700; color: var(--gray-text); cursor: pointer; transition: all .15s; }
+    .seg button:hover { background: var(--blue-pale); color: var(--blue); }
+    .seg button.active { background: var(--blue); color: #fff; }
+    .sort-sel { display: flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 600; color: var(--gray-text); }
+    .sel-sm { padding: 7px 10px; border: 1.5px solid var(--gray-border); border-radius: 8px; font-family: 'Sarabun', sans-serif; font-size: .86rem; color: var(--text); background: #fff; outline: none; cursor: pointer; }
+    .sel-sm:focus { border-color: var(--blue); }
+
     /* ── Table ── */
-    .table-card { background: white; border-radius: 12px; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .table-card { background: white; border-radius: 12px; box-shadow: var(--shadow-sm); }
     .table-scroll { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 750px; }
-    #mainTable { min-width: 1400px; }
+    table { width: 100%; border-collapse: collapse; }
+    #mainTable { min-width: 880px; }
     thead { background: linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 100%); color: white; }
+    thead th:first-child { border-top-left-radius: 12px; }
+    thead th:last-child  { border-top-right-radius: 12px; }
     thead th { padding: 13px 16px; text-align: left; font-size: 0.88rem; font-weight: 600; white-space: nowrap; }
     thead th.sortable { cursor: pointer; user-select: none; transition: background .15s; }
     thead th.sortable:hover { background: rgba(255,255,255,0.15); }
@@ -166,18 +178,61 @@
     tbody tr:hover { background: #f0f6ff; }
     tbody tr:nth-child(even) { background: #fafbfd; }
     tbody tr:nth-child(even):hover { background: #eaf3ff; }
-    td { padding: 13px 16px; font-size: 0.88rem; vertical-align: middle; }
+    tbody tr.row-click { cursor: pointer; }
+    td { padding: 14px 16px; font-size: 0.88rem; vertical-align: middle; }
+    .td-no { color: var(--gray-text); font-weight: 700; width: 48px; }
 
     .empty-state { text-align: center; padding: 64px 20px; color: var(--gray-text); }
     .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
     .empty-state p { font-size: 0.9rem; }
 
     /* ── Status chips ── */
-    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
     .chip-green  { background: #e8f5e9; color: var(--green); }
     .chip-red    { background: #ffebee; color: var(--red); }
     .chip-orange { background: #fff3e0; color: var(--orange); }
     .chip-blue   { background: var(--blue-pale); color: var(--blue); }
+
+    /* ── เซลล์แบบรวมก้อน ── */
+    .d1 { font-weight: 700; font-size: .9rem; }
+    .d2 { font-size: .78rem; color: var(--gray-text); margin-top: 2px; }
+    .p-name { font-weight: 700; font-size: .96rem; color: #0d47a1; line-height: 1.35; }
+    .p-id   { font-size: .78rem; color: var(--gray-text); margin-top: 1px; }
+    .pills  { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+    .tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 6px; font-size: .76rem; font-weight: 700; white-space: nowrap; }
+    .tag-dept { background: var(--blue-pale); color: var(--blue); }
+    .tag-type { background: #263238; color: #fff; }
+    .tag-mc   { background: #e0f2f1; color: #00695c; }
+    .loc-op   { font-size: .84rem; margin-top: 6px; font-weight: 600; }
+    .loc-sent { font-size: .78rem; color: var(--green); margin-top: 3px; font-weight: 600; }
+    .muted    { color: #9aa5b1; font-weight: 400; }
+
+    /* ── การ์ด ── */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+    .rec-card {
+      background: #fff; border: 1px solid var(--gray-border); border-radius: 14px;
+      box-shadow: var(--shadow-sm); padding: 14px 16px; cursor: pointer;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    .rec-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--blue-light); }
+    .rc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .rc-date { font-size: .8rem; color: var(--gray-text); font-weight: 600; }
+    .rc-loc { background: #f7f9fc; border-radius: 10px; padding: 9px 12px; }
+    .rc-loc .loc-op:first-child { margin-top: 0; }
+    .rc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+    .rc-more { font-size: .82rem; font-weight: 700; color: var(--blue-light); }
+
+    /* ── Pagination ── */
+    .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; font-size: .88rem; }
+    .pager-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .pager-left label { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--gray-text); }
+    .pg { display: inline-flex; border: 1px solid #dee2e6; border-radius: 6px; overflow: hidden; background: #fff; }
+    .pg button { border: none; border-right: 1px solid #dee2e6; background: #fff; color: #0d6efd; padding: 7px 13px; min-width: 38px; cursor: pointer; font-family: 'Sarabun', sans-serif; font-size: .88rem; }
+    .pg button:last-child { border-right: none; }
+    .pg button:not(:disabled):not(.active):hover { background: #e9f0ff; }
+    .pg button.active { background: #0d6efd; color: #fff; font-weight: 700; }
+    .pg button:disabled { color: #9aa5b1; cursor: default; }
 
     /* ── Info cards ── */
     .info-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
@@ -217,8 +272,9 @@
       background: white; border-radius: 10px;
       box-shadow: 0 6px 28px rgba(21,101,192,.18);
       border: 1px solid #e3eaf5;
-      min-width: 152px; z-index: 300; overflow: hidden;
+      min-width: 152px; z-index: 300; overflow: hidden; text-align: left;
     }
+    .dropdown-menu.up { top: auto; bottom: calc(100% + 6px); }
     .dropdown-menu.open { display: block; animation: ddFadeIn .15s ease; }
 
     @keyframes ddFadeIn {
@@ -347,10 +403,11 @@
 
     /* ── z-index layers ── */
     #modalOverlay    { z-index: 500; }
+    #detailOverlay   { z-index: 500; }
     #confirmOverlay  { z-index: 600; }
     #passwordOverlay { z-index: 700; }
     #lockOverlay     { z-index: 800; }
-        /* ── Clickable stat cards ── */
+    /* ── Clickable stat cards ── */
     .info-card.clickable { cursor: pointer; transition: transform .15s, box-shadow .15s; position: relative; }
     .info-card.clickable:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
     .info-card .ic-hint { font-size: 0.72rem; color: var(--blue-light); font-weight: 600; margin-top: 2px; }
@@ -372,7 +429,7 @@
       padding: 10px 12px; font-size: 0.82rem; text-align: left; white-space: nowrap;
     }
     .list-table td { padding: 10px 12px; font-size: 0.86rem; border-top: 1px solid #eef2f8; }
-        /* ── Search suggest ── */
+    /* ── Search suggest ── */
     .search-wrap { position: relative; }
     .suggest-box {
       display: none; position: absolute; right: 0; top: calc(100% + 6px);
@@ -447,6 +504,16 @@
     .emp-del:hover { background: #ffebee; }
     .btn-sm { padding: 6px 14px; font-size: .84rem; }
 
+    /* ── popup รายละเอียด ── */
+    .detail-modal { width: 600px; }
+    .detail-status { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .dt-item { background: #f7f9fc; border: 1px solid #eef2f8; border-radius: 10px; padding: 10px 12px; min-width: 0; }
+    .dt-item.full { grid-column: 1 / -1; }
+    .dt-label { font-size: .74rem; font-weight: 700; color: var(--gray-text); margin-bottom: 3px; }
+    .dt-val { font-size: .92rem; font-weight: 600; word-break: break-word; }
+    .detail-footer { padding: 12px 22px 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+
     /* ══ รองรับโทรศัพท์ ══ */
     @media (max-width: 720px) {
       html { -webkit-text-size-adjust: 100%; }
@@ -476,27 +543,24 @@
       .data-toolbar > .btn { flex: 1 1 calc(50% - 8px); justify-content: center; padding: 10px 8px; }
       .search-box { order: 9; width: 100%; margin-left: 0; }
 
-      /* ตาราง → การ์ดต่อรายการ */
-      .table-card { background: transparent; box-shadow: none; overflow: visible; }
-      .table-scroll { overflow: visible; }
-      #mainTable { min-width: 0 !important; display: block; }
-      #mainTable thead { display: none; }
-      #mainTable tbody { display: block; }
-      #mainTable tbody tr { display: block; position: relative; background: #fff !important; border: 1px solid var(--gray-border); border-radius: 12px; box-shadow: var(--shadow-sm); padding: 10px 14px; margin-bottom: 10px; }
-      #mainTable tbody td { display: block; padding: 0; background: transparent !important; }
-      #mainTable tbody td[data-label] { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; border-bottom: 1px dashed #e6ecf5; text-align: right; font-size: .88rem; word-break: break-word; }
-      #mainTable tbody td[data-label]::before { content: attr(data-label); font-weight: 700; color: var(--gray-text); font-size: .78rem; text-align: left; flex-shrink: 0; }
-      #mainTable tbody td[data-label="ลำดับ"] { padding-right: 46px; }
-      #mainTable tbody td.cell-act { position: absolute; top: 6px; right: 8px; }
-      .btn-dots { width: 38px; height: 38px; }
-      .dropdown-menu { min-width: 170px; }
+      /* มือถือ: ใช้การ์ดเสมอ */
+      .view-bar { display: none; }
+      .card-grid { grid-template-columns: 1fr; gap: 12px; }
+      .pager { flex-direction: column; align-items: stretch; gap: 12px; }
+      .pager-left { justify-content: space-between; }
+      .pg { align-self: center; }
+      .pg button { padding: 8px 11px; min-width: 36px; }
+      .pager select { font-size: 16px; }
 
       /* popup */
-      .modal, .list-modal, .add-modal { width: 100%; max-width: 96vw; }
+      .modal, .list-modal, .add-modal, .detail-modal { width: 100%; max-width: 96vw; }
       .modal-body { padding: 18px 14px 10px; max-height: 68vh; }
       .form-grid { grid-template-columns: 1fr; }
+      .detail-grid { grid-template-columns: 1fr; }
       .modal-footer, .confirm-footer, .done-footer { flex-wrap: wrap; }
       .modal-footer .btn, .confirm-footer .btn { flex: 1; justify-content: center; padding: 11px 12px; }
+      .detail-footer { padding: 12px 14px 18px; }
+      .detail-footer .btn { flex: 1 1 calc(50% - 8px); justify-content: center; padding: 11px 8px; }
       .confirm-box, .done-box { width: 96vw; max-width: 96vw; }
       .done-body { padding: 14px; }
       .list-scroll { max-height: 56vh; }
@@ -615,47 +679,32 @@
     </div>
   </div>
 
-  <div class="table-card">
+  <!-- แถบเลือกมุมมอง + เรียงลำดับ -->
+  <div class="view-bar">
+    <div class="seg view-toggle" id="viewToggle">
+      <button type="button" data-view="table" class="active">▤ ตาราง</button>
+      <button type="button" data-view="card">▦ การ์ด</button>
+    </div>
+  </div>
+
+  <!-- มุมมองตาราง -->
+  <div class="table-card" id="tableCard">
     <div class="table-scroll">
       <table id="mainTable">
         <thead>
           <tr>
             <th>#</th>
             <th class="sortable" data-key="date">
-              <span class="th-inner">วันที่รับเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="sentDate">
-              <span class="th-inner">วันที่ส่งเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+              <span class="th-inner">วันที่/เวลารับเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
             </th>
             <th class="sortable" data-key="idName">
-              <span class="th-inner">ID / ชื่อ-สกุล <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="machine">
-              <span class="th-inner">เบอร์เครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="dept">
-              <span class="th-inner">แผนก <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="type">
-              <span class="th-inner">ประเภท <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+              <span class="th-inner">พนักงาน / เครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
             </th>
             <th class="sortable" data-key="status">
               <span class="th-inner">สถานะ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
             </th>
             <th class="sortable" data-key="cabinet">
-              <span class="th-inner">ตู้ที่ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="receiver">
-              <span class="th-inner">ผู้รับเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="operator">
-              <span class="th-inner">ผู้ดำเนินการ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="sender">
-              <span class="th-inner">คนส่งเครื่อง <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
-            </th>
-            <th class="sortable" data-key="note">
-              <span class="th-inner">หมายเหตุ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+              <span class="th-inner">ตำแหน่ง / ผู้ดำเนินการ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
             </th>
             <th style="text-align:center;min-width:60px">จัดการ</th>
           </tr>
@@ -664,6 +713,28 @@
       </table>
     </div>
   </div>
+
+  <!-- มุมมองการ์ด (มือถือใช้แบบนี้เสมอ) -->
+  <div class="card-grid" id="cardGrid" style="display:none"></div>
+
+  <!-- แบ่งหน้า -->
+  <div class="pager" id="pager">
+    <div class="pager-left">
+      <label>แสดง
+        <select class="sel-sm" id="pageSizeSel">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="25">25</option>
+          <option value="30">30</option>
+        </select>
+        รายการ/หน้า
+      </label>
+      <span id="pagerInfo"></span>
+    </div>
+    <div class="pg" id="pgBtns"></div>
+  </div>
 </div>
 
 <footer class="site-footer">
@@ -671,6 +742,34 @@
   Tel : 02-017-7777 Ext. 7442 &nbsp;|&nbsp; Hotline : 083-989-0894, 083-989-1551<br>
   เวลาทำการ 09:00 – 18:00 น.
 </footer>
+
+<!-- ══════════════════════════════════════════
+     🔎 DETAIL MODAL (ดูรายละเอียดเพิ่มเติม)
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="detailOverlay">
+  <div class="modal detail-modal">
+    <div class="modal-header">
+      <span>🔎 รายละเอียดเครื่อง</span>
+      <button class="modal-close" id="closeDetail">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-status">
+        <div>
+          <div class="p-name" id="dtName" style="font-size:1.1rem"></div>
+          <div class="p-id" id="dtId"></div>
+        </div>
+        <div id="dtStatus"></div>
+      </div>
+      <div class="detail-grid" id="dtGrid"></div>
+    </div>
+    <div class="detail-footer">
+      <button class="btn btn-outline" id="dtEdit">✏️ แก้ไข</button>
+      <button class="btn btn-blue" id="dtSend">📤 ส่งเครื่อง</button>
+      <button class="btn btn-red" id="dtDelete">🗑️ ลบ</button>
+      <button class="btn btn-gray" id="dtClose">ปิด</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════
      🔐 PASSWORD MODAL
@@ -869,18 +968,31 @@
   const MAX_ATTEMPTS    = 5;
   const LOCKOUT_MS      = 5 * 60 * 1000;
 
+  const PAGE_MIN = 5, PAGE_MAX = 30, PAGE_DEFAULT = 15;   // จำนวนรายการต่อหน้า (ต่ำสุด 5 · สูงสุด 30)
+
   // ตัวเลือกในฟอร์มเพิ่ม/แก้ไข
   const TYPE_LIST    = ['NB', 'PC', 'MACBook', 'IMAC'];
   const STATUS_LIST  = ['พร้อมใช้งาน', 'ขาดเมล์+WiFi', 'อยู่ระหว่างรอดำเนินการ', 'ส่งเครื่องแล้ว'];
   const CABINET_LIST = ['ตู้ที่1', 'ตู้ที่2', 'อยู่นอกตู้'];
 
+  // จำค่ามุมมอง / จำนวนต่อหน้า (ถ้าเบราว์เซอร์ไม่อนุญาตก็ข้ามไป)
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
   let tableData        = [];
-  let sortKey          = null;
-  let sortDir          = null;
+  let sortKey          = 'date';
+  let sortDir          = 'desc';
   let searchTerm       = '';
   let pendingDeleteIdx = null;
   let pendingSendIdx   = null;
   let editingIdx       = null;   // ← index ที่กำลัง edit
+  let detailIdx        = null;   // ← index ที่เปิดดูรายละเอียด
+  let page             = 1;
+  let viewMode         = lsGet('itf_view') === 'card' ? 'card' : 'table';
+  let pageSize         = (() => {
+    const n = parseInt(lsGet('itf_ps'), 10);
+    return (n >= PAGE_MIN && n <= PAGE_MAX && n % 5 === 0) ? n : PAGE_DEFAULT;
+  })();
 
   // ── Lockout state ─────────────────────────────────────────────────────────
   let failCount   = parseInt(sessionStorage.getItem('pwFail') || '0');
@@ -895,10 +1007,12 @@
   }
 
   function statusChip(s) {
-    if (s === 'พร้อมใช้งาน')  return `<span class="chip chip-green">✅ ${s}</span>`;
-    if (s === 'ขาดเมล์+WiFi') return `<span class="chip chip-red">⚠️ ${s}</span>`;
-    if (s === 'ซ่อม')          return `<span class="chip chip-orange">🔧 ${s}</span>`;
-    return `<span class="chip chip-blue">${s || '—'}</span>`;
+    const t = escHtml(s);
+    if (s === 'พร้อมใช้งาน')            return `<span class="chip chip-green">✅ ${t}</span>`;
+    if (s === 'ขาดเมล์+WiFi')           return `<span class="chip chip-red">⚠️ ${t}</span>`;
+    if (s === 'ซ่อม' || s === 'อยู่ระหว่างรอดำเนินการ') return `<span class="chip chip-orange">⏳ ${t}</span>`;
+    if (s === 'ส่งเครื่องแล้ว')          return `<span class="chip chip-blue">📤 ${t}</span>`;
+    return `<span class="chip chip-blue">${t || '—'}</span>`;
   }
 
   function formatDate(dateStr) {
@@ -910,6 +1024,14 @@
     const dd  = String(d.getDate()).padStart(2,'0');
     const mo  = String(d.getMonth()+1).padStart(2,'0');
     return `${dd}/${mo}/${d.getFullYear()}`;
+  }
+
+  // เวลา HH:mm (คืนค่าว่างถ้าเป็นวันที่ล้วน)
+  function formatTime(v) {
+    if (!v || /^\d{4}-\d{2}-\d{2}$/.test(String(v))) return '';
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return '';
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
   }
 
   function todayStr() {
@@ -1114,19 +1236,45 @@
   document.getElementById('errCloseBtn').addEventListener('click', () => document.getElementById('errOverlay').classList.remove('active'));
   document.getElementById('errOverlay').addEventListener('click', e => { if (e.target.id === 'errOverlay') e.currentTarget.classList.remove('active'); });
 
+  // ══════════════════════════════════════════════════════════════════════════
+  //  มุมมอง (ตาราง/การ์ด) + ข้อความโหลด/ผิดพลาด
+  // ══════════════════════════════════════════════════════════════════════════
+  const mqMobile = window.matchMedia('(max-width: 720px)');
+  function effectiveView() { return mqMobile.matches ? 'card' : viewMode; }
+
+  function applyViewVisibility() {
+    const v = effectiveView();
+    document.getElementById('tableCard').style.display = v === 'table' ? '' : 'none';
+    document.getElementById('cardGrid').style.display  = v === 'card'  ? '' : 'none';
+    document.querySelectorAll('#viewToggle button').forEach(b => b.classList.toggle('active', b.dataset.view === viewMode));
+  }
+
+  function showMsg(html) {
+    applyViewVisibility();
+    document.getElementById('tableBody').innerHTML = `<tr><td colspan="6">${html}</td></tr>`;
+    document.getElementById('cardGrid').innerHTML  = `<div style="grid-column:1/-1;background:#fff;border-radius:12px;box-shadow:var(--shadow-sm)">${html}</div>`;
+    document.getElementById('pager').style.display = 'none';
+  }
   function showLoading(msg) {
-    document.getElementById('tableBody').innerHTML = `
-      <tr><td colspan="14"><div class="empty-state">
+    showMsg(`<div class="empty-state">
         <div style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">⏳</div>
         <p style="margin-top:10px">${msg}</p>
-      </div></td></tr>`;
+      </div>`);
   }
   function showError(msg) {
-    document.getElementById('tableBody').innerHTML = `
-      <tr><td colspan="14"><div class="empty-state">
-        <div class="empty-icon">⚠️</div><p>${msg}</p>
-      </div></td></tr>`;
+    showMsg(`<div class="empty-state"><div class="empty-icon">⚠️</div><p>${msg}</p></div>`);
   }
+
+  document.querySelectorAll('#viewToggle button').forEach(b => {
+    b.addEventListener('click', () => {
+      viewMode = b.dataset.view === 'card' ? 'card' : 'table';
+      lsSet('itf_view', viewMode);
+      renderTable();
+    });
+  });
+  const onMqChange = () => renderTable();
+  if (mqMobile.addEventListener) mqMobile.addEventListener('change', onMqChange);
+  else if (mqMobile.addListener) mqMobile.addListener(onMqChange);
 
   // ══════════════════════════════════════════════════════════════════════════
   //  DROPDOWN  (3-dot)
@@ -1151,11 +1299,72 @@
   // ปิด dropdown เมื่อคลิกที่อื่น
   document.addEventListener('click', closeAllDropdowns);
 
+  function actionMenu(origIdx, up) {
+    return `<div class="action-wrap" id="aw-${origIdx}" onclick="event.stopPropagation()">
+      <button class="btn-dots" onclick="toggleDropdown(${origIdx}, event)" title="จัดการ">⋮</button>
+      <div class="dropdown-menu${up ? ' up' : ''}" id="dd-${origIdx}">
+        <button class="dropdown-item" onclick="closeAllDropdowns(); openDetail(${origIdx})">
+          <span class="di-icon di-blue">🔎</span> ดูรายละเอียด
+        </button>
+        <button class="dropdown-item" onclick="closeAllDropdowns(); askSend(${origIdx})">
+          <span class="di-icon di-blue">📤</span> ส่งเครื่อง
+        </button>
+        <button class="dropdown-item" onclick="closeAllDropdowns(); openEdit(${origIdx})">
+          <span class="di-icon di-orange">✏️</span> แก้ไขข้อมูล
+        </button>
+        <button class="dropdown-item del" onclick="closeAllDropdowns(); askDelete(${origIdx})">
+          <span class="di-icon di-red">🗑️</span> ลบข้อมูล
+        </button>
+      </div>
+    </div>`;
+  }
+
   // ══════════════════════════════════════════════════════════════════════════
-  //  RENDER TABLE
+  //  บล็อกข้อมูลที่รวมกลุ่มแล้ว
   // ══════════════════════════════════════════════════════════════════════════
-  function renderTable() {
-    const body = document.getElementById('tableBody');
+  function splitIdName(r) {
+    const parts = String(r.idName || '').split(' / ');
+    if (parts.length < 2) return { id: '', name: (parts[0] || '').trim() };
+    return { id: parts[0].trim(), name: parts.slice(1).join(' / ').trim() };
+  }
+
+  function dateCell(v) {
+    const t = formatTime(v);
+    return `<div class="d1">${formatDate(v)}</div>${t ? `<div class="d2">🕐 ${t} น.</div>` : ''}`;
+  }
+
+  // ก้อน: ชื่อ + รหัส + (แผนก · ประเภท · เบอร์เครื่อง)
+  function personBlock(r) {
+    const p = splitIdName(r);
+    let h = `<div class="p-name">${escHtml(p.name) || '—'}</div>`;
+    if (p.id) h += `<div class="p-id">รหัสพนักงาน ${escHtml(p.id)}</div>`;
+    h += '<div class="pills">';
+    if (!isBlank(r.dept))    h += `<span class="tag tag-dept">🏢 ${escHtml(String(r.dept).trim())}</span>`;
+    if (!isBlank(r.type))    h += `<span class="tag tag-type">💻 ${escHtml(String(r.type).trim())}</span>`;
+    if (!isBlank(r.machine)) h += `<span class="tag tag-mc">🖥️ เครื่อง ${escHtml(String(r.machine).trim())}</span>`;
+    h += '</div>';
+    return h;
+  }
+
+  // ก้อน: ตู้ที่ + ผู้ดำเนินการ + (ถ้าส่งแล้ว) วันที่ส่ง
+  function locBlock(r) {
+    const cab = isBlank(r.cabinet) ? '' : String(r.cabinet).trim();
+    let h = cab
+      ? `<span class="pill pill-cab${cab === 'อยู่นอกตู้' ? ' out' : ''}">🗄️ ${escHtml(cab)}</span>`
+      : `<span class="muted" style="font-size:.82rem">🗄️ ยังไม่ระบุตำแหน่ง</span>`;
+    h += hasOp(r)
+      ? `<div class="loc-op">👤 ${escHtml(r.operator)}</div>`
+      : `<div class="loc-op muted">👤 ยังไม่มีผู้ดำเนินการ</div>`;
+    if (r.sentDate) {
+      h += `<div class="loc-sent">📤 ส่งแล้ว ${formatDate(r.sentDate)}${isBlank(r.sender) ? '' : ' · โดย ' + escHtml(r.sender)}</div>`;
+    }
+    return h;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  กรอง + เรียง
+  // ══════════════════════════════════════════════════════════════════════════
+  function getFilteredSorted() {
     let rows = tableData
       .map((r, origIdx) => ({ ...r, origIdx }))
       .filter(r => !r.deleted)
@@ -1182,49 +1391,111 @@
         return 0;
       });
     }
+    return rows;
+  }
 
-    if (rows.length === 0) {
-      body.innerHTML = `<tr><td colspan="14"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูล</p></div></td></tr>`;
+  // ══════════════════════════════════════════════════════════════════════════
+  //  RENDER (ตาราง / การ์ด + แบ่งหน้า)
+  // ══════════════════════════════════════════════════════════════════════════
+  function renderTable() {
+    const all   = getFilteredSorted();
+    const total = all.length;
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+    if (page > pages) page = pages;
+    if (page < 1) page = 1;
+    const start = (page - 1) * pageSize;
+    const rows  = all.slice(start, start + pageSize);
+
+    if (total === 0) {
+      showMsg(`<div class="empty-state"><div class="empty-icon">📭</div><p>ไม่พบข้อมูล</p></div>`);
       updateStats(); return;
     }
 
-    body.innerHTML = rows.map((r, i) => {
-      const sc = k => sortKey === k ? 'sorted-col' : '';
-      return `<tr>
-        <td data-label="ลำดับ">${i+1}</td>
-        <td data-label="วันที่รับเครื่อง" class="${sc('date')}">${formatDate(r.date)}</td>
-        <td data-label="วันที่ส่งเครื่อง" class="${sc('sentDate')}">${formatDate(r.sentDate)}</td>
-        <td data-label="ID / ชื่อ-สกุล" class="${sc('idName')}">${escHtml(r.idName) || '—'}</td>
-        <td data-label="เบอร์เครื่อง" class="${sc('machine')}">${escHtml(r.machine) || '—'}</td>
-        <td data-label="แผนก" class="${sc('dept')}">${escHtml(r.dept) || '—'}</td>
-        <td data-label="ประเภท" class="${sc('type')}">${escHtml(r.type) || '—'}</td>
-        <td data-label="สถานะ" class="${sc('status')}">${statusChip(r.status)}</td>
-        <td data-label="ตู้ที่" class="${sc('cabinet')}">${escHtml(r.cabinet) || '—'}</td>
-        <td data-label="ผู้รับเครื่อง" class="${sc('receiver')}">${escHtml(r.receiver) || '—'}</td>
-        <td data-label="ผู้ดำเนินการ" class="${sc('operator')}">${escHtml(r.operator) || '—'}</td>
-        <td data-label="คนส่งเครื่อง" class="${sc('sender')}">${escHtml(r.sender) || '—'}</td>
-        <td data-label="หมายเหตุ" class="${sc('note')}">${escHtml(r.note) || '—'}</td>
-        <td class="cell-act" style="text-align:center">
-          <!-- ⋮ 3-dot button -->
-          <div class="action-wrap" id="aw-${r.origIdx}">
-            <button class="btn-dots" onclick="toggleDropdown(${r.origIdx}, event)" title="จัดการ">⋮</button>
-            <div class="dropdown-menu" id="dd-${r.origIdx}">
-              <button class="dropdown-item del" onclick="closeAllDropdowns(); askDelete(${r.origIdx})">
-                <span class="di-icon di-red">🗑️</span> ลบข้อมูล
-              </button>
-              <button class="dropdown-item" onclick="closeAllDropdowns(); askSend(${r.origIdx})">
-                <span class="di-icon di-blue">📤</span> ส่งเครื่อง
-              </button>
-              <button class="dropdown-item" onclick="closeAllDropdowns(); openEdit(${r.origIdx})">
-                <span class="di-icon di-orange">✏️</span> แก้ไขข้อมูล
-              </button>
-            </div>
+    applyViewVisibility();
+    document.getElementById('pager').style.display = '';
+    const view = effectiveView();
+
+    if (view === 'table') {
+      document.getElementById('tableBody').innerHTML = rows.map((r, i) => {
+        const sc = k => sortKey === k ? 'sorted-col' : '';
+        const up = rows.length > 3 && i >= rows.length - 2;      // แถวท้ายๆ เปิดเมนูขึ้นด้านบน
+        return `<tr class="row-click" onclick="openDetail(${r.origIdx})">
+          <td class="td-no">${start + i + 1}</td>
+          <td class="${sc('date')}">${dateCell(r.date)}</td>
+          <td class="${sc('idName')}">${personBlock(r)}</td>
+          <td class="${sc('status')}">${statusChip(r.status)}</td>
+          <td class="${sc('cabinet')}">${locBlock(r)}</td>
+          <td class="cell-act" style="text-align:center" onclick="event.stopPropagation()">${actionMenu(r.origIdx, up)}</td>
+        </tr>`;
+      }).join('');
+    } else {
+      document.getElementById('cardGrid').innerHTML = rows.map(r => {
+        const t = formatTime(r.date);
+        return `<div class="rec-card" data-i="${r.origIdx}">
+          <div class="rc-top">
+            <span class="rc-date">🕐 รับเครื่อง ${formatDate(r.date)}${t ? ' ' + t + ' น.' : ''}</span>
+            ${statusChip(r.status)}
           </div>
-        </td>
-      </tr>`;
-    }).join('');
+          <div>${personBlock(r)}</div>
+          <div class="rc-loc">${locBlock(r)}</div>
+          <div class="rc-foot">
+            <span class="rc-more">ดูรายละเอียดเพิ่มเติม ›</span>
+            ${actionMenu(r.origIdx, true)}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    renderPager(total, start, rows.length, pages);
     updateStats();
   }
+
+  // คลิกการ์ด → เปิดรายละเอียด
+  document.getElementById('cardGrid').addEventListener('click', e => {
+    if (e.target.closest('.action-wrap')) return;
+    const card = e.target.closest('.rec-card');
+    if (card) openDetail(parseInt(card.dataset.i, 10));
+  });
+
+  // ── Pagination ────────────────────────────────────────────────────────────
+  function pageList(cur, total) {
+    const rng = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+    if (total <= 7) return rng(1, total);
+    if (cur <= 4) return [...rng(1, 5), '…', total];
+    if (cur >= total - 3) return [1, '…', ...rng(total - 4, total)];
+    return [1, '…', cur - 1, cur, cur + 1, '…', total];
+  }
+
+  function renderPager(total, start, count, pages) {
+    document.getElementById('pagerInfo').textContent = `แสดง ${start + 1} ถึง ${start + count} จาก ${total} แถว`;
+    document.getElementById('pageSizeSel').value = String(pageSize);
+    let h = `<button type="button" data-p="${page - 1}" ${page <= 1 ? 'disabled' : ''}>ก่อนหน้า</button>`;
+    pageList(page, pages).forEach(p => {
+      h += p === '…'
+        ? `<button type="button" disabled>…</button>`
+        : `<button type="button" data-p="${p}" class="${p === page ? 'active' : ''}">${p}</button>`;
+    });
+    h += `<button type="button" data-p="${page + 1}" ${page >= pages ? 'disabled' : ''}>ถัดไป</button>`;
+    document.getElementById('pgBtns').innerHTML = h;
+  }
+
+  document.getElementById('pgBtns').addEventListener('click', e => {
+    const b = e.target.closest('button[data-p]');
+    if (!b || b.disabled) return;
+    page = parseInt(b.dataset.p, 10);
+    renderTable();
+    const top = document.querySelector('.view-bar');
+    if (top) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('pageSizeSel').addEventListener('change', e => {
+    let n = parseInt(e.target.value, 10);
+    if (!(n >= PAGE_MIN)) n = PAGE_MIN;
+    if (n > PAGE_MAX) n = PAGE_MAX;
+    pageSize = n; lsSet('itf_ps', n);
+    page = 1;
+    renderTable();
+  });
 
   function updateHeaders() {
     document.querySelectorAll('thead th.sortable').forEach(th => {
@@ -1248,16 +1519,16 @@
       const k = th.dataset.key;
       if (sortKey===k) { sortDir==='asc' ? sortDir='desc' : (sortKey=sortDir=null); }
       else { sortKey=k; sortDir='asc'; }
-      updateHeaders(); renderTable();
+      page = 1; updateHeaders(); renderTable();
     });
   });
 
   // ── Search ────────────────────────────────────────────────────────────────
   document.getElementById('searchBtn').addEventListener('click', () => {
-    searchTerm = document.getElementById('searchInput').value.trim(); renderTable();
+    searchTerm = document.getElementById('searchInput').value.trim(); page = 1; renderTable();
   });
   document.getElementById('searchInput').addEventListener('keydown', e => {
-    if (e.key==='Enter') { searchTerm = e.target.value.trim(); renderTable(); }
+    if (e.key==='Enter') { searchTerm = e.target.value.trim(); page = 1; renderTable(); }
   });
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -1279,9 +1550,47 @@
       }));
       renderTable();
     } catch(err) {
-      showError(`โหลดข้อมูลไม่สำเร็จ: <small style="color:#e53935">${err.message}</small>`);
+      showError(`โหลดข้อมูลไม่สำเร็จ: <small style="color:#e53935">${escHtml(err.message)}</small>`);
     }
   }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  DETAIL MODAL
+  // ══════════════════════════════════════════════════════════════════════════
+  function openDetail(origIdx) {
+    const r = tableData[origIdx];
+    if (!r) return;
+    detailIdx = origIdx;
+    const p = splitIdName(r);
+    document.getElementById('dtName').textContent = p.name || '—';
+    document.getElementById('dtId').textContent   = p.id ? `รหัสพนักงาน ${p.id}` : '';
+    document.getElementById('dtStatus').innerHTML = statusChip(r.status);
+    const val = v => isBlank(v) ? '<span class="muted">—</span>' : escHtml(String(v).trim());
+    const rt = formatTime(r.date);
+    const items = [
+      ['🕐 วันที่/เวลารับเครื่อง', escHtml(formatDate(r.date)) + (rt ? ' ' + rt + ' น.' : '')],
+      ['📤 วันที่ส่งเครื่อง',      r.sentDate ? escHtml(formatDate(r.sentDate)) : '<span class="muted">ยังไม่ได้ส่ง</span>'],
+      ['🖥️ เบอร์เครื่อง',          val(r.machine)],
+      ['💻 ประเภทเครื่อง',         val(r.type)],
+      ['🏢 แผนก',                  val(r.dept), true],
+      ['🗄️ ตู้ที่ / ตำแหน่ง',      val(r.cabinet)],
+      ['👤 ผู้ดำเนินการ',          hasOp(r) ? escHtml(r.operator) : '<span class="muted">—</span>'],
+      ['📥 ผู้รับเครื่อง',          val(r.receiver)],
+      ['📦 คนส่งเครื่อง',          val(r.sender)],
+      ['📝 หมายเหตุ',              val(r.note), true]
+    ];
+    document.getElementById('dtGrid').innerHTML = items.map(it =>
+      `<div class="dt-item${it[2] ? ' full' : ''}"><div class="dt-label">${it[0]}</div><div class="dt-val">${it[1]}</div></div>`
+    ).join('');
+    document.getElementById('detailOverlay').classList.add('active');
+  }
+  function closeDetail() { document.getElementById('detailOverlay').classList.remove('active'); }
+  document.getElementById('closeDetail').addEventListener('click', closeDetail);
+  document.getElementById('dtClose').addEventListener('click', closeDetail);
+  document.getElementById('detailOverlay').addEventListener('click', e => { if (e.target.id === 'detailOverlay') closeDetail(); });
+  document.getElementById('dtEdit').addEventListener('click',   () => { const i = detailIdx; closeDetail(); if (i !== null) openEdit(i); });
+  document.getElementById('dtSend').addEventListener('click',   () => { const i = detailIdx; closeDetail(); if (i !== null) askSend(i); });
+  document.getElementById('dtDelete').addEventListener('click', () => { const i = detailIdx; closeDetail(); if (i !== null) askDelete(i); });
 
   // ══════════════════════════════════════════════════════════════════════════
   //  LOCKOUT HELPERS
@@ -1636,6 +1945,7 @@
         done++;
       }
       closeAdd();
+      page = 1;
       await loadFromSheets();
       if (!isEdit) showAddSummary(items, receiver, dateStr, note);
     } catch(err) {
@@ -1653,7 +1963,7 @@
 
   // ── Refresh ───────────────────────────────────────────────────────────────
   document.getElementById('resetSort').addEventListener('click', () => {
-    sortKey=null; sortDir=null; searchTerm='';
+    sortKey='date'; sortDir='desc'; searchTerm=''; page=1;
     document.getElementById('searchInput').value='';
     updateHeaders(); loadFromSheets();
   });
@@ -1697,7 +2007,7 @@
   document.getElementById('listOverlay').addEventListener('click', e => {
     if (e.target === document.getElementById('listOverlay')) closeStatList();
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatList(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeStatList(); closeDetail(); } });
     // ══════════════════════════════════════════════════════════════════════════
   //  SEARCH SUGGEST  (ตรงกัน → ใกล้เคียง)
   // ══════════════════════════════════════════════════════════════════════════
@@ -1830,6 +2140,7 @@
     const key = (r.idName || '').split(' / ')[0].trim() || r.machine || '';
     searchInputEl.value = key;
     searchTerm = key;
+    page = 1;
     hideSuggest();
     renderTable();
   }
@@ -1916,6 +2227,9 @@
   if (isLockedOut()) startLockDisplay();
 
   // ── Init ──────────────────────────────────────────────────────────────────
+  document.getElementById('pageSizeSel').value = String(pageSize);
+  applyViewVisibility();
+  updateHeaders();
   resetModal();
   loadFromSheets();
 </script>
