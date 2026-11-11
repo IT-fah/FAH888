@@ -105,7 +105,7 @@
     /* ── Table ── */
     .table-card { background:#fff; border-radius:12px; box-shadow:var(--shadow-sm); overflow:hidden; }
     .table-scroll { overflow-x:auto; }
-    table { width:100%; border-collapse:collapse; min-width:1100px; }
+    table { width:100%; border-collapse:collapse; min-width:760px; }
     thead { background:linear-gradient(90deg,var(--blue),var(--blue-mid)); color:#fff; }
     thead th { padding:13px 16px; text-align:left; font-size:.88rem; font-weight:600; white-space:nowrap; }
     thead th.sortable { cursor:pointer; user-select:none; transition:background .15s; }
@@ -118,6 +118,7 @@
     tbody tr:last-child { border-bottom:none; }
     tbody tr:nth-child(even) { background:#fffafa; }
     tbody tr:hover { background:#fff5f4; }
+    tbody tr.row-click { cursor:pointer; }
     td { padding:13px 16px; font-size:.88rem; vertical-align:middle; }
     .empty-state { text-align:center; padding:56px 20px; color:var(--gray-text); }
     .empty-icon { font-size:2.5rem; margin-bottom:12px; opacity:.5; }
@@ -135,6 +136,7 @@
     .btn-dots:hover { background:var(--blue-pale); border-color:var(--blue); }
     .btn-dots.open { background:var(--blue); color:#fff; border-color:var(--blue); }
     .dropdown-menu { display:none; position:absolute; right:0; top:calc(100% + 6px); background:#fff; border-radius:10px; box-shadow:0 6px 28px rgba(214,90,90,.18); border:1px solid #f6dcda; min-width:152px; z-index:300; overflow:hidden; }
+    .dropdown-menu.up { top:auto; bottom:calc(100% + 6px); }
     .dropdown-menu.open { display:block; animation:ddFadeIn .15s ease; }
     @keyframes ddFadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
     .dropdown-item { display:flex; align-items:center; gap:10px; padding:10px 14px; font-size:.87rem; font-weight:600; color:var(--text); cursor:pointer; border:none; background:none; width:100%; text-align:left; font-family:'Sarabun',sans-serif; border-bottom:1px solid #fbeceb; }
@@ -247,6 +249,53 @@
     @media (max-width:640px) { .dev-row { grid-template-columns:1fr 40px 36px; } .dev-row .dev-type { grid-column:1 / -1; } }
     @media (max-width:640px) { .form-grid { grid-template-columns:1fr; } .search-box { margin-left:0; width:100%; } .search-input { flex:1; min-width:0; } .dev-extra .dev-cond { width:100%; } }
 
+
+    /* ── การ์ด (มือถือ) ── */
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+    .rec-card { background:#fff; border:1px solid var(--gray-border); border-radius:14px; box-shadow:var(--shadow-sm); padding:14px 16px; cursor:pointer; display:flex; flex-direction:column; gap:10px; transition:transform .15s, box-shadow .15s, border-color .15s; }
+    .rec-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:var(--blue-light); }
+    .rec-card.sel { background:#ffe9e7; border-color:var(--blue); }
+    .rec-card.bulk-off { opacity:.55; cursor:default; }
+    .rc-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .rc-date { font-size:.8rem; color:var(--gray-text); font-weight:600; display:flex; align-items:center; gap:8px; }
+    .rc-body { display:flex; flex-direction:column; gap:6px; }
+    .rc-sn { font-size:.92rem; font-weight:700; color:var(--text); word-break:break-all; }
+    .rc-sn small { font-size:.74rem; color:var(--gray-text); font-weight:600; margin-right:6px; }
+    .rc-op { font-size:.84rem; font-weight:600; }
+    .rc-foot { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+    .rc-more { font-size:.82rem; font-weight:700; color:var(--blue-light); }
+    .muted { color:#a99896; font-weight:400; }
+    .d1 { font-weight:700; font-size:.9rem; }
+    .sn-cell { font-weight:600; word-break:break-all; }
+
+    /* ── Pagination ── */
+    .sel-sm { padding:7px 10px; border:1.5px solid var(--gray-border); border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.86rem; color:var(--text); background:#fff; outline:none; cursor:pointer; }
+    .sel-sm:focus { border-color:var(--blue); }
+    .pager { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:16px; font-size:.88rem; }
+    .pager-left { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .pager-left label { display:inline-flex; align-items:center; gap:8px; font-weight:600; color:var(--gray-text); }
+    .pg { display:inline-flex; border:1px solid #dee2e6; border-radius:6px; overflow:hidden; background:#fff; }
+    .pg button { border:none; border-right:1px solid #dee2e6; background:#fff; color:#0d6efd; padding:7px 13px; min-width:38px; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:.88rem; }
+    .pg button:last-child { border-right:none; }
+    .pg button:not(:disabled):not(.active):hover { background:#e9f0ff; }
+    .pg button.active { background:#0d6efd; color:#fff; font-weight:700; }
+    .pg button:disabled { color:#9aa5b1; cursor:default; }
+
+    /* ── ติ๊กเลือกทั้งหมด (โหมดส่งเครื่อง) ── */
+    .bulk-all-wrap { display:none; align-items:center; gap:8px; font-weight:600; cursor:pointer; width:100%; }
+    .bulk-bar.active .bulk-all-wrap { display:flex; }
+
+    /* ── popup รายละเอียด ── */
+    #detailOverlay { z-index:500; }
+    .detail-modal { width:560px; }
+    .detail-status { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+    .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .dt-item { background:#fffafa; border:1px solid #f6e4e2; border-radius:10px; padding:10px 12px; min-width:0; }
+    .dt-item.full { grid-column:1 / -1; }
+    .dt-label { font-size:.74rem; font-weight:700; color:var(--gray-text); margin-bottom:3px; }
+    .dt-val { font-size:.92rem; font-weight:600; word-break:break-word; }
+    .detail-footer { padding:12px 22px 20px; display:flex; gap:8px; flex-wrap:wrap; }
+
     /* ══ รองรับโทรศัพท์ ══ */
     @media (max-width:720px) {
       html { -webkit-text-size-adjust:100%; }
@@ -281,20 +330,17 @@
       .bulk-bar .bulk-text { min-width:100%; }
       .bulk-bar .btn { flex:1; justify-content:center; }
 
-      /* ตาราง → การ์ดต่อรายการ */
-      .table-card { background:transparent; box-shadow:none; overflow:visible; }
-      .table-scroll { overflow:visible; }
-      table { min-width:0 !important; display:block; }
-      thead { display:none; }
-      tbody { display:block; }
-      tbody tr { display:block; position:relative; background:#fff !important; border:1px solid var(--gray-border); border-radius:12px; box-shadow:var(--shadow-sm); padding:10px 14px; margin-bottom:10px; }
-      tbody tr.sel { background:#ffe9e7 !important; border-color:var(--blue); }
-      tbody td { display:block; padding:0; }
-      tbody td[data-label] { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:6px 0; border-bottom:1px dashed #f3dedc; text-align:right; font-size:.88rem; word-break:break-word; }
-      tbody td[data-label]::before { content:attr(data-label); font-weight:700; color:var(--gray-text); font-size:.78rem; text-align:left; flex-shrink:0; }
-      tbody td.cell-act { position:absolute; top:6px; right:8px; border:none; }
-      tbody td.cell-act + td, tbody td:last-child { border-bottom:none; }
-      tbody td[data-label="ลำดับ"], tbody td[data-label="เลือก"] { padding-right:46px; }
+      /* การ์ดมือถือ */
+      .card-grid { grid-template-columns:1fr; gap:12px; }
+      .detail-modal { width:100%; max-width:96vw; }
+      .detail-grid { grid-template-columns:1fr; }
+      .detail-footer { padding:12px 14px 18px; }
+      .detail-footer .btn { flex:1 1 calc(50% - 8px); justify-content:center; padding:11px 8px; }
+      .pager { flex-direction:column; align-items:stretch; gap:12px; }
+      .pager-left { justify-content:space-between; }
+      .pg { align-self:center; }
+      .pg button { padding:8px 11px; min-width:36px; }
+      .pager select { font-size:16px; }
       .bulk-cb { width:22px; height:22px; }
       .dropdown-menu { min-width:170px; }
       .btn-dots { width:38px; height:38px; }
@@ -377,29 +423,47 @@
     <div class="bulk-text">📤 <strong>โหมดส่งเครื่อง</strong> — ติ๊กเลือกเครื่องที่จะส่ง (ใช้ช่องค้นหาได้ รายการที่ติ๊กไว้จะไม่หาย) · เลือกแล้ว <span class="bulk-count" id="bulkCount">0</span> เครื่อง</div>
     <button class="btn btn-blue" id="bulkConfirmBtn" disabled>✅ ยืนยันเครื่องที่เลือก</button>
     <button class="btn btn-gray" id="bulkCancelBtn">ยกเลิก</button>
+    <label class="bulk-all-wrap"><input type="checkbox" class="bulk-cb" id="bulkAll"/> เลือกทั้งหมดในหน้านี้</label>
   </div>
 
-  <div class="table-card">
+  <div id="viewTop"></div>
+
+  <!-- ตาราง (คอม) -->
+  <div class="table-card" id="tableCard">
     <div class="table-scroll">
       <table>
         <thead>
           <tr>
             <th id="thNum" style="width:52px">#</th>
             <th class="sortable" data-key="date">วันที่รับ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
-            <th class="sortable" data-key="sentDate">วันที่ส่ง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="type">ประเภท<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
-            <th class="sortable" data-key="condition">ลักษณะ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="serial">S/N<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="status">สถานะ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th class="sortable" data-key="operator">ผู้ดำเนินการ<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
-            <th class="sortable" data-key="receiver">ผู้รับเครื่อง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
-            <th class="sortable" data-key="sender">คนส่ง<span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></th>
             <th style="text-align:center;min-width:60px">จัดการ</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
+  </div>
+
+  <!-- การ์ด (มือถือ) -->
+  <div class="card-grid" id="cardGrid" style="display:none"></div>
+
+  <!-- แบ่งหน้า -->
+  <div class="pager" id="pager">
+    <div class="pager-left">
+      <label>แสดง
+        <select class="sel-sm" id="pageSizeSel">
+          <option value="5">5</option><option value="10">10</option><option value="15">15</option>
+          <option value="20">20</option><option value="25">25</option><option value="30">30</option>
+        </select>
+        รายการ/หน้า
+      </label>
+      <span id="pagerInfo"></span>
+    </div>
+    <div class="pg" id="pgBtns"></div>
   </div>
 </div>
 
@@ -409,7 +473,27 @@
   เวลาทำการ 09:00 – 18:00 น.
 </footer>
 
-<!-- ══ LIST MODAL (กดการ์ด) ══ -->
+<!-- ══ DETAIL MODAL (ดูรายละเอียดเพิ่มเติม) ══ -->
+<div class="modal-overlay" id="detailOverlay">
+  <div class="modal detail-modal">
+    <div class="modal-header"><span>🔎 รายละเอียดอุปกรณ์</span><button class="modal-close" id="closeDetail">✕</button></div>
+    <div class="modal-body">
+      <div class="detail-status">
+        <div><span class="type-tag" id="dtType" style="font-size:.95rem"></span><span class="cap-tag" id="dtCap" style="display:none"></span></div>
+        <div id="dtStatus"></div>
+      </div>
+      <div class="detail-grid" id="dtGrid"></div>
+    </div>
+    <div class="detail-footer">
+      <button class="btn btn-outline" id="dtEdit">✏️ แก้ไข</button>
+      <button class="btn btn-blue" id="dtSend">📤 ส่งเครื่อง</button>
+      <button class="btn btn-red" id="dtDelete">🗑️ ลบ</button>
+      <button class="btn btn-gray" id="dtClose">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIST MODAL (กดการ์ดภาพรวม) ══ -->
 <div class="modal-overlay" id="listOverlay">
   <div class="modal list-modal">
     <div class="modal-header"><span id="listTitle">รายการ</span><button class="modal-close" id="closeList">✕</button></div>
@@ -626,7 +710,14 @@
   if (navHomeEl) navHomeEl.href = HOME_URL;
 
   let tableData = [];
-  let sortKey = null, sortDir = null;
+  let sortKey = 'date', sortDir = 'desc';
+  const PAGE_MIN = 5, PAGE_MAX = 30, PAGE_DEFAULT = 15;
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  let page = 1;
+  let pageSize = (() => { const n = parseInt(lsGet('itf_acc_ps'), 10); return (n >= PAGE_MIN && n <= PAGE_MAX && n % 5 === 0) ? n : PAGE_DEFAULT; })();
+  let detailIdx = null;
+  const mqMobile = window.matchMedia('(max-width: 720px)');   // มือถือ = การ์ด · คอม = ตาราง
   let searchTerm = '';
   let typeFilter = '';
   let editingIdx = null, pendingDeleteIdx = null;
@@ -670,8 +761,16 @@
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
   function showMsg(icon, msg) {
-    document.getElementById('tableBody').innerHTML =
-      `<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">${icon}</div><p>${msg}</p></div></td></tr>`;
+    const html = `<div class="empty-state"><div class="empty-icon">${icon}</div><p>${msg}</p></div>`;
+    applyViewVisibility();
+    document.getElementById('tableBody').innerHTML = `<tr><td colspan="7">${html}</td></tr>`;
+    document.getElementById('cardGrid').innerHTML = `<div style="grid-column:1/-1;background:#fff;border-radius:12px;box-shadow:var(--shadow-sm)">${html}</div>`;
+    document.getElementById('pager').style.display = 'none';
+  }
+  function applyViewVisibility() {
+    const card = mqMobile.matches;
+    document.getElementById('tableCard').style.display = card ? 'none' : '';
+    document.getElementById('cardGrid').style.display  = card ? '' : 'none';
   }
 
   // ── Popup ข้อผิดพลาด (แทน alert) ─────────────────────────────────────────
@@ -746,13 +845,28 @@
     }).join('');
   }
 
-  // ── Table ─────────────────────────────────────────────────────────────────
-  function renderTable() {
+  // ── Table / Card ──────────────────────────────────────────────────────────
+  function actionMenu(idx, up) {
+    return `<div class="action-wrap" onclick="event.stopPropagation()">
+      <button class="btn-dots" onclick="toggleDropdown(${idx}, event)" title="จัดการ">⋮</button>
+      <div class="dropdown-menu${up ? ' up' : ''}" id="dd-${idx}">
+        <button class="dropdown-item" onclick="closeAllDropdowns(); openDetail(${idx})"><span class="di-icon di-blue">🔎</span> ดูรายละเอียด</button>
+        <button class="dropdown-item" onclick="closeAllDropdowns(); askSend(${idx})"><span class="di-icon di-blue">📤</span> ส่งเครื่อง</button>
+        <button class="dropdown-item" onclick="closeAllDropdowns(); openEdit(${idx})"><span class="di-icon di-orange">✏️</span> แก้ไขข้อมูล</button>
+        <button class="dropdown-item del" onclick="closeAllDropdowns(); askDelete(${idx})"><span class="di-icon di-red">🗑️</span> ลบข้อมูล</button>
+      </div>
+    </div>`;
+  }
+  function typeBlock(r) {
+    return `<span class="type-tag">${escHtml(r.type) || '—'}</span>${r.capacity ? `<span class="cap-tag">${escHtml(r.capacity)}</span>` : ''}`;
+  }
+  function opText(r) { return hasOp(r) ? escHtml(r.operator) : '<span class="muted">—</span>'; }
+
+  function getFilteredSorted() {
     const q = searchTerm.toLowerCase();
     let rows = tableData.map((r, origIdx) => ({ ...r, origIdx })).filter(r => !r.deleted)
       .filter(r => !typeFilter || r.type === typeFilter)
       .filter(r => !q || [r.type, r.serial, r.operator, r.receiver, r.sender, r.condition, r.capacity].some(v => String(v || '').toLowerCase().includes(q)));
-
     if (sortKey) {
       rows.sort((a, b) => {
         let va = a[sortKey] || '', vb = b[sortKey] || '';
@@ -767,60 +881,149 @@
         return (va < vb ? -1 : va > vb ? 1 : 0) * (sortDir === 'asc' ? 1 : -1);
       });
     }
+    return rows;
+  }
 
-    visibleRows = rows;
+  function renderTable() {
+    const all = getFilteredSorted();
+    const total = all.length;
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+    if (page > pages) page = pages;
+    if (page < 1) page = 1;
+    const start = (page - 1) * pageSize;
+    const rows = all.slice(start, start + pageSize);
+
+    visibleRows = rows;                       // "เลือกทั้งหมด" = เฉพาะรายการในหน้านี้
     renderNumHeader();
 
-    if (!rows.length) { showMsg('📭', typeFilter ? `ไม่พบข้อมูลของ ${escHtml(typeFilter)}` : 'ไม่พบข้อมูล'); updateBulkBar(); return; }
+    if (!total) { showMsg('📭', typeFilter ? `ไม่พบข้อมูลของ ${escHtml(typeFilter)}` : 'ไม่พบข้อมูล'); updateBulkBar(); return; }
 
+    applyViewVisibility();
+    document.getElementById('pager').style.display = '';
+
+    // ตาราง (คอม)
     document.getElementById('tableBody').innerHTML = rows.map((r, i) => {
       const selectable = !r.sentDate;                 // ส่งแล้วจะเลือกซ้ำไม่ได้ในโหมดนี้
       const checked = bulkSel.has(r.origIdx);
       const firstCell = bulkMode
         ? `<input type="checkbox" class="bulk-cb" ${selectable ? '' : 'disabled'} ${checked && selectable ? 'checked' : ''} title="${selectable ? 'เลือกเครื่องนี้' : 'ส่งไปแล้ว'}"/>`
-        : String(i + 1);
-      const trCls = bulkMode ? (selectable ? 'bulk-row' : 'bulk-off') + (checked && selectable ? ' sel' : '') : '';
+        : String(start + i + 1);
+      const trCls = bulkMode ? (selectable ? 'bulk-row' : 'bulk-off') + (checked && selectable ? ' sel' : '') : 'row-click';
+      const up = rows.length > 3 && i >= rows.length - 2;
       return `<tr data-idx="${r.origIdx}" class="${trCls}">
-      <td data-label="${bulkMode ? 'เลือก' : 'ลำดับ'}">${firstCell}</td>
-      <td data-label="วันที่รับ">${formatDate(r.date)}</td>
-      <td data-label="วันที่ส่ง">${formatDate(r.sentDate, '—')}</td>
-      <td data-label="ประเภท"><span class="type-tag">${escHtml(r.type) || '—'}</span>${r.capacity ? `<span class="cap-tag">${escHtml(r.capacity)}</span>` : ''}</td>
-      <td data-label="ลักษณะ">${condChip(r.condition)}</td>
-      <td data-label="S/N">${escHtml(r.serial) || '—'}</td>
-      <td data-label="สถานะ">${statusChip(r.status)}</td>
-      <td data-label="ผู้ดำเนินการ">${escHtml(r.operator) || '—'}</td>
-      <td data-label="ผู้รับเครื่อง">${escHtml(r.receiver) || '—'}</td>
-      <td data-label="คนส่ง">${escHtml(r.sender) || '—'}</td>
-      <td class="cell-act" style="text-align:center">
-        <div class="action-wrap">
-          <button class="btn-dots" onclick="toggleDropdown(${r.origIdx}, event)" title="จัดการ">⋮</button>
-          <div class="dropdown-menu" id="dd-${r.origIdx}">
-            <button class="dropdown-item" onclick="closeAllDropdowns(); askSend(${r.origIdx})"><span class="di-icon di-blue">📤</span> ส่งเครื่อง</button>
-            <button class="dropdown-item" onclick="closeAllDropdowns(); openEdit(${r.origIdx})"><span class="di-icon di-orange">✏️</span> แก้ไขข้อมูล</button>
-            <button class="dropdown-item del" onclick="closeAllDropdowns(); askDelete(${r.origIdx})"><span class="di-icon di-red">🗑️</span> ลบข้อมูล</button>
-          </div>
-        </div>
-      </td>
+      <td>${firstCell}</td>
+      <td><div class="d1">${formatDate(r.date)}</div></td>
+      <td>${typeBlock(r)}</td>
+      <td class="sn-cell">${escHtml(r.serial) || '—'}</td>
+      <td>${statusChip(r.status)}</td>
+      <td>${opText(r)}</td>
+      <td class="cell-act" style="text-align:center">${actionMenu(r.origIdx, up)}</td>
     </tr>`;
     }).join('');
+
+    // การ์ด (มือถือ)
+    document.getElementById('cardGrid').innerHTML = rows.map(r => {
+      const selectable = !r.sentDate;
+      const checked = bulkSel.has(r.origIdx);
+      const cls = 'rec-card' + (bulkMode ? (selectable ? '' : ' bulk-off') + (checked && selectable ? ' sel' : '') : '');
+      const cb = bulkMode ? `<input type="checkbox" class="bulk-cb" ${selectable ? '' : 'disabled'} ${checked && selectable ? 'checked' : ''}/>` : '';
+      return `<div class="${cls}" data-idx="${r.origIdx}">
+        <div class="rc-top">
+          <span class="rc-date">${cb}🕐 รับ ${formatDate(r.date)}</span>
+          ${statusChip(r.status)}
+        </div>
+        <div class="rc-body">
+          <div>${typeBlock(r)}</div>
+          <div class="rc-sn"><small>S/N</small>${escHtml(r.serial) || '—'}</div>
+          <div class="rc-op">👤 ${hasOp(r) ? escHtml(r.operator) : '<span class="muted">ยังไม่มีผู้ดำเนินการ</span>'}</div>
+        </div>
+        <div class="rc-foot">
+          <span class="rc-more">${bulkMode ? (selectable ? 'แตะเพื่อเลือก' : 'ส่งไปแล้ว') : 'ดูรายละเอียดเพิ่มเติม ›'}</span>
+          ${bulkMode ? '' : actionMenu(r.origIdx, true)}
+        </div>
+      </div>`;
+    }).join('');
+
+    renderPager(total, start, rows.length, pages);
     updateBulkBar();
   }
 
+  // ── Pagination ────────────────────────────────────────────────────────────
+  function pageList(cur, total) {
+    const rng = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+    if (total <= 7) return rng(1, total);
+    if (cur <= 4) return [...rng(1, 5), '…', total];
+    if (cur >= total - 3) return [1, '…', ...rng(total - 4, total)];
+    return [1, '…', cur - 1, cur, cur + 1, '…', total];
+  }
+  function renderPager(total, start, count, pages) {
+    document.getElementById('pagerInfo').textContent = `แสดง ${start + 1} ถึง ${start + count} จาก ${total} แถว`;
+    document.getElementById('pageSizeSel').value = String(pageSize);
+    let h = `<button type="button" data-p="${page - 1}" ${page <= 1 ? 'disabled' : ''}>ก่อนหน้า</button>`;
+    pageList(page, pages).forEach(p => {
+      h += p === '…' ? `<button type="button" disabled>…</button>`
+        : `<button type="button" data-p="${p}" class="${p === page ? 'active' : ''}">${p}</button>`;
+    });
+    h += `<button type="button" data-p="${page + 1}" ${page >= pages ? 'disabled' : ''}>ถัดไป</button>`;
+    document.getElementById('pgBtns').innerHTML = h;
+  }
+  document.getElementById('pgBtns').addEventListener('click', e => {
+    const b = e.target.closest('button[data-p]');
+    if (!b || b.disabled) return;
+    page = parseInt(b.dataset.p, 10);
+    renderTable();
+    document.getElementById('viewTop').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('pageSizeSel').addEventListener('change', e => {
+    let n = parseInt(e.target.value, 10);
+    if (!(n >= PAGE_MIN)) n = PAGE_MIN;
+    if (n > PAGE_MAX) n = PAGE_MAX;
+    pageSize = n; lsSet('itf_acc_ps', n); page = 1; renderTable();
+  });
+  const onMq = () => renderTable();
+  if (mqMobile.addEventListener) mqMobile.addEventListener('change', onMq); else if (mqMobile.addListener) mqMobile.addListener(onMq);
+
+  // ── Detail modal ──────────────────────────────────────────────────────────
+  function openDetail(idx) {
+    const r = tableData[idx];
+    if (!r) return;
+    detailIdx = idx;
+    document.getElementById('dtType').textContent = r.type || '—';
+    const cap = document.getElementById('dtCap');
+    cap.style.display = r.capacity ? '' : 'none'; cap.textContent = r.capacity || '';
+    document.getElementById('dtStatus').innerHTML = statusChip(r.status);
+    const val = v => (!v || String(v).trim() === '' || v === '—') ? '<span class="muted">—</span>' : escHtml(String(v).trim());
+    const items = [
+      ['📥 วันที่รับ', escHtml(formatDate(r.date))],
+      ['📤 วันที่ส่ง', r.sentDate ? escHtml(formatDate(r.sentDate)) : '<span class="muted">ยังไม่ได้ส่ง</span>'],
+      ['🔖 S/N', val(r.serial), true],
+      ['✨ ลักษณะ', condChip(r.condition)],
+      ['💾 ความจุ', val(r.capacity)],
+      ['👤 ผู้ดำเนินการ', hasOp(r) ? escHtml(r.operator) : '<span class="muted">—</span>'],
+      ['📥 ผู้รับเครื่อง', val(r.receiver)],
+      ['📦 คนส่ง', val(r.sender)]
+    ];
+    document.getElementById('dtGrid').innerHTML = items.map(it =>
+      `<div class="dt-item${it[2] ? ' full' : ''}"><div class="dt-label">${it[0]}</div><div class="dt-val">${it[1]}</div></div>`).join('');
+    document.getElementById('detailOverlay').classList.add('active');
+  }
+  function closeDetail() { document.getElementById('detailOverlay').classList.remove('active'); }
+  document.getElementById('closeDetail').addEventListener('click', closeDetail);
+  document.getElementById('dtClose').addEventListener('click', closeDetail);
+  document.getElementById('detailOverlay').addEventListener('click', e => { if (e.target.id === 'detailOverlay') closeDetail(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+  document.getElementById('dtEdit').addEventListener('click',   () => { const i = detailIdx; closeDetail(); if (i !== null) openEdit(i); });
+  document.getElementById('dtSend').addEventListener('click',   () => { const i = detailIdx; closeDetail(); if (i !== null) askSend(i); });
+  document.getElementById('dtDelete').addEventListener('click', () => { const i = detailIdx; closeDetail(); if (i !== null) askDelete(i); });
+
   function renderAll() { renderCards(); renderTable(); }
 
-  // หัวคอลัมน์ "#" → ในโหมดส่งเครื่องกลายเป็นช่องติ๊ก "เลือกทั้งหมดที่แสดงอยู่"
-  function renderNumHeader() {
-    const th = document.getElementById('thNum');
-    if (bulkMode) {
-      th.innerHTML = '<input type="checkbox" class="bulk-cb" id="bulkAll" title="เลือกทั้งหมดที่แสดงอยู่"/>';
-      document.getElementById('bulkAll').addEventListener('change', e => {
-        visibleRows.forEach(r => { if (r.sentDate) return; e.target.checked ? bulkSel.add(r.origIdx) : bulkSel.delete(r.origIdx); });
-        renderTable();
-      });
-    } else {
-      th.textContent = '#';
-    }
-  }
+  // ช่อง "เลือกทั้งหมดในหน้านี้" อยู่ในแถบโหมดส่งเครื่อง (ใช้ได้ทั้งตารางและการ์ด)
+  function renderNumHeader() { document.getElementById('thNum').textContent = '#'; }
+  document.getElementById('bulkAll').addEventListener('change', e => {
+    visibleRows.forEach(r => { if (r.sentDate) return; e.target.checked ? bulkSel.add(r.origIdx) : bulkSel.delete(r.origIdx); });
+    renderTable();
+  });
 
   // ── โหมดส่งเครื่องหลายเครื่อง ─────────────────────────────────────────────
   function updateBulkBar() {
@@ -847,20 +1050,22 @@
   document.getElementById('bulkSendBtn').addEventListener('click', () => setBulkMode(!bulkMode));
   document.getElementById('bulkCancelBtn').addEventListener('click', () => setBulkMode(false));
 
-  // ติ๊ก/เลิกติ๊ก (กดที่แถวก็ได้)
-  document.getElementById('tableBody').addEventListener('click', e => {
-    if (!bulkMode) return;
+  // กดแถว/การ์ด: โหมดส่งเครื่อง = ติ๊กเลือก · ปกติ = เปิดรายละเอียด
+  function onRowClick(e, sel) {
     if (e.target.closest('.action-wrap')) return;
-    const tr = e.target.closest('tr[data-idx]');
-    if (!tr) return;
-    const cb = tr.querySelector('.bulk-cb');
+    const el = e.target.closest(sel);
+    if (!el) return;
+    const idx = +el.dataset.idx;
+    if (!bulkMode) { openDetail(idx); return; }
+    const cb = el.querySelector('.bulk-cb');
     if (!cb || cb.disabled) return;
     if (e.target !== cb) cb.checked = !cb.checked;
-    const idx = +tr.dataset.idx;
     if (cb.checked) bulkSel.add(idx); else bulkSel.delete(idx);
-    tr.classList.toggle('sel', cb.checked);
+    el.classList.toggle('sel', cb.checked);
     updateBulkBar();
-  });
+  }
+  document.getElementById('tableBody').addEventListener('click', e => onRowClick(e, 'tr[data-idx]'));
+  document.getElementById('cardGrid').addEventListener('click', e => onRowClick(e, '.rec-card'));
 
   // กดยืนยันเครื่องที่เลือก → popup ใส่ผู้ส่ง + ผู้ดำเนินการ
   const bulkSendOverlay = document.getElementById('bulkSendOverlay');
@@ -953,6 +1158,7 @@
       const k = th.dataset.key;
       if (sortKey === k) { if (sortDir === 'asc') sortDir = 'desc'; else { sortKey = sortDir = null; } }
       else { sortKey = k; sortDir = 'asc'; }
+      page = 1;
       document.querySelectorAll('thead th.sortable').forEach(h => {
         h.classList.remove('sort-asc', 'sort-desc');
         if (h.dataset.key === sortKey) h.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
@@ -962,14 +1168,14 @@
   });
 
   const searchInput = document.getElementById('searchInput');
-  searchInput.addEventListener('input', () => { searchTerm = searchInput.value.trim(); renderTable(); });
-  document.getElementById('searchBtn').addEventListener('click', () => { searchTerm = searchInput.value.trim(); renderTable(); });
+  searchInput.addEventListener('input', () => { searchTerm = searchInput.value.trim(); page = 1; renderTable(); });
+  document.getElementById('searchBtn').addEventListener('click', () => { searchTerm = searchInput.value.trim(); page = 1; renderTable(); });
   document.getElementById('showAllBtn').addEventListener('click', () => {
-    typeFilter = ''; searchTerm = ''; searchInput.value = ''; renderTable();
+    typeFilter = ''; searchTerm = ''; searchInput.value = ''; page = 1; renderTable();
   });
   document.getElementById('reloadBtn').addEventListener('click', () => {
-    sortKey = sortDir = null; typeFilter = ''; searchTerm = ''; searchInput.value = '';
-    document.querySelectorAll('thead th.sortable').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+    sortKey = 'date'; sortDir = 'desc'; typeFilter = ''; searchTerm = ''; searchInput.value = ''; page = 1;
+    document.querySelectorAll('thead th.sortable').forEach(h => { h.classList.remove('sort-asc', 'sort-desc'); if (h.dataset.key === 'date') h.classList.add('sort-desc'); });
     loadData();
   });
 
@@ -1685,6 +1891,8 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScan(); });
 
   // ── Init ──────────────────────────────────────────────────────────────────
+  document.querySelectorAll('thead th.sortable').forEach(h => { if (h.dataset.key === sortKey) h.classList.add('sort-desc'); });
+  applyViewVisibility();
   loadData();
 </script>
 </body>
