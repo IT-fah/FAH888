@@ -544,7 +544,6 @@
       .search-box { order: 9; width: 100%; margin-left: 0; }
 
       /* มือถือ: ใช้การ์ดเสมอ */
-      .view-bar { display: none; }
       .card-grid { grid-template-columns: 1fr; gap: 12px; }
       .pager { flex-direction: column; align-items: stretch; gap: 12px; }
       .pager-left { justify-content: space-between; }
@@ -680,12 +679,7 @@
   </div>
 
   <!-- แถบเลือกมุมมอง + เรียงลำดับ -->
-  <div class="view-bar">
-    <div class="seg view-toggle" id="viewToggle">
-      <button type="button" data-view="table" class="active">▤ ตาราง</button>
-      <button type="button" data-view="card">▦ การ์ด</button>
-    </div>
-  </div>
+  <div id="viewTop"></div>
 
   <!-- มุมมองตาราง -->
   <div class="table-card" id="tableCard">
@@ -704,7 +698,7 @@
               <span class="th-inner">สถานะ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
             </th>
             <th class="sortable" data-key="cabinet">
-              <span class="th-inner">ตำแหน่ง / ผู้ดำเนินการ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
+              <span class="th-inner">เบอร์เครื่อง / ตำแหน่ง / ผู้ดำเนินการ <span class="sort-icon"><span class="arrow-up">▲</span><span class="arrow-down">▼</span></span></span>
             </th>
             <th style="text-align:center;min-width:60px">จัดการ</th>
           </tr>
@@ -988,7 +982,6 @@
   let editingIdx       = null;   // ← index ที่กำลัง edit
   let detailIdx        = null;   // ← index ที่เปิดดูรายละเอียด
   let page             = 1;
-  let viewMode         = lsGet('itf_view') === 'card' ? 'card' : 'table';
   let pageSize         = (() => {
     const n = parseInt(lsGet('itf_ps'), 10);
     return (n >= PAGE_MIN && n <= PAGE_MAX && n % 5 === 0) ? n : PAGE_DEFAULT;
@@ -1240,13 +1233,12 @@
   //  มุมมอง (ตาราง/การ์ด) + ข้อความโหลด/ผิดพลาด
   // ══════════════════════════════════════════════════════════════════════════
   const mqMobile = window.matchMedia('(max-width: 720px)');
-  function effectiveView() { return mqMobile.matches ? 'card' : viewMode; }
+  function effectiveView() { return mqMobile.matches ? 'card' : 'table'; }   // มือถือ = การ์ด · คอม = ตาราง
 
   function applyViewVisibility() {
     const v = effectiveView();
     document.getElementById('tableCard').style.display = v === 'table' ? '' : 'none';
     document.getElementById('cardGrid').style.display  = v === 'card'  ? '' : 'none';
-    document.querySelectorAll('#viewToggle button').forEach(b => b.classList.toggle('active', b.dataset.view === viewMode));
   }
 
   function showMsg(html) {
@@ -1265,13 +1257,6 @@
     showMsg(`<div class="empty-state"><div class="empty-icon">⚠️</div><p>${msg}</p></div>`);
   }
 
-  document.querySelectorAll('#viewToggle button').forEach(b => {
-    b.addEventListener('click', () => {
-      viewMode = b.dataset.view === 'card' ? 'card' : 'table';
-      lsSet('itf_view', viewMode);
-      renderTable();
-    });
-  });
   const onMqChange = () => renderTable();
   if (mqMobile.addEventListener) mqMobile.addEventListener('change', onMqChange);
   else if (mqMobile.addListener) mqMobile.addListener(onMqChange);
@@ -1341,7 +1326,6 @@
     h += '<div class="pills">';
     if (!isBlank(r.dept))    h += `<span class="tag tag-dept">🏢 ${escHtml(String(r.dept).trim())}</span>`;
     if (!isBlank(r.type))    h += `<span class="tag tag-type">💻 ${escHtml(String(r.type).trim())}</span>`;
-    if (!isBlank(r.machine)) h += `<span class="tag tag-mc">🖥️ เครื่อง ${escHtml(String(r.machine).trim())}</span>`;
     h += '</div>';
     return h;
   }
@@ -1349,9 +1333,13 @@
   // ก้อน: ตู้ที่ + ผู้ดำเนินการ + (ถ้าส่งแล้ว) วันที่ส่ง
   function locBlock(r) {
     const cab = isBlank(r.cabinet) ? '' : String(r.cabinet).trim();
-    let h = cab
+    const mc = isBlank(r.machine) ? '' : String(r.machine).trim();
+    let h = '<div class="pills" style="margin-top:0">';
+    if (mc) h += `<span class="tag tag-mc">🖥️ เครื่อง ${escHtml(mc)}</span>`;
+    h += cab
       ? `<span class="pill pill-cab${cab === 'อยู่นอกตู้' ? ' out' : ''}">🗄️ ${escHtml(cab)}</span>`
       : `<span class="muted" style="font-size:.82rem">🗄️ ยังไม่ระบุตำแหน่ง</span>`;
+    h += '</div>';
     h += hasOp(r)
       ? `<div class="loc-op">👤 ${escHtml(r.operator)}</div>`
       : `<div class="loc-op muted">👤 ยังไม่มีผู้ดำเนินการ</div>`;
@@ -1484,7 +1472,7 @@
     if (!b || b.disabled) return;
     page = parseInt(b.dataset.p, 10);
     renderTable();
-    const top = document.querySelector('.view-bar');
+    const top = document.getElementById('viewTop');
     if (top) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
