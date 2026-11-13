@@ -239,8 +239,9 @@ dialog h3{font-family:'Prompt',sans-serif;font-size:1.05rem;color:var(--navy)}
 <dialog id="xlDlg">
   <form method="dialog">
     <h3>ส่งออกเป็น Excel</h3>
-    <p class="dlg-note">เลือกข้อมูลที่ต้องการ · ช่วงเวลา: <span id="xlPeriod"></span><br>ไฟล์จะมีแผ่น “สรุป” และ “รายเดือน” เสมอ เมื่อเลือกเฉพาะประเภทเดียว จะเลือกข้อมูลในแผ่นรายการได้</p>
+    <p class="dlg-note">เลือกข้อมูลที่ต้องการ · ช่วงเวลา: <span id="xlPeriod"></span><br>ไฟล์จะมีแผ่น “สรุป” และ “รายเดือน” เสมอ เมื่อเลือกเฉพาะประเภทเดียว จะกรองรายการและเลือกข้อมูลในแผ่นรายการได้</p>
     <div id="xlOpts"></div>
+    <div id="xlFilt" hidden></div>
     <div id="xlCols" hidden></div>
     <div class="dlg-act"><button class="btn" value="cancel" formnovalidate>ยกเลิก</button><button class="btn pri" value="ok" id="xlOk">ดาวน์โหลด</button></div>
   </form>
@@ -401,7 +402,7 @@ function render() {
 
 function monthlyTable(year, keys) {
   const rows = MONTHS.map((_, m) => ({ m, src:{ emp:0, acc:0, store:0 }, inn:0, out:0, pend:0 }));
-  (keys ? records.filter(r => keys.includes(r.src)) : records).forEach(r => {
+  (keys ? records.filter(r => keys.includes(r.src) && xf(r)) : records).forEach(r => {
     const t = toTime(r.date);
     if (!isNaN(t)) { const d = new Date(t); if (d.getFullYear() === year) { const x = rows[d.getMonth()]; x.src[r.src]++; x.inn++; if (!isSent(r)) x.pend++; } }
     const t2 = toTime(r.sentDate);
@@ -492,9 +493,22 @@ const avgDays = l => { const d = l.map(daysTaken).filter(x => x !== null); retur
 const tally = (l, fn) => [...l.reduce((m, r) => { const k = fn(r) || 'ไม่ระบุ', a = m.get(k) || [0, 0]; a[isSent(r) ? 1 : 0]++; return m.set(k, a); }, new Map())].map(([k, [p, s]]) => [k, p + s, s, p]).sort((a, b) => b[1] - a[1]);
 
 const colsOf = key => [...COLS[key], ['_st','สถานะการส่ง'], ['_days','ใช้เวลารับ→ส่ง (วัน)']];
+// ตัวกรองแถวตามประเภทข้อมูล: เครื่องพนักงาน=แผนก · อุปกรณ์เสริม=ประเภท · เครื่องหน้าร้าน=ประเภทการเบิก
+const FILT = { emp:['แผนก', r => r.dept || 'ไม่ระบุ'], acc:['ประเภท', r => r.type || 'ไม่ระบุ'], store:['ประเภทการเบิก', r => r.wd || 'ไม่ระบุ'] };
+let xf = () => true;
+const updOk = () => { const none = id => !$(id).hidden && !$(id).querySelector('input:checked'); $('xlOk').disabled = none('xlFilt') || none('xlCols'); };
+function renderFilt(scope) {
+  const box = $('xlFilt');
+  if (scope === 'all') { box.hidden = true; box.innerHTML = ''; return; }
+  const [title, fn] = FILT[scope];
+  box.hidden = false;
+  box.innerHTML = `<div class="cols-h"><b>เลือก${title}</b><button type="button" class="lnk" id="fltAll">เลือกทั้งหมด / ล้าง</button></div><div class="cols">`
+    + countBy(periodRecords().filter(r => r.src === scope), fn).map(([k, n]) => `<label><input type="checkbox" name="flt" value="${esc(k)}" checked/> ${esc(k)} <span class="src">(${n})</span></label>`).join('') + '</div>';
+  $('fltAll').onclick = () => { const cs = box.querySelectorAll('input[name=flt]'), on = [...cs].some(c => !c.checked); cs.forEach(c => c.checked = on); updOk(); };
+}
 function sheetRows(key, sel) {
   const cols = colsOf(key).filter(([k]) => !sel || sel.includes(k));
-  return periodRecords().filter(r => r.src === key).sort((a, b) => toTime(a.date) - toTime(b.date)).map((r, i) => {
+  return periodRecords().filter(r => r.src === key && xf(r)).sort((a, b) => toTime(a.date) - toTime(b.date)).map((r, i) => {
     const o = { 'ลำดับ': i + 1 };
     cols.forEach(([k, h]) => { o[h] = k === '_st' ? (isSent(r) ? 'ส่งแล้ว' : 'ค้างส่ง') : k === '_days' ? (daysTaken(r) ?? '') : DATE_KEYS.includes(k) ? fmtDT(r.raw[k]) : (r.raw[k] ?? ''); });
     return o;
@@ -503,27 +517,28 @@ function sheetRows(key, sel) {
 
 function renderCols(scope) {
   const box = $('xlCols');
-  $('xlOk').disabled = false;
-  if (scope === 'all') { box.hidden = true; box.innerHTML = ''; return; }
+  renderFilt(scope);
+  if (scope === 'all') { box.hidden = true; box.innerHTML = ''; updOk(); return; }
   box.hidden = false;
   box.innerHTML = '<div class="cols-h"><b>เลือกข้อมูลที่ต้องการ</b><button type="button" class="lnk" id="colsAll">เลือกทั้งหมด / ล้าง</button></div><div class="cols">'
     + colsOf(scope).map(([k, h]) => `<label><input type="checkbox" name="col" value="${k}" checked/> ${h}</label>`).join('') + '</div>';
-  $('colsAll').onclick = () => { const cs = box.querySelectorAll('input[name=col]'), on = [...cs].some(c => !c.checked); cs.forEach(c => c.checked = on); $('xlOk').disabled = !on; };
+  $('colsAll').onclick = () => { const cs = box.querySelectorAll('input[name=col]'), on = [...cs].some(c => !c.checked); cs.forEach(c => c.checked = on); updOk(); };
+  updOk();
 }
 
 function summaryRows(keys, scopeName) {
-  const inL = periodRecords().filter(r => keys.includes(r.src));
+  const inL = periodRecords().filter(r => keys.includes(r.src) && xf(r));
   const rows = [['รายงานสรุปการรับ–ส่งอุปกรณ์ · IT Facilities Dept.'], ['วันที่ส่งออก', fmtDT(new Date().toISOString())], ['ช่วงเวลา', range.label], ['ขอบเขตข้อมูล', scopeName]];
   if (isSample) rows.push(['หมายเหตุ', 'ข้อมูลตัวอย่าง (ยังไม่ได้เชื่อมต่อข้อมูลจริง)']);
   rows.push([], ['1. สรุปภาพรวม'], ['หน้า', 'รับเข้า', 'ส่งออก', 'ค้างส่ง (จากที่รับ)', 'ส่งแล้ว (%)', 'เวลาเฉลี่ยรับ→ส่ง (วัน)']);
   let ti = 0, to = 0, tp = 0;
   keys.forEach(k => {
-    const l = inL.filter(r => r.src === k), o = records.filter(r => r.src === k && r.sentDate && inRange(toTime(r.sentDate))).length, p = l.filter(r => !isSent(r)).length;
+    const l = inL.filter(r => r.src === k), o = records.filter(r => r.src === k && xf(r) && r.sentDate && inRange(toTime(r.sentDate))).length, p = l.filter(r => !isSent(r)).length;
     ti += l.length; to += o; tp += p;
     rows.push([srcName(k), l.length, o, p, l.length ? Math.round((l.length - p) / l.length * 100) + '%' : '—', avgDays(l)]);
   });
   rows.push(['รวม', ti, to, tp, ti ? Math.round((ti - tp) / ti * 100) + '%' : '—', avgDays(inL)]);
-  rows.push(['ค้างส่งสะสมทั้งหมด (ทุกช่วงเวลา ณ ตอนนี้)', records.filter(r => keys.includes(r.src) && !isSent(r)).length]);
+  rows.push(['ค้างส่งสะสมทั้งหมด (ทุกช่วงเวลา ณ ตอนนี้)', records.filter(r => keys.includes(r.src) && xf(r) && !isSent(r)).length]);
   [['2. สรุปตามสถานะ', 'สถานะ', r => r.status], ['3. สรุปตามผู้ดำเนินการ', 'ผู้ดำเนินการ', r => r.operator], ['4. สรุปตามผู้รับเครื่อง', 'ผู้รับเครื่อง', r => r.receiver]].forEach(([t, h, fn]) => {
     rows.push([], [t], [h, 'ทั้งหมด', 'ส่งแล้ว', 'ค้างส่ง']); tally(inL, fn).forEach(x => rows.push(x));
   });
@@ -537,10 +552,11 @@ function openXlsxDialog() {
   $('xlDlg').returnValue = ''; renderCols('all'); $('xlDlg').showModal();
 }
 
-function exportXlsx(scope, cols) {
+function exportXlsx(scope, cols, vals) {
   if (!records.length) return;
   if (typeof XLSX === 'undefined') { exportCsvFallback(); return; }
-  const keys = scope === 'all' ? SOURCES.map(s => s.key) : [scope], scopeName = scope === 'all' ? 'ทั้งหมด (เครื่องพนักงาน · อุปกรณ์เสริม · เครื่องหน้าร้าน)' : srcName(scope);
+  const keys = scope === 'all' ? SOURCES.map(s => s.key) : [scope], scopeName = scope === 'all' ? 'ทั้งหมด (เครื่องพนักงาน · อุปกรณ์เสริม · เครื่องหน้าร้าน)' : srcName(scope) + (vals ? ' · ' + FILT[scope][0] + ': ' + vals.join(', ') : '');
+  xf = vals ? r => r.src !== scope || vals.includes(FILT[scope][1](r)) : () => true;
   const wb = XLSX.utils.book_new();
   const sum = XLSX.utils.aoa_to_sheet(summaryRows(keys, scopeName));
   sum['!cols'] = [{ wch: 36 }, { wch: 14 }, { wch: 12 }, { wch: 20 }, { wch: 14 }, { wch: 22 }];
@@ -559,6 +575,7 @@ function exportXlsx(scope, cols) {
     if (rows.length) ws['!autofilter'] = { ref: ws['!ref'] };
     XLSX.utils.book_append_sheet(wb, ws, srcName(k));
   });
+  xf = () => true;
   XLSX.writeFile(wb, 'IT-Facilities_' + scope + '_' + fileTag() + (isSample ? '_ตัวอย่าง' : '') + '.xlsx');
 }
 
@@ -588,12 +605,14 @@ $('toD').addEventListener('change', e => { period.to = e.target.value; saveP(); 
 document.addEventListener('click', e => { const m = $('exportMenu'); if (m.open && (!m.contains(e.target) || e.target.closest('.items button'))) m.open = false; });
 $('xlsxBtn').addEventListener('click', openXlsxDialog);
 $('xlOpts').addEventListener('change', e => renderCols(e.target.value));
-$('xlCols').addEventListener('change', () => { $('xlOk').disabled = !$('xlCols').querySelector('input:checked'); });
+$('xlCols').addEventListener('change', updOk);
+$('xlFilt').addEventListener('change', updOk);
 $('xlDlg').addEventListener('close', () => {
   const d = $('xlDlg');
   if (d.returnValue !== 'ok') return;
   const sc = (d.querySelector('input[name=scope]:checked') || {}).value || 'all';
-  exportXlsx(sc, sc === 'all' ? null : [...d.querySelectorAll('input[name=col]:checked')].map(c => c.value));
+  const fl = [...d.querySelectorAll('input[name=flt]')], on = fl.filter(c => c.checked).map(c => c.value);
+  exportXlsx(sc, sc === 'all' ? null : [...d.querySelectorAll('input[name=col]:checked')].map(c => c.value), sc === 'all' || on.length === fl.length ? null : on);
 });
 $('pdfBtn').addEventListener('click', exportPdf);
 $('refreshBtn').addEventListener('click', loadAll);
