@@ -17,6 +17,7 @@
       --green-light:#43a047;
       --orange:     #e65100;
       --red:        #c62828;
+      --slate:      #37474f;
       --gray-bg:    #f5f7fa;
       --gray-card:  #ffffff;
       --gray-border:#dde3ec;
@@ -182,6 +183,24 @@
     td { padding: 14px 16px; font-size: 0.88rem; vertical-align: middle; }
     .td-no { color: var(--gray-text); font-weight: 700; width: 48px; }
 
+    /* ── แถวที่ส่งเครื่องแล้ว = สีเข้ม ── */
+    tbody tr.row-sent,
+    tbody tr.row-sent:nth-child(even) { background: var(--slate); border-bottom-color: #2b373d; }
+    tbody tr.row-sent td,
+    tbody tr.row-sent td.sorted-col { background: var(--slate); color: #eceff1; }
+    tbody tr.row-sent:hover td,
+    tbody tr.row-sent:hover td.sorted-col { background: #2c383e; }
+    tbody tr.row-sent .td-no { color: #b0bec5; }
+    tbody tr.row-sent .d1 { color: #fff; }
+    tbody tr.row-sent .d2,
+    tbody tr.row-sent .p-id { color: #b0bec5; }
+    tbody tr.row-sent .p-name { color: #fff; }
+    tbody tr.row-sent .loc-op { color: #eceff1; }
+    tbody tr.row-sent .loc-op.muted,
+    tbody tr.row-sent .muted { color: #90a4ae; }
+    tbody tr.row-sent .loc-sent { color: #a5d6a7; }
+    tbody tr.row-sent .tag-type { background: #90a4ae; color: #102027; }
+
     .empty-state { text-align: center; padding: 64px 20px; color: var(--gray-text); }
     .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
     .empty-state p { font-size: 0.9rem; }
@@ -223,6 +242,20 @@
     .rc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
     .rc-more { font-size: .82rem; font-weight: 700; color: var(--blue-light); }
 
+    /* การ์ด (มือถือ) ที่ส่งเครื่องแล้ว = สีเข้ม */
+    .rec-card.sent { background: var(--slate); border-color: #2b373d; }
+    .rec-card.sent:hover { border-color: #607d8b; }
+    .rec-card.sent .rc-date,
+    .rec-card.sent .p-id { color: #b0bec5; }
+    .rec-card.sent .p-name { color: #fff; }
+    .rec-card.sent .rc-loc { background: rgba(255,255,255,.08); }
+    .rec-card.sent .loc-op { color: #eceff1; }
+    .rec-card.sent .loc-op.muted,
+    .rec-card.sent .muted { color: #90a4ae; }
+    .rec-card.sent .loc-sent { color: #a5d6a7; }
+    .rec-card.sent .tag-type { background: #90a4ae; color: #102027; }
+    .rec-card.sent .rc-more { color: #90caf9; }
+
     /* ── Pagination ── */
     .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; font-size: .88rem; }
     .pager-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
@@ -247,6 +280,7 @@
     .info-card.green  { border-left-color: var(--green-light); } .info-card.green  .ic-value { color: var(--green); }
     .info-card.red    { border-left-color: var(--red); }         .info-card.red    .ic-value { color: var(--red); }
     .info-card.orange { border-left-color: var(--orange); }      .info-card.orange .ic-value { color: var(--orange); }
+    .info-card.slate  { border-left-color: var(--slate); }       .info-card.slate  .ic-value { color: var(--slate); }
 
     /* ══════════════════════════════════════
        3-DOT ACTION DROPDOWN
@@ -661,6 +695,12 @@
       <div class="ic-sub">อยู่ระหว่างรอดำเนินการ</div>
       <div class="ic-hint">👆 คลิกดูรายชื่อ</div>
     </div>
+    <div class="info-card slate clickable" onclick="openStatList('sent')">
+      <div class="ic-label">ส่งเครื่องแล้ว</div>
+      <div class="ic-value" id="stat-sent">—</div>
+      <div class="ic-sub">ส่งเครื่องเรียบร้อย</div>
+      <div class="ic-hint">👆 คลิกดูรายชื่อ</div>
+    </div>
   </div>
 
   <div class="section-title">📋 รายการส่งเครื่องพนักงาน</div>
@@ -941,10 +981,7 @@
       <div class="list-scroll">
         <table class="list-table">
           <thead>
-            <tr>
-              <th>#</th><th>ID / ชื่อ-สกุล</th><th>เบอร์เครื่อง</th>
-              <th>แผนก</th><th>ประเภท</th><th>สถานะ</th><th>ตู้ที่</th>
-            </tr>
+            <tr id="listHead"></tr>
           </thead>
           <tbody id="listBody"></tbody>
         </table>
@@ -1007,6 +1044,9 @@
     if (s === 'ส่งเครื่องแล้ว')          return `<span class="chip chip-blue">📤 ${t}</span>`;
     return `<span class="chip chip-blue">${t || '—'}</span>`;
   }
+
+  // เครื่องที่ส่งแล้ว (ตารางจะซ่อนเบอร์เครื่อง/ตู้ และแสดงแถวสีเข้ม)
+  function isSent(r) { return String(r.status || '').trim() === 'ส่งเครื่องแล้ว'; }
 
   function formatDate(dateStr) {
     if (!dateStr) return '—';
@@ -1331,19 +1371,24 @@
     return h;
   }
 
-  // ก้อน: ตู้ที่ + ผู้ดำเนินการ + (ถ้าส่งแล้ว) วันที่ส่ง
+  // ก้อน: เบอร์เครื่อง + ตู้ที่ + ผู้ดำเนินการ + (ถ้าส่งแล้ว) วันที่ส่ง
+  // ถ้าส่งเครื่องแล้ว จะไม่แสดงเบอร์เครื่อง / ตู้ที่ (ข้อมูลยังอยู่ในชีท และดูได้ในหน้ารายละเอียด)
   function locBlock(r) {
-    const cab = isBlank(r.cabinet) ? '' : String(r.cabinet).trim();
-    const mc = isBlank(r.machine) ? '' : String(r.machine).trim();
-    let h = '<div class="pills" style="margin-top:0">';
-    if (mc) h += `<span class="tag tag-mc">🖥️ เครื่อง ${escHtml(mc)}</span>`;
-    h += cab
-      ? `<span class="pill pill-cab${cab === 'อยู่นอกตู้' ? ' out' : ''}">🗄️ ${escHtml(cab)}</span>`
-      : `<span class="muted" style="font-size:.82rem">🗄️ ยังไม่ระบุตำแหน่ง</span>`;
-    h += '</div>';
+    let h = '';
+    if (!isSent(r)) {
+      const cab = isBlank(r.cabinet) ? '' : String(r.cabinet).trim();
+      const mc = isBlank(r.machine) ? '' : String(r.machine).trim();
+      h += '<div class="pills" style="margin-top:0">';
+      if (mc) h += `<span class="tag tag-mc">🖥️ เครื่อง ${escHtml(mc)}</span>`;
+      h += cab
+        ? `<span class="pill pill-cab${cab === 'อยู่นอกตู้' ? ' out' : ''}">🗄️ ${escHtml(cab)}</span>`
+        : `<span class="muted" style="font-size:.82rem">🗄️ ยังไม่ระบุตำแหน่ง</span>`;
+      h += '</div>';
+    }
+    const opCls = isSent(r) ? ' style="margin-top:0"' : '';
     h += hasOp(r)
-      ? `<div class="loc-op">👤 ${escHtml(r.operator)}</div>`
-      : `<div class="loc-op muted">👤 ยังไม่มีผู้ดำเนินการ</div>`;
+      ? `<div class="loc-op"${opCls}>👤 ${escHtml(r.operator)}</div>`
+      : `<div class="loc-op muted"${opCls}>👤 ยังไม่มีผู้ดำเนินการ</div>`;
     if (r.sentDate) {
       h += `<div class="loc-sent">📤 ส่งแล้ว ${formatDate(r.sentDate)}${isBlank(r.sender) ? '' : ' · โดย ' + escHtml(r.sender)}</div>`;
     }
@@ -1408,7 +1453,7 @@
       document.getElementById('tableBody').innerHTML = rows.map((r, i) => {
         const sc = k => sortKey === k ? 'sorted-col' : '';
         const up = rows.length > 3 && i >= rows.length - 2;      // แถวท้ายๆ เปิดเมนูขึ้นด้านบน
-        return `<tr class="row-click" onclick="openDetail(${r.origIdx})">
+        return `<tr class="row-click${isSent(r) ? ' row-sent' : ''}" onclick="openDetail(${r.origIdx})">
           <td class="td-no">${start + i + 1}</td>
           <td class="${sc('date')}">${dateCell(r.date)}</td>
           <td class="${sc('idName')}">${personBlock(r)}</td>
@@ -1420,7 +1465,7 @@
     } else {
       document.getElementById('cardGrid').innerHTML = rows.map(r => {
         const t = formatTime(r.date);
-        return `<div class="rec-card" data-i="${r.origIdx}">
+        return `<div class="rec-card${isSent(r) ? ' sent' : ''}" data-i="${r.origIdx}">
           <div class="rc-top">
             <span class="rc-date">🕐 รับเครื่อง ${formatDate(r.date)}${t ? ' ' + t + ' น.' : ''}</span>
             ${statusChip(r.status)}
@@ -1500,6 +1545,7 @@
     document.getElementById('stat-ready').textContent  = active.filter(r => r.status==='พร้อมใช้งาน').length;
     document.getElementById('stat-issue').textContent  = active.filter(r => r.status==='ขาดเมล์+WiFi').length;
     document.getElementById('stat-repair').textContent = active.filter(r => r.status==='อยู่ระหว่างรอดำเนินการ').length;
+    document.getElementById('stat-sent').textContent   = active.filter(isSent).length;
   }
 
   // ── Sort ──────────────────────────────────────────────────────────────────
@@ -1963,20 +2009,40 @@
     total:  { title: '💻 เครื่องทั้งหมด',       match: r => true },
     ready:  { title: '✅ พร้อมใช้งาน',          match: r => r.status === 'พร้อมใช้งาน' },
     issue:  { title: '⚠️ ขาดเมล์ / WiFi',        match: r => r.status === 'ขาดเมล์+WiFi' },
-    repair: { title: '🔧 รอดำเนินการ',          match: r => r.status === 'อยู่ระหว่างรอดำเนินการ' || r.status === 'ซ่อม' }
+    repair: { title: '🔧 รอดำเนินการ',          match: r => r.status === 'อยู่ระหว่างรอดำเนินการ' || r.status === 'ซ่อม' },
+    sent:   { title: '📤 ส่งเครื่องแล้ว',        match: r => isSent(r), sent: true }
   };
 
   function openStatList(key) {
     const g = STAT_GROUPS[key];
     if (!g) return;
-    const rows = tableData.filter(r => !r.deleted).filter(g.match);
+    let rows = tableData.filter(r => !r.deleted).filter(g.match);
+    if (g.sent) {   // รายการส่งแล้ว: เรียงจากส่งล่าสุดก่อน
+      rows = [...rows].sort((a, b) => (new Date(b.sentDate).getTime() || 0) - (new Date(a.sentDate).getTime() || 0));
+    }
 
     document.getElementById('listTitle').textContent = g.title;
     document.getElementById('listCount').textContent = rows.length;
 
+    // หัวตาราง: หมวด "ส่งเครื่องแล้ว" ไม่แสดงเบอร์เครื่อง/ตู้ แต่แสดงวันที่ส่ง + ผู้ส่ง + ผู้ดำเนินการ
+    const heads = g.sent
+      ? ['#', 'ID / ชื่อ-สกุล', 'แผนก', 'ประเภท', 'วันที่ส่ง', 'ผู้ส่ง', 'ผู้ดำเนินการ']
+      : ['#', 'ID / ชื่อ-สกุล', 'เบอร์เครื่อง', 'แผนก', 'ประเภท', 'สถานะ', 'ตู้ที่'];
+    document.getElementById('listHead').innerHTML = heads.map(h => `<th>${h}</th>`).join('');
+
     document.getElementById('listBody').innerHTML = rows.length === 0
       ? `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>ไม่มีเครื่องในหมวดนี้</p></div></td></tr>`
-      : rows.map((r, i) => `<tr>
+      : rows.map((r, i) => g.sent
+        ? `<tr>
+          <td>${i + 1}</td>
+          <td>${escHtml(r.idName) || '—'}</td>
+          <td>${escHtml(r.dept) || '—'}</td>
+          <td>${escHtml(r.type) || '—'}</td>
+          <td>${r.sentDate ? formatDate(r.sentDate) : '—'}</td>
+          <td>${isBlank(r.sender) ? '—' : escHtml(r.sender)}</td>
+          <td>${hasOp(r) ? escHtml(r.operator) : '—'}</td>
+        </tr>`
+        : `<tr>
           <td>${i + 1}</td>
           <td>${escHtml(r.idName) || '—'}</td>
           <td>${escHtml(r.machine) || '—'}</td>
