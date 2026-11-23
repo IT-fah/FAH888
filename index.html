@@ -185,21 +185,22 @@
 
     /* ── แถวที่ส่งเครื่องแล้ว = สีเข้ม ── */
     tbody tr.row-sent,
-    tbody tr.row-sent:nth-child(even) { background: var(--slate); border-bottom-color: #2b373d; }
+    tbody tr.row-sent:nth-child(even) { background: #e3e8ec; border-bottom-color: #cfd8dc; }
     tbody tr.row-sent td,
-    tbody tr.row-sent td.sorted-col { background: var(--slate); color: #eceff1; }
+    tbody tr.row-sent td.sorted-col { background: #e3e8ec; color: #37474f; }
     tbody tr.row-sent:hover td,
-    tbody tr.row-sent:hover td.sorted-col { background: #2c383e; }
-    tbody tr.row-sent .td-no { color: #b0bec5; }
-    tbody tr.row-sent .d1 { color: #fff; }
+    tbody tr.row-sent:hover td.sorted-col { background: #d5dce1; }
+    tbody tr.row-sent .td-no { color: #78909c; }
+    tbody tr.row-sent .d1 { color: #37474f; }
     tbody tr.row-sent .d2,
-    tbody tr.row-sent .p-id { color: #b0bec5; }
-    tbody tr.row-sent .p-name { color: #fff; }
-    tbody tr.row-sent .loc-op { color: #eceff1; }
+    tbody tr.row-sent .p-id { color: #607d8b; }
+    tbody tr.row-sent .p-name { color: #37474f; }
+    tbody tr.row-sent .loc-op { color: #37474f; }
     tbody tr.row-sent .loc-op.muted,
-    tbody tr.row-sent .muted { color: #90a4ae; }
-    tbody tr.row-sent .loc-sent { color: #a5d6a7; }
-    tbody tr.row-sent .tag-type { background: #90a4ae; color: #102027; }
+    tbody tr.row-sent .muted { color: #78909c; }
+    tbody tr.row-sent .loc-sent { color: var(--green); }
+    tbody tr.row-sent .tag-dept { background: #cfd8dc; color: #37474f; }
+    tbody tr.row-sent .tag-type { background: #78909c; color: #fff; }
 
     .empty-state { text-align: center; padding: 64px 20px; color: var(--gray-text); }
     .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
@@ -243,18 +244,18 @@
     .rc-more { font-size: .82rem; font-weight: 700; color: var(--blue-light); }
 
     /* การ์ด (มือถือ) ที่ส่งเครื่องแล้ว = สีเข้ม */
-    .rec-card.sent { background: var(--slate); border-color: #2b373d; }
-    .rec-card.sent:hover { border-color: #607d8b; }
+    .rec-card.sent { background: #e3e8ec; border-color: #cfd8dc; }
+    .rec-card.sent:hover { border-color: #90a4ae; }
     .rec-card.sent .rc-date,
-    .rec-card.sent .p-id { color: #b0bec5; }
-    .rec-card.sent .p-name { color: #fff; }
-    .rec-card.sent .rc-loc { background: rgba(255,255,255,.08); }
-    .rec-card.sent .loc-op { color: #eceff1; }
+    .rec-card.sent .p-id { color: #607d8b; }
+    .rec-card.sent .p-name { color: #37474f; }
+    .rec-card.sent .rc-loc { background: rgba(255,255,255,.6); }
+    .rec-card.sent .loc-op { color: #37474f; }
     .rec-card.sent .loc-op.muted,
-    .rec-card.sent .muted { color: #90a4ae; }
-    .rec-card.sent .loc-sent { color: #a5d6a7; }
-    .rec-card.sent .tag-type { background: #90a4ae; color: #102027; }
-    .rec-card.sent .rc-more { color: #90caf9; }
+    .rec-card.sent .muted { color: #78909c; }
+    .rec-card.sent .loc-sent { color: var(--green); }
+    .rec-card.sent .tag-dept { background: #cfd8dc; color: #37474f; }
+    .rec-card.sent .tag-type { background: #78909c; color: #fff; }
 
     /* ── Pagination ── */
     .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; font-size: .88rem; }
