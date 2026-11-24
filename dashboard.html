@@ -6,114 +6,177 @@
 <title>IT Facilities Dept. — แดชบอร์ด</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Prompt:wght@500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#eef2f6;--card:#fff;--ink:#0f1b2d;--ink2:#4a5b70;--ink3:#8493a5;--line:#cdd6e1;--grid:#e6ebf1;--navy:#12294a;--in:#1e3a5f;--out:#0f766e;--pend:#b45309;--neu:#64748b;--hl:#e8eef6;--warn-bg:#fdf1e3}
-@media (prefers-color-scheme:dark){:root{--bg:#0d1520;--card:#152130;--ink:#e6edf5;--ink2:#9db0c4;--ink3:#6c8197;--line:#2a3b4e;--grid:#21303f;--navy:#0a1626;--in:#7aa7dc;--out:#4fb8ab;--pend:#f0a35a;--neu:#8fa3b8;--hl:#1c2d42;--warn-bg:#3a2a14;color-scheme:dark}}
+:root{--bg:#f1f4f9;--card:#fff;--ink:#142036;--ink2:#5a6b82;--ink3:#93a1b5;--line:#e4e9f1;--grid:#edf1f7;--navy:#12294a;
+--blue:#3b6cf6;--blue-s:#e8eeff;--green:#16a37f;--green-s:#e2f6ef;--orange:#f08a24;--orange-s:#fff0dd;--purple:#7c5cf0;--purple-s:#eee9ff;--teal:#0ea5b7;--teal-s:#dff4f7;--red:#e5484d;--red-s:#fde8e9;
+--hl:#f4f7fc;--shadow:0 1px 2px rgba(20,32,54,.05),0 4px 14px rgba(20,32,54,.05)}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1420;--card:#162132;--ink:#e8eef7;--ink2:#a0b1c6;--ink3:#6c8197;--line:#263548;--grid:#1f2d3f;--navy:#0a1626;
+--blue:#7a9bff;--blue-s:#1d2b4d;--green:#3fc9a3;--green-s:#143a33;--orange:#f5a54f;--orange-s:#3b2a14;--purple:#a58cff;--purple-s:#2a2250;--teal:#44c6d6;--teal-s:#123941;--red:#ff7a7f;--red-s:#3d1d20;--hl:#1b2a3d;--shadow:0 1px 2px rgba(0,0,0,.3);color-scheme:dark}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:15px;line-height:1.5}
 .num{font-variant-numeric:tabular-nums}
-.topnav{background:var(--navy);position:sticky;top:0;z-index:20;border-bottom:3px solid var(--in)}
-.topnav-in{max-width:1200px;margin:0 auto;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topnav{background:var(--navy);position:sticky;top:0;z-index:20}
+.topnav-in{max-width:1440px;margin:0 auto;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{font-family:'Prompt',sans-serif;font-weight:600;color:#fff;font-size:1.02rem;white-space:nowrap}
 .nav{display:flex;gap:2px;overflow-x:auto}
-.nav a{padding:7px 14px;border-radius:4px;font-size:.86rem;font-weight:600;color:#c3d1e3;text-decoration:none;white-space:nowrap}
+.nav a{padding:7px 14px;border-radius:8px;font-size:.86rem;font-weight:600;color:#c3d1e3;text-decoration:none;white-space:nowrap}
 .nav a:hover{background:rgba(255,255,255,.1);color:#fff}
 .nav a.active{background:rgba(255,255,255,.18);color:#fff}
-main{max-width:1200px;margin:0 auto;padding:24px 20px 56px;display:flex;flex-direction:column;gap:18px}
-.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--navy);padding-bottom:12px}
-.org{font-size:.82rem;font-weight:600;color:var(--ink2)}
-h1{font-family:'Prompt',sans-serif;font-weight:600;font-size:1.45rem;color:var(--navy)}
-@media (prefers-color-scheme:dark){h1{color:var(--ink)}}
+main{max-width:1440px;margin:0 auto;padding:22px 20px 56px;display:flex;flex-direction:column;gap:16px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.org{font-size:.8rem;font-weight:600;color:var(--blue)}
+h1{font-family:'Prompt',sans-serif;font-weight:600;font-size:1.5rem;color:var(--ink)}
 .stamp{font-size:.82rem;color:var(--ink2)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{font:inherit;font-size:.86rem;font-weight:600;padding:8px 16px;border-radius:4px;border:1.5px solid var(--in);background:var(--card);color:var(--in);cursor:pointer}
+.btn{font:inherit;font-size:.86rem;font-weight:600;padding:8px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;box-shadow:var(--shadow)}
 .btn:hover{background:var(--hl)}
-.btn.pri{background:var(--in);color:#fff}.btn.pri:hover{opacity:.9}
-@media (prefers-color-scheme:dark){.btn.pri{color:#0d1520}}
-.btn:disabled{opacity:.6;cursor:wait}
-.btn:focus-visible,.nav a:focus-visible,.menu summary:focus-visible,.menu button:focus-visible,.filter select:focus-visible,.filter input:focus-visible{outline:2px solid var(--in);outline-offset:2px}
-.banner{display:none;background:var(--warn-bg);color:var(--pend);border-left:4px solid var(--pend);padding:10px 14px;font-size:.86rem;font-weight:600}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}.btn.pri:hover{opacity:.9}
+@media (prefers-color-scheme:dark){.btn.pri{color:#0d1420}}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,.nav a:focus-visible,.menu summary:focus-visible,.menu button:focus-visible,.filter select:focus-visible,.filter input:focus-visible,.ib:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.banner{display:none;background:var(--orange-s);color:var(--orange);border-radius:10px;padding:10px 14px;font-size:.86rem;font-weight:600}
 .banner.show{display:block}
-.filter{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:10px 14px}
+.filter{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;background:var(--card);border-radius:12px;padding:10px 16px;box-shadow:var(--shadow)}
 .filter label,.filter .range{display:flex;align-items:center;gap:6px;font-size:.84rem;color:var(--ink2)}
-.filter select,.filter input{font:inherit;font-size:.84rem;padding:5px 8px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink)}
+.filter select,.filter input{font:inherit;font-size:.84rem;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
 .plabel{margin-left:auto;font-size:.82rem;font-weight:600;color:var(--ink2)}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.kpi{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:4px;padding:14px 18px;min-width:0}
-.kpi:nth-child(1){--c:var(--in)}.kpi:nth-child(2){--c:var(--out)}.kpi:nth-child(3),.kpi:nth-child(4){--c:var(--pend)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:start}
+.left,.side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.kpi{background:var(--card);border-radius:14px;padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start;min-width:0}
+.kpi .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--cs);color:var(--c)}
+.kpi:nth-child(1){--c:var(--blue);--cs:var(--blue-s)}.kpi:nth-child(2){--c:var(--green);--cs:var(--green-s)}.kpi:nth-child(3){--c:var(--orange);--cs:var(--orange-s)}
+.kpi:nth-child(4){--c:var(--red);--cs:var(--red-s)}.kpi:nth-child(5){--c:var(--teal);--cs:var(--teal-s)}.kpi:nth-child(6){--c:var(--purple);--cs:var(--purple-s)}
 .kpi .l{font-size:.8rem;font-weight:600;color:var(--ink2)}
-.kpi .v{font-family:'Prompt',sans-serif;font-weight:600;font-size:2rem;line-height:1.25;color:var(--c)}
-.kpi .s{font-size:.78rem;color:var(--ink2)}
+.kpi .v{font-family:'Prompt',sans-serif;font-weight:600;font-size:1.75rem;line-height:1.25;color:var(--ink)}
+.kpi .v small{font-size:.9rem;font-weight:500;color:var(--ink2);margin-left:3px}
+.kpi .s{font-size:.76rem;color:var(--ink2)}
+.dl{font-weight:700;margin-right:4px;color:var(--ink2)}.dl.ok{color:var(--green)}.dl.bad{color:var(--red)}
 .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
-.panel{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--navy);border-radius:4px;padding:16px 18px;min-width:0}
+.panel{background:var(--card);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);min-width:0}
 .panel h2{font-family:'Prompt',sans-serif;font-weight:600;font-size:.95rem}
 .panel .sub{font-size:.78rem;color:var(--ink2);margin-bottom:12px}
-.c7{grid-column:span 7}.c5{grid-column:span 5}.c6{grid-column:span 6}.c12{grid-column:span 12}
+.c4{grid-column:span 4}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:span 12}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:var(--ink2);margin-bottom:8px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-.sw-a{background:var(--pend)}.sw-b,.sw-out{background:var(--out)}.sw-in{background:var(--in)}
-.hb{display:flex;flex-direction:column;gap:9px}
-.hb-row{display:grid;grid-template-columns:minmax(80px,38%) 1fr auto;gap:10px;align-items:center;font-size:.84rem}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.sw-a{background:var(--orange)}.sw-b,.sw-out{background:var(--green)}.sw-in{background:var(--blue)}
+.hb{display:flex;flex-direction:column;gap:10px}
+.hb-row{display:grid;grid-template-columns:minmax(70px,36%) 1fr auto;gap:10px;align-items:center;font-size:.83rem}
 .hb-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hb-track{display:flex;height:16px}
-.hb-seg{height:100%;min-width:0;border-radius:2px}
+.hb-track{display:flex;height:12px}
+.hb-seg{height:100%;min-width:0;border-radius:6px}
 .hb-seg+.hb-seg{margin-left:2px}
-.hb-seg.n{background:var(--neu)}.hb-seg.a{background:var(--pend)}.hb-seg.b{background:var(--out)}
+.hb-seg.n{background:var(--blue)}.hb-seg.a{background:var(--orange)}.hb-seg.b{background:var(--green)}
 .hb-v{font-weight:600;color:var(--ink2);min-width:2ch;text-align:right}
 .empty{color:var(--ink3);font-size:.86rem;padding:18px 0}
 svg text{font-family:'Sarabun',sans-serif;fill:var(--ink2);font-size:11px}
-.gridline{stroke:var(--grid)}.bar-a{fill:var(--in)}.bar-b{fill:var(--out)}
-.bar-hit{fill:transparent}.bar-hit:hover{fill:var(--in);opacity:.08}
+.gridline{stroke:var(--grid)}.bar-a{fill:var(--blue)}.bar-b{fill:var(--green)}
+.bar-hit{fill:transparent}.bar-hit:hover{fill:var(--blue);opacity:.07}
+.ln-a{fill:none;stroke:var(--blue);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.ln-b{fill:none;stroke:var(--green);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.ar-a{fill:var(--blue);opacity:.1}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.donut-wrap svg{width:170px;height:170px}
+.donut-wrap .big{font-family:'Prompt',sans-serif;font-size:7px;font-weight:600;fill:var(--ink)}
+.donut-wrap .cap{font-size:2.6px;fill:var(--ink2)}
+.dleg{width:100%;display:flex;flex-direction:column;gap:6px;font-size:.84rem}
+.dleg div{display:flex;align-items:center;gap:8px}
+.dleg i{width:10px;height:10px;border-radius:3px;flex:none}
+.dleg b{margin-left:auto}.dleg span{color:var(--ink2);min-width:42px;text-align:right}
+.pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.step{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--hl);border-top:3px solid var(--c)}
+.step .n{font-family:'Prompt',sans-serif;font-weight:600;font-size:1.5rem;color:var(--c);line-height:1.2}
+.step .t{font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.step .p{font-size:.74rem;color:var(--ink2)}
+.step .bar{height:5px;border-radius:3px;background:var(--grid);margin-top:6px;overflow:hidden}.step .bar i{display:block;height:100%;background:var(--c);border-radius:3px}
+.li{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--grid);font-size:.86rem}
+.li:last-child{border-bottom:0}
+.li .rk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.75rem;font-weight:700;background:var(--hl);color:var(--ink2);flex:none}
+.li .t{flex:1;min-width:0}.li .t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li .t span{font-size:.76rem;color:var(--ink2)}
+.badge{font-size:.74rem;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;background:var(--blue-s);color:var(--blue)}
+.badge.o{background:var(--orange-s);color:var(--orange)}.badge.r{background:var(--red-s);color:var(--red)}
+.act{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--grid);font-size:.84rem}
+.act:last-child{border-bottom:0}
+.act .d{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:.9rem;font-weight:700}
+.act .d.in{background:var(--blue-s);color:var(--blue)}.act .d.out{background:var(--green-s);color:var(--green)}
+.act .t{min-width:0}.act .t div:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.act .t span{font-size:.74rem;color:var(--ink2)}
+.ins{list-style:none;display:flex;flex-direction:column;gap:9px;font-size:.84rem}
+.ins li{padding-left:16px;position:relative}.ins li::before{content:'';position:absolute;left:2px;top:.55em;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:.9rem}
+.ib{border:0;background:var(--hl);color:var(--ink);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:1.1rem;line-height:1}
+.ib:hover{background:var(--line)}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:.8rem}
+.cal-g .wd{color:var(--ink3);font-size:.72rem;font-weight:600}
+.cal-g .dy{padding:5px 0;border-radius:8px;color:var(--ink2);background:none;border:0;font:inherit;font-size:.8rem;cursor:pointer}
+.cal-g .dy:hover{background:var(--hl)}
+.cal-g .dy.out{box-shadow:inset 0 -3px 0 var(--green)}
+.cal-g .dy.sel{outline:2px solid var(--ink);outline-offset:-2px}
+#calDetail{margin-top:14px;border-top:1px solid var(--grid);padding-top:12px;max-height:340px;overflow:auto}
+.cd-h{font-family:'Prompt',sans-serif;font-weight:600;font-size:.9rem;margin-bottom:6px}
+.cd-sec{font-size:.78rem;font-weight:700;margin:10px 0 4px}.cd-sec.in{color:var(--blue)}.cd-sec.out{color:var(--green)}
+.cd-row{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--grid);font-size:.82rem}
+.cd-row:last-child{border-bottom:0}
+.cd-t{min-width:0}.cd-t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cd-t span{font-size:.74rem;color:var(--ink2)}
+.cd-tm{font-size:.74rem;color:var(--ink2);white-space:nowrap}
+.cd-hint{font-size:.8rem;color:var(--ink3);padding:4px 0}
+.cal-g .dy.l1{background:var(--blue-s);color:var(--blue);font-weight:600}
+.cal-g .dy.l2{background:var(--blue);color:#fff;font-weight:600;opacity:.75}
+.cal-g .dy.l3{background:var(--blue);color:#fff;font-weight:700}
+@media (prefers-color-scheme:dark){.cal-g .dy.l2,.cal-g .dy.l3{color:#0d1420}}
+.cal-g .dy.today{outline:2px solid var(--orange);outline-offset:-2px}
+.cal-leg{display:flex;gap:10px;margin-top:10px;font-size:.72rem;color:var(--ink2);align-items:center}
+.cal-leg i{width:12px;height:12px;border-radius:4px;display:inline-block;margin-right:4px;vertical-align:-2px}
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:560px}
-th{text-align:left;font-size:.78rem;font-weight:600;color:var(--navy);background:var(--hl);padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap}
-@media (prefers-color-scheme:dark){th{color:var(--ink)}}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th{text-align:left;font-size:.78rem;font-weight:600;color:var(--ink2);background:var(--hl);padding:8px 10px;white-space:nowrap}
+th:first-child{border-radius:8px 0 0 8px}th:last-child{border-radius:0 8px 8px 0}
 td{padding:8px 10px;border-bottom:1px solid var(--grid);font-size:.86rem}
 tr:last-child td{border-bottom:none}
 th.n,td.n{text-align:right}
 tfoot td{font-weight:700;border-top:2px solid var(--line)}
-.tag{display:inline-block;padding:2px 10px;border-radius:3px;font-size:.74rem;font-weight:700;white-space:nowrap}
-.tag.pend{background:var(--warn-bg);color:var(--pend)}.tag.sent{background:var(--hl);color:var(--out)}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.74rem;font-weight:700;white-space:nowrap}
+.tag.pend{background:var(--orange-s);color:var(--orange)}.tag.sent{background:var(--green-s);color:var(--green)}
 .src{color:var(--ink2);font-size:.8rem;white-space:nowrap}
-#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.78rem;padding:6px 10px;border-radius:4px;display:none;max-width:240px}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.78rem;padding:6px 10px;border-radius:8px;display:none;max-width:260px}
 .menu{position:relative}
-.menu summary{list-style:none;cursor:pointer;font-weight:600;font-size:.86rem;padding:8px 16px;border-radius:4px;border:1.5px solid var(--in);background:var(--in);color:#fff;user-select:none}
-@media (prefers-color-scheme:dark){.menu summary{color:#0d1520}}
+.menu summary{list-style:none;cursor:pointer;font-weight:600;font-size:.86rem;padding:8px 16px;border-radius:10px;border:1px solid var(--blue);background:var(--blue);color:#fff;user-select:none;box-shadow:var(--shadow)}
+@media (prefers-color-scheme:dark){.menu summary{color:#0d1420}}
 .menu summary::-webkit-details-marker{display:none}
-.menu .items{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:200px;background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.2);padding:6px;display:flex;flex-direction:column}
-.menu .items button{font:inherit;font-size:.86rem;text-align:left;padding:9px 12px;border:0;background:transparent;color:var(--ink);border-radius:4px;cursor:pointer}
+.menu .items{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:210px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;display:flex;flex-direction:column}
+.menu .items button{font:inherit;font-size:.86rem;text-align:left;padding:9px 12px;border:0;background:transparent;color:var(--ink);border-radius:8px;cursor:pointer}
 .menu .items button:hover{background:var(--hl)}
-dialog{border:1px solid var(--line);border-radius:6px;padding:22px;background:var(--card);color:var(--ink);width:min(440px,92vw);margin:auto}
+dialog{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--card);color:var(--ink);width:min(440px,92vw);margin:auto}
 dialog::backdrop{background:rgba(10,22,38,.55)}
-dialog h3{font-family:'Prompt',sans-serif;font-size:1.05rem;color:var(--navy)}
-@media (prefers-color-scheme:dark){dialog h3{color:var(--ink)}}
-.opt{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:6px;margin-bottom:8px;cursor:pointer;font-size:.9rem}
-.opt:has(input:checked){border-color:var(--in);background:var(--hl)}
+dialog h3{font-family:'Prompt',sans-serif;font-size:1.05rem}
+.opt{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;font-size:.9rem}
+.opt:has(input:checked){border-color:var(--blue);background:var(--blue-s)}
 .opt b{margin-left:auto;font-weight:600;color:var(--ink2)}
 .dlg-act{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
 .dlg-note{font-size:.78rem;color:var(--ink2);margin-bottom:12px}
 .cols-h{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;font-size:.88rem}
-.lnk{font:inherit;font-size:.8rem;background:none;border:0;color:var(--in);cursor:pointer;text-decoration:underline}
+.lnk{font:inherit;font-size:.8rem;background:none;border:0;color:var(--blue);cursor:pointer;text-decoration:underline}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:.86rem;max-height:220px;overflow:auto}
 .cols label{display:flex;gap:6px;align-items:center;cursor:pointer}
-.btn:disabled{opacity:.5;cursor:not-allowed}
 [hidden]{display:none!important}
 .rpt,.sign{display:none}
-@media (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.c7,.c5,.c6{grid-column:span 12}}
-@media (max-width:520px){main{padding:16px 14px 40px}.topnav-in{padding:0 12px}.plabel{margin-left:0;width:100%}.kpi .v{font-size:1.6rem}}
-@media (prefers-reduced-motion:no-preference){.hb-seg{transition:width .3s ease}}
+@media (max-width:1100px){.layout{grid-template-columns:minmax(0,1fr)}.side{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}}
+@media (max-width:900px){.c4,.c6,.c8{grid-column:span 12}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){main{padding:16px 14px 40px}.topnav-in{padding:0 12px}.plabel{margin-left:0;width:100%}.kpis{grid-template-columns:minmax(0,1fr)}}
 @page{size:A4 landscape;margin:12mm}
 @media print{
-  :root:root:root{--bg:#fff;--card:#fff;--ink:#0f1b2d;--ink2:#4a5b70;--ink3:#8493a5;--line:#cdd6e1;--grid:#e6ebf1;--navy:#12294a;--in:#1e3a5f;--out:#0f766e;--pend:#b45309;--neu:#64748b;--hl:#e8eef6;--warn-bg:#fdf1e3;color-scheme:light}
+  :root:root:root{--bg:#fff;--card:#fff;--ink:#0f1b2d;--ink2:#4a5b70;--ink3:#8493a5;--line:#cdd6e1;--grid:#e6ebf1;--hl:#f1f4f9;--shadow:none;--blue:#3b6cf6;--blue-s:#e8eeff;--green:#16a37f;--green-s:#e2f6ef;--orange:#f08a24;--orange-s:#fff0dd;--purple:#7c5cf0;--purple-s:#eee9ff;--teal:#0ea5b7;--teal-s:#dff4f7;--red:#e5484d;--red-s:#fde8e9;color-scheme:light}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body{background:#fff;font-size:12.5px}
-  .topnav,.actions,.banner,#tip,.filter label,.filter .range,dialog,.head .stamp,.head h1,.head .org{display:none!important}
+  .topnav,.actions,.banner,#tip,.filter label,.filter .range,dialog,.head .stamp,.head h1,.head .org,.side{display:none!important}
+  .layout{display:block}
   .rpt{display:block;border-bottom:3px solid #12294a;padding-bottom:8px}
   .rpt h1{font-size:1.4rem;color:#12294a;display:block!important}
   .rpt div{font-size:.85rem;color:#4a5b70}
   .head{border:0;padding:0}
-  .filter{border:0;padding:0;background:none}.plabel{margin-left:0;font-size:.9rem;color:#12294a}
+  .filter{padding:0;background:none}.plabel{margin-left:0;font-size:.9rem;color:#12294a}
   main{padding:0;max-width:none;gap:12px}
-  .panel,.kpi{break-inside:avoid}
+  .panel,.kpi{break-inside:avoid;border:1px solid #e4e9f1}
   .tbl-wrap{overflow:visible}table{min-width:0}tr{break-inside:avoid}
   .sign{display:flex;justify-content:space-around;gap:20px;margin-top:24px;break-inside:avoid;text-align:center;font-size:.85rem;color:#4a5b70}
   .sign div{width:28%;border-top:1px solid #4a5b70;padding-top:6px}
@@ -167,71 +230,107 @@ dialog h3{font-family:'Prompt',sans-serif;font-size:1.05rem;color:var(--navy)}
     <span class="plabel" id="plabel"></span>
   </section>
 
-  <section class="kpis" aria-label="สรุปตัวเลข">
-    <div class="kpi"><div class="l">รับเข้า (ช่วงที่เลือก)</div><div class="v num" id="k-in">—</div><div class="s" id="k-in-s"></div></div>
-    <div class="kpi"><div class="l">ส่งออก (ช่วงที่เลือก)</div><div class="v num" id="k-out">—</div><div class="s" id="k-out-s"></div></div>
-    <div class="kpi"><div class="l">ค้างส่ง จากที่รับในช่วงนี้</div><div class="v num" id="k-pending">—</div><div class="s" id="k-pending-s"></div></div>
-    <div class="kpi"><div class="l">ค้างส่งสะสมทั้งหมด</div><div class="v num" id="k-backlog">—</div><div class="s" id="k-backlog-s"></div></div>
-  </section>
+  <div class="layout">
+  <div class="left">
+    <section class="kpis" aria-label="สรุปตัวเลข">
+      <div class="kpi"><div class="ico" id="i-in"></div><div><div class="l">รับเข้า (ช่วงที่เลือก)</div><div class="v num" id="k-in">—</div><div class="s" id="k-in-s"></div></div></div>
+      <div class="kpi"><div class="ico" id="i-out"></div><div><div class="l">ส่งออก (ช่วงที่เลือก)</div><div class="v num" id="k-out">—</div><div class="s" id="k-out-s"></div></div></div>
+      <div class="kpi"><div class="ico" id="i-pend"></div><div><div class="l">ค้างส่ง จากที่รับในช่วงนี้</div><div class="v num" id="k-pending">—</div><div class="s" id="k-pending-s"></div></div></div>
+      <div class="kpi"><div class="ico" id="i-back"></div><div><div class="l">ค้างส่งสะสมทั้งหมด</div><div class="v num" id="k-backlog">—</div><div class="s" id="k-backlog-s"></div></div></div>
+      <div class="kpi"><div class="ico" id="i-rate"></div><div><div class="l">อัตราส่งแล้ว</div><div class="v num" id="k-rate">—</div><div class="s" id="k-rate-s"></div></div></div>
+      <div class="kpi"><div class="ico" id="i-days"></div><div><div class="l">เวลาเฉลี่ยรับ → ส่ง</div><div class="v num" id="k-days">—</div><div class="s" id="k-days-s"></div></div></div>
+    </section>
 
-  <section class="panel" id="yearPanel" hidden>
-    <h2 id="yearTitle">สรุปทั้งปี</h2><div class="sub" id="yearSub"></div>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>เดือน</th><th class="n">รับเข้า</th><th class="n">เครื่องพนักงาน</th><th class="n">อุปกรณ์เสริม</th><th class="n">เครื่องหน้าร้าน</th><th class="n">ส่งออก</th><th class="n">ค้างส่ง</th></tr></thead>
-      <tbody id="yearBody"></tbody><tfoot id="yearFoot"></tfoot>
-    </table></div>
-  </section>
+    <section class="grid">
+      <div class="panel c8">
+        <h2>แนวโน้มสะสม รับเข้า / ส่งออก</h2><div class="sub" id="trendSub"></div>
+        <div class="legend"><span><i class="sw-in"></i>รับเข้า (สะสม)</span><span><i class="sw-out"></i>ส่งออก (สะสม)</span></div>
+        <div id="trend"></div>
+      </div>
+      <div class="panel c4">
+        <h2>สัดส่วนตามหน้า</h2><div class="sub">รับเข้าในช่วงที่เลือก</div>
+        <div class="donut-wrap" id="donut"></div>
+      </div>
 
-  <section class="grid">
-    <div class="panel c7">
-      <h2>รับเข้า / ส่งออก รายเดือน</h2><div class="sub" id="monthlySub"></div>
-      <div class="legend"><span><i class="sw-in"></i>รับเข้า</span><span><i class="sw-out"></i>ส่งออก</span></div>
-      <div id="monthly"></div>
+      <div class="panel c12">
+        <h2 style="margin-bottom:12px">สถานะ</h2>
+        <div class="pipe" id="pipe"></div>
+      </div>
+
+      <div class="panel c4">
+        <h2>แผนกที่มีเครื่องมากที่สุด</h2><div class="sub">เครื่องพนักงาน 8 อันดับแรก</div>
+        <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
+        <div class="hb" id="empDept"></div>
+      </div>
+      <div class="panel c4">
+        <h2>รับเข้า / ส่งออก รายเดือน</h2><div class="sub" id="monthlySub"></div>
+        <div class="legend"><span><i class="sw-in"></i>รับเข้า</span><span><i class="sw-out"></i>ส่งออก</span></div>
+        <div id="monthly"></div>
+      </div>
+      <div class="panel c4">
+        <h2>ผู้ดำเนินการ</h2><div class="sub">จำนวนงาน 8 อันดับแรก</div>
+        <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
+        <div class="hb" id="opers"></div>
+      </div>
+
+      <div class="panel c4">
+        <h2>สถานะเครื่องพนักงาน</h2><div class="sub">จำนวนเครื่องตามสถานะ</div>
+        <div class="hb" id="empStatus"></div>
+      </div>
+      <div class="panel c4">
+        <h2>อุปกรณ์เสริมตามประเภท</h2><div class="sub">แยกค้างส่ง / ส่งแล้ว</div>
+        <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
+        <div class="hb" id="accType"></div>
+      </div>
+      <div class="panel c4">
+        <h2>เครื่องหน้าร้านตามประเภทการเบิก</h2><div class="sub">ร้านใหม่ · เบิกเพิ่ม · ทดแทน · NPI</div>
+        <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
+        <div class="hb" id="storeWd"></div>
+      </div>
+
+      <div class="panel c4">
+        <h2>เครื่องหน้าร้านตามประเภทเครื่อง</h2><div class="sub">NB · PC · MACBook ฯลฯ</div>
+        <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
+        <div class="hb" id="storeType"></div>
+      </div>
+      <div class="panel c8">
+        <h2>สรุปตามประเภทงาน</h2><div class="sub">ช่วงเวลาที่เลือก</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>ประเภทงาน</th><th class="n">รับเข้า</th><th class="n">ส่งออก</th><th class="n">ค้างส่ง</th><th class="n">ส่งแล้ว</th></tr></thead>
+          <tbody id="sumBody"></tbody>
+        </table></div>
+      </div>
+
+      <section class="panel c12" id="yearPanel" hidden>
+        <h2 id="yearTitle">สรุปทั้งปี</h2><div class="sub" id="yearSub"></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>เดือน</th><th class="n">รับเข้า</th><th class="n">เครื่องพนักงาน</th><th class="n">อุปกรณ์เสริม</th><th class="n">เครื่องหน้าร้าน</th><th class="n">ส่งออก</th><th class="n">ค้างส่ง</th></tr></thead>
+          <tbody id="yearBody"></tbody><tfoot id="yearFoot"></tfoot>
+        </table></div>
+      </section>
+
+      <div class="panel c6">
+        <h2>ค้างส่งนานที่สุด</h2><div class="sub">ค้างสะสมทุกช่วงเวลา · 8 รายการแรก</div>
+        <div id="oldest"></div>
+      </div>
+      <div class="panel c6">
+        <h2>รายการรับเข้าล่าสุด</h2><div class="sub">6 รายการล่าสุดในช่วงที่เลือก</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>วัน-เวลาที่รับ</th><th>หน้า</th><th>รายการ</th><th>สถานะ</th></tr></thead>
+          <tbody id="recent"></tbody>
+        </table></div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="side">
+    <div class="panel"><div id="cal"></div>
+      <div class="cal-leg"><span><i style="background:var(--blue-s)"></i>1–2</span><span><i style="background:var(--blue);opacity:.75"></i>3–4</span><span><i style="background:var(--blue)"></i>5+</span><span>รับเข้า/วัน</span><span><i style="background:var(--green);height:3px;vertical-align:1px"></i>มีส่งออก</span></div><div id="calDetail"></div>
     </div>
-    <div class="panel c5">
-      <h2>สถานะเครื่องพนักงาน</h2><div class="sub">จำนวนเครื่องตามสถานะ</div>
-      <div class="hb" id="empStatus"></div>
-    </div>
-    <div class="panel c6">
-      <h2>แผนกที่มีเครื่องมากที่สุด</h2><div class="sub">เครื่องพนักงาน 8 อันดับแรก</div>
-      <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
-      <div class="hb" id="empDept"></div>
-    </div>
-    <div class="panel c6">
-      <h2>ผู้ดำเนินการ</h2><div class="sub">จำนวนงานที่ดำเนินการ 8 อันดับแรก</div>
-      <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
-      <div class="hb" id="opers"></div>
-    </div>
-    <div class="panel c6">
-      <h2>อุปกรณ์เสริมตามประเภท</h2><div class="sub">จำนวนชิ้น แยกค้างส่ง / ส่งแล้ว</div>
-      <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
-      <div class="hb" id="accType"></div>
-    </div>
-    <div class="panel c6">
-      <h2>เครื่องหน้าร้านตามประเภทการเบิก</h2><div class="sub">ร้านใหม่ · เบิกเพิ่ม · ทดแทน · NPI</div>
-      <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
-      <div class="hb" id="storeWd"></div>
-    </div>
-    <div class="panel c6">
-      <h2>เครื่องหน้าร้านตามประเภทเครื่อง</h2><div class="sub">NB · PC · MACBook ฯลฯ</div>
-      <div class="legend"><span><i class="sw-a"></i>ค้างส่ง</span><span><i class="sw-b"></i>ส่งแล้ว</span></div>
-      <div class="hb" id="storeType"></div>
-    </div>
-    <div class="panel c6">
-      <h2>สรุปตามประเภทงาน</h2><div class="sub">ช่วงเวลาที่เลือก</div>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>ประเภทงาน</th><th class="n">รับเข้า</th><th class="n">ส่งออก</th><th class="n">ค้างส่ง</th><th class="n">ส่งแล้ว</th></tr></thead>
-        <tbody id="sumBody"></tbody>
-      </table></div>
-    </div>
-    <div class="panel c12">
-      <h2>รายการรับเข้าล่าสุด</h2><div class="sub">10 รายการล่าสุดจากทุกหน้า</div>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>วัน-เวลาที่รับ</th><th>หน้า</th><th>รายการ</th><th>ผู้รับเครื่อง</th><th>ผู้ดำเนินการ</th><th>สถานะ</th></tr></thead>
-        <tbody id="recent"></tbody>
-      </table></div>
-    </div>
-  </section>
+    <div class="panel"><h2>กิจกรรมล่าสุด</h2><div class="sub">รับเข้า / ส่งออก ทุกหน้า</div><div id="activity"></div></div>
+    <div class="panel"><h2>สรุปภาพรวม</h2><div class="sub">คำนวณจากข้อมูลในช่วงที่เลือก</div><ul class="ins" id="insight"></ul></div>
+  </aside>
+  </div>
   <div class="sign"><div>ผู้จัดทำรายงาน</div><div>ผู้ตรวจสอบ</div><div>ผู้อนุมัติ</div></div>
 </main>
 <div id="tip"></div>
@@ -256,6 +355,8 @@ const SOURCES = [
   { key:'acc',   name:'อุปกรณ์เสริม',   url: API_URL + '?sheet=accessories' },
   { key:'store', name:'เครื่องหน้าร้าน', url: API_URL + '?sheet=store' }
 ];
+const SRC_COL = { emp:'var(--blue)', acc:'var(--purple)', store:'var(--teal)' };
+const STEP_COL = ['var(--blue)','var(--green)','var(--orange)','var(--purple)','var(--teal)','var(--red)'];
 const MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const DAY = 86400000;
 const $ = id => document.getElementById(id);
@@ -264,9 +365,19 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const fmt = n => n.toLocaleString('en-US');
 const toTime = v => v ? new Date(v).getTime() : NaN;
 const fmtDate = v => { const t = toTime(v); if (isNaN(t)) return '—'; const d = new Date(t); return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear(); };
-// วันที่ + เวลา (แสดงเวลาเมื่อข้อมูลมีเวลาอยู่)
 const fmtDT = v => { const t = toTime(v); if (isNaN(t)) return ''; const d = new Date(t); return fmtDate(v) + (/[T ]\d{1,2}:\d{2}/.test(String(v)) ? ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' น.' : ''); };
 const srcName = k => SOURCES.find(s => s.key === k).name;
+
+const ICO = {
+  in:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+  out:'<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>',
+  pend:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  back:'<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',
+  rate:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',
+  days:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'
+};
+const ico = p => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+Object.entries({ 'i-in':'in', 'i-out':'out', 'i-pend':'pend', 'i-back':'back', 'i-rate':'rate', 'i-days':'days' }).forEach(([id, k]) => $(id).innerHTML = ico(ICO[k]));
 
 function normalize(key, r) {
   const base = { src:key, raw:r, date:r.date || '', sentDate:r.sentDate || '', receiver:r.receiver || '', operator:(r.operator && r.operator !== '—') ? r.operator : '' };
@@ -363,6 +474,25 @@ function applyUI() {
   $('fromD').value = period.from || ''; $('toD').value = period.to || '';
 }
 
+// ── ตัวช่วยคำนวณ ──
+const countBy = (l, fn) => [...l.reduce((m, r) => { const k = fn(r); return m.set(k, (m.get(k) || 0) + 1); }, new Map())].sort((a, b) => b[1] - a[1]);
+function splitBy(l, fn) {
+  const m = new Map();
+  l.forEach(r => { const k = fn(r); if (!m.has(k)) m.set(k, [0, 0]); m.get(k)[isSent(r) ? 1 : 0]++; });
+  return [...m].map(([label, parts]) => ({ label, parts })).sort((a, b) => (b.parts[0] + b.parts[1]) - (a.parts[0] + a.parts[1]));
+}
+const DATE_KEYS = ['date', 'sentDate'];
+const daysTaken = r => { const a = toTime(r.date), b = toTime(r.sentDate); return isNaN(a) || isNaN(b) ? null : Math.max(0, Math.round((b - a) / DAY)); };
+const avgDays = l => { const d = l.map(daysTaken).filter(x => x !== null); return d.length ? +(d.reduce((a, b) => a + b, 0) / d.length).toFixed(1) : '—'; };
+const waiting = r => { const t = toTime(r.date); return isNaN(t) ? 0 : Math.max(0, Math.floor((Date.now() - t) / DAY)); };
+const dl = (c, p, goodUp) => {
+  if (p === null) return '';
+  if (!p) return c ? '<span class="dl">▲ ใหม่</span>' : '';
+  const x = Math.round((c - p) / p * 100);
+  if (!x) return '<span class="dl">– เท่าเดิม</span> ';
+  return `<span class="dl ${(x > 0) === goodUp ? 'ok' : 'bad'}">${x > 0 ? '▲' : '▼'} ${Math.abs(x)}%</span> `;
+};
+
 // ── แสดงผล ──
 function render() {
   range = getRange(); fillYears(); applyUI();
@@ -374,11 +504,25 @@ function render() {
   const backlog = records.filter(r => !isSent(r));
   const by = (l, k) => l.filter(r => r.src === k).length;
   const sub = l => SOURCES.map(s => s.name.replace('เครื่อง','') + ' ' + by(l, s.key)).join(' · ');
-  $('k-in').textContent = fmt(inP.length);        $('k-in-s').textContent = sub(inP);
-  $('k-out').textContent = fmt(outP.length);      $('k-out-s').textContent = sub(outP);
+
+  let pIn = null, pOut = null;
+  if (!range.all && isFinite(range.start) && isFinite(range.end)) {
+    const len = range.end - range.start + 1, ps = range.start - len, pe = range.start - 1, inR = t => !isNaN(t) && t >= ps && t <= pe;
+    pIn = records.filter(r => inR(toTime(r.date))).length; pOut = records.filter(r => inR(toTime(r.sentDate))).length;
+  }
+  const vs = pIn === null ? '' : ' จากช่วงก่อนหน้า<br>';
+  $('k-in').textContent = fmt(inP.length);        $('k-in-s').innerHTML = dl(inP.length, pIn, true) + vs + sub(inP);
+  $('k-out').textContent = fmt(outP.length);      $('k-out-s').innerHTML = dl(outP.length, pOut, true) + vs + sub(outP);
   $('k-pending').textContent = fmt(pendP.length); $('k-pending-s').textContent = sub(pendP);
   $('k-backlog').textContent = fmt(backlog.length); $('k-backlog-s').textContent = 'ทุกช่วงเวลา ณ ตอนนี้';
-  renderMonthly(); renderYear();
+  const rate = inP.length ? Math.round((inP.length - pendP.length) / inP.length * 100) : null;
+  $('k-rate').innerHTML = rate === null ? '—' : rate + '<small>%</small>';
+  $('k-rate-s').textContent = 'ส่งแล้ว ' + fmt(inP.length - pendP.length) + ' จาก ' + fmt(inP.length) + ' รายการ';
+  const ad = avgDays(inP.filter(isSent));
+  $('k-days').innerHTML = ad === '—' ? '—' : ad + '<small>วัน</small>';
+  $('k-days-s').textContent = 'เฉพาะรายการที่ส่งแล้ว';
+
+  renderTrend(); renderDonut(inP); renderPipe(inP); renderMonthly(); renderYear();
 
   const emp = inP.filter(r => r.src === 'emp'), store = inP.filter(r => r.src === 'store');
   hbar('empStatus', countBy(emp, r => r.status || 'ไม่ระบุ').map(([k, v]) => ({ label:k, parts:[v] })), ['n']);
@@ -392,12 +536,67 @@ function render() {
   $('sumBody').innerHTML = SOURCES.map(s => { const i = by(inP, s.key), p = by(pendP, s.key); return `<tr><td>${s.name}</td><td class="n num">${i}</td><td class="n num">${by(outP, s.key)}</td><td class="n num">${p}</td><td class="n num">${pct(i - p, i)}</td></tr>`; }).join('')
     + `<tr style="font-weight:700"><td>รวม</td><td class="n num">${inP.length}</td><td class="n num">${outP.length}</td><td class="n num">${pendP.length}</td><td class="n num">${pct(inP.length - pendP.length, inP.length)}</td></tr>`;
 
-  const rec = inP.filter(r => !isNaN(toTime(r.date))).sort((a, b) => toTime(b.date) - toTime(a.date)).slice(0, 10);
+  const rec = inP.filter(r => !isNaN(toTime(r.date))).sort((a, b) => toTime(b.date) - toTime(a.date)).slice(0, 6);
   $('recent').innerHTML = rec.length ? rec.map(r => `<tr>
     <td class="num">${fmtDT(r.date)}</td><td class="src">${esc(srcName(r.src))}</td><td>${esc(r.label)}</td>
-    <td>${esc(r.receiver) || '—'}</td><td>${esc(r.operator) || '—'}</td>
-    <td>${isSent(r) ? `<span class="tag sent">ส่งแล้ว ${fmtDT(r.sentDate)}</span>` : '<span class="tag pend">ค้างส่ง</span>'}</td></tr>`).join('')
-    : '<tr><td colspan="6" class="empty">ไม่มีรายการในช่วงเวลานี้</td></tr>';
+    <td>${isSent(r) ? `<span class="tag sent">ส่งแล้ว</span>` : '<span class="tag pend">ค้างส่ง</span>'}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty">ไม่มีรายการในช่วงเวลานี้</td></tr>';
+
+  const old = backlog.filter(r => !isNaN(toTime(r.date))).sort((a, b) => toTime(a.date) - toTime(b.date)).slice(0, 8);
+  $('oldest').innerHTML = old.length ? old.map((r, i) => { const w = waiting(r); return `<div class="li"><div class="rk">${i + 1}</div><div class="t"><b>${esc(r.label)}</b><span>${esc(srcName(r.src))} · รับ ${fmtDate(r.date)}</span></div><span class="badge ${w > 14 ? 'r' : w > 7 ? 'o' : ''}">${w} วัน</span></div>`; }).join('')
+    : '<div class="empty">ไม่มีรายการค้างส่ง 🎉</div>';
+
+  renderCal(); renderActivity(); renderInsight(inP, outP, backlog, emp);
+}
+
+function renderTrend() {
+  const now = Date.now();
+  let st = range.start;
+  if (!isFinite(st)) { const ts = records.map(r => toTime(r.date)).filter(t => !isNaN(t)); st = ts.length ? Math.min(...ts) : now - 29 * DAY; }
+  st = dayStart(new Date(st));
+  let en = Math.min(isFinite(range.end) ? range.end : now, now); if (en < st) en = st;
+  const enEnd = dayStart(new Date(en)) + DAY, days = Math.max(1, Math.round((enEnd - st) / DAY));
+  const step = days <= 70 ? 1 : days <= 400 ? 7 : 30, nb = Math.ceil(days / step);
+  const A = Array(nb).fill(0), B = Array(nb).fill(0);
+  const slot = t => (isNaN(t) || t < st || t >= enEnd) ? -1 : Math.min(nb - 1, Math.floor((t - st) / DAY / step));
+  records.forEach(r => {
+    const ta = toTime(r.date); if (inRange(ta)) { const i = slot(ta); if (i >= 0) A[i]++; }
+    const tb = toTime(r.sentDate); if (inRange(tb)) { const i = slot(tb); if (i >= 0) B[i]++; }
+  });
+  let ca = 0, cb = 0; const CA = A.map(v => ca += v), CB = B.map(v => cb += v);
+  $('trendSub').textContent = 'สะสมตามช่วงเวลาที่เลือก · แต่ละจุด = ' + (step === 1 ? '1 วัน' : step === 7 ? '1 สัปดาห์' : '1 เดือน');
+  const W = 640, H = 250, L = 34, R = 12, T = 12, Bm = 26, iw = W - L - R;
+  const raw = Math.max(ca, cb, 1), u0 = raw / 4, mag = Math.pow(10, Math.floor(Math.log10(u0))), unit = [1, 2, 5, 10].map(m => m * mag).find(v => v >= u0), max = unit * 4;
+  const y = v => T + (H - T - Bm) * (1 - v / max), x = i => nb === 1 ? L + iw / 2 : L + iw * i / (nb - 1);
+  const path = arr => arr.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="กราฟเส้นสะสมรับเข้าและส่งออก">`;
+  for (let i = 0; i <= 4; i++) { const v = unit * i; s += `<line class="gridline" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`; }
+  s += `<path class="ar-a" d="${path(CA)} L${x(nb-1).toFixed(1)} ${y(0)} L${x(0).toFixed(1)} ${y(0)} Z"/><path class="ln-a" d="${path(CA)}"/><path class="ln-b" d="${path(CB)}"/>`;
+  s += `<circle cx="${x(nb-1)}" cy="${y(CA[nb-1])}" r="4" fill="var(--blue)"/><circle cx="${x(nb-1)}" cy="${y(CB[nb-1])}" r="4" fill="var(--green)"/>`;
+  const nl = Math.min(6, nb), idxs = [...new Set(Array.from({ length: nl }, (_, k) => nl === 1 ? 0 : Math.round(k * (nb - 1) / (nl - 1))))];
+  const lab = i => { const d = new Date(st + i * step * DAY); return d.getDate() + ' ' + MONTHS[d.getMonth()]; };
+  idxs.forEach(i => s += `<text x="${x(i)}" y="${H-8}" text-anchor="${i === 0 && nb > 1 ? 'start' : i === nb - 1 && nb > 1 ? 'end' : 'middle'}">${lab(i)}</text>`);
+  const bw = iw / nb;
+  for (let i = 0; i < nb; i++) s += `<rect class="bar-hit" x="${(x(i) - bw / 2).toFixed(1)}" y="${T}" width="${bw.toFixed(1)}" height="${H-T-Bm}" data-tip="${lab(i)} · รับสะสม ${CA[i]} (+${A[i]}) · ส่งสะสม ${CB[i]} (+${B[i]})"/>`;
+  $('trend').innerHTML = s + '</svg>';
+}
+
+function renderDonut(inP) {
+  const total = inP.length, parts = SOURCES.map(s => ({ s, n: by2(inP, s.key) }));
+  function by2(l, k) { return l.filter(r => r.src === k).length; }
+  let svg = '<svg viewBox="0 0 42 42" role="img" aria-label="สัดส่วนรับเข้าตามหน้า"><circle cx="21" cy="21" r="15.9155" fill="none" stroke="var(--grid)" stroke-width="5"/>', cum = 0;
+  if (total) parts.forEach(p => {
+    const v = p.n / total * 100; if (!v) return;
+    svg += `<circle cx="21" cy="21" r="15.9155" fill="none" stroke="${SRC_COL[p.s.key]}" stroke-width="5" stroke-dasharray="${v.toFixed(2)} ${(100 - v).toFixed(2)}" stroke-dashoffset="${(25 - cum).toFixed(2)}" data-tip="${esc(p.s.name)} · ${p.n} (${Math.round(v)}%)"/>`;
+    cum += v;
+  });
+  svg += `<text class="big" x="21" y="22.5" text-anchor="middle">${fmt(total)}</text><text class="cap" x="21" y="27" text-anchor="middle">รายการ</text></svg>`;
+  $('donut').innerHTML = svg + '<div class="dleg">' + parts.map(p => `<div><i style="background:${SRC_COL[p.s.key]}"></i>${esc(p.s.name)}<b class="num">${p.n}</b><span class="num">${total ? Math.round(p.n / total * 100) : 0}%</span></div>`).join('') + '</div>';
+}
+
+function renderPipe(inP) {
+  const rows = countBy(inP, r => r.status || 'ไม่ระบุ').slice(0, 6), total = inP.length;
+  $('pipe').innerHTML = rows.length ? rows.map(([k, v], i) => `<div class="step" style="--c:${STEP_COL[i % STEP_COL.length]}" title="${esc(k)}"><div class="n num">${fmt(v)}</div><div class="t">${esc(k)}</div><div class="p num">${Math.round(v / total * 100)}% ของทั้งหมด</div><div class="bar"><i style="width:${(v / total * 100).toFixed(1)}%"></i></div></div>`).join('') : '<div class="empty">ยังไม่มีข้อมูล</div>';
 }
 
 function monthlyTable(year, keys) {
@@ -424,12 +623,6 @@ function renderYear() {
   $('yearFoot').innerHTML = tr('รวมทั้งปี', tot);
 }
 
-const countBy = (l, fn) => [...l.reduce((m, r) => { const k = fn(r); return m.set(k, (m.get(k) || 0) + 1); }, new Map())].sort((a, b) => b[1] - a[1]);
-function splitBy(l, fn) {
-  const m = new Map();
-  l.forEach(r => { const k = fn(r); if (!m.has(k)) m.set(k, [0, 0]); m.get(k)[isSent(r) ? 1 : 0]++; });
-  return [...m].map(([label, parts]) => ({ label, parts })).sort((a, b) => (b.parts[0] + b.parts[1]) - (a.parts[0] + a.parts[1]));
-}
 function hbar(id, rows, cls) {
   const el = $(id);
   if (!rows.length) { el.innerHTML = '<div class="empty">ยังไม่มีข้อมูล</div>'; return; }
@@ -448,28 +641,91 @@ function renderMonthly() {
     if (!isFinite(startT)) { const ts = records.map(r => toTime(r.date)).filter(t => !isNaN(t)); startT = ts.length ? Math.min(...ts) : endT; }
     const e = new Date(endT), st = new Date(startT), endIdx = e.getFullYear() * 12 + e.getMonth(), stIdx = st.getFullYear() * 12 + st.getMonth(), n = endIdx - stIdx + 1;
     let from = stIdx;
-    if (n < 6) from = endIdx - 5; else if (n > 12) { from = endIdx - 11; note = ' · แสดง 12 เดือนสุดท้ายของช่วง'; }
+    if (n < 6) from = endIdx - 5; else if (n > 12) { from = endIdx - 11; note = ' · 12 เดือนสุดท้ายของช่วง'; }
     for (let i = from; i <= endIdx; i++) months.push({ y:Math.floor(i / 12), m:i % 12, a:0, b:0 });
-    note = 'เดือนนอกช่วงที่เลือกแสดงจาง' + note;
+    note = 'เดือนนอกช่วงแสดงจาง' + note;
   }
   $('monthlySub').textContent = 'รวมทั้ง 3 หน้า · ' + note;
   const slot = v => { const t = toTime(v); if (isNaN(t)) return null; const d = new Date(t); return months.find(x => x.y === d.getFullYear() && x.m === d.getMonth()) || null; };
   records.forEach(r => { const a = slot(r.date); if (a) a.a++; if (r.sentDate) { const b = slot(r.sentDate); if (b) b.b++; } });
   const inPM = m => range.all || (new Date(m.y, m.m + 1, 1).getTime() > range.start && new Date(m.y, m.m, 1).getTime() <= range.end);
-  const W = 600, H = 250, L = 34, R = 8, T = 10, B = 28;
+  const W = 420, H = 230, L = 30, R = 6, T = 10, B = 28;
   const rawMax = Math.max(...months.flatMap(m => [m.a, m.b]), 1);
   const step = rawMax <= 5 ? 1 : rawMax <= 10 ? 2 : rawMax <= 25 ? 5 : rawMax <= 50 ? 10 : rawMax <= 100 ? 20 : 50;
   const max = Math.ceil(rawMax / step) * step, y = v => T + (H - T - B) * (1 - v / max), bw = (W - L - R) / months.length;
   let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="กราฟแท่งรับเข้าและส่งออกรายเดือน">`;
   for (let v = 0; v <= max; v += step) s += `<line class="gridline" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
   months.forEach((m, i) => {
-    const x0 = L + i * bw, w = Math.min(26, bw * 0.3), cx = x0 + bw / 2, op = inPM(m) ? 1 : 0.3;
+    const x0 = L + i * bw, w = Math.min(14, bw * 0.34), cx = x0 + bw / 2, op = inPM(m) ? 1 : 0.3;
     const label = MONTHS[m.m] + (m.m === 0 ? ' ' + String(m.y).slice(2) : '');
     const bar = (v, x, c) => v ? `<path class="${c}" opacity="${op}" d="M${x} ${y(0)} V${y(v)+3} Q${x} ${y(v)} ${x+3} ${y(v)} H${x+w-3} Q${x+w} ${y(v)} ${x+w} ${y(v)+3} V${y(0)} Z"/>` : '';
-    s += bar(m.a, cx - w - 1, 'bar-a') + bar(m.b, cx + 1, 'bar-b') + `<text x="${cx}" y="${H-8}" text-anchor="middle">${label}</text>`
-       + `<rect class="bar-hit" x="${x0+2}" y="${T}" width="${bw-4}" height="${H-T-B}" data-tip="${label} ${m.y} · รับเข้า ${m.a} · ส่งออก ${m.b}"/>`;
+    s += bar(m.a, cx - w - 1, 'bar-a') + bar(m.b, cx + 1, 'bar-b') + `<text x="${cx}" y="${H-8}" text-anchor="middle" style="font-size:${months.length > 9 ? 9 : 10}px">${label}</text>`
+       + `<rect class="bar-hit" x="${x0+1}" y="${T}" width="${bw-2}" height="${H-T-B}" data-tip="${label} ${m.y} · รับเข้า ${m.a} · ส่งออก ${m.b}"/>`;
   });
   $('monthly').innerHTML = s + '</svg>';
+}
+
+// ── แถบด้านขวา ──
+let cal = { y:new Date().getFullYear(), m:new Date().getMonth() };
+let calSel = { y:new Date().getFullYear(), m:new Date().getMonth(), d:new Date().getDate() };
+function renderCal() {
+  const dim = new Date(cal.y, cal.m + 1, 0).getDate(), off = new Date(cal.y, cal.m, 1).getDay(), td = new Date(), cnt = {};
+  const snt = {};
+  records.forEach(r => {
+    const t = toTime(r.date); if (!isNaN(t)) { const d = new Date(t); if (d.getFullYear() === cal.y && d.getMonth() === cal.m) cnt[d.getDate()] = (cnt[d.getDate()] || 0) + 1; }
+    const t2 = toTime(r.sentDate); if (!isNaN(t2)) { const d = new Date(t2); if (d.getFullYear() === cal.y && d.getMonth() === cal.m) snt[d.getDate()] = (snt[d.getDate()] || 0) + 1; }
+  });
+  let h = `<div class="cal-h"><button type="button" class="ib" id="calPrev" aria-label="เดือนก่อนหน้า">‹</button><b>${MONTHS[cal.m]} ${cal.y}</b><button type="button" class="ib" id="calNext" aria-label="เดือนถัดไป">›</button></div><div class="cal-g">`
+    + ['อา','จ','อ','พ','พฤ','ศ','ส'].map(d => `<span class="wd">${d}</span>`).join('');
+  for (let i = 0; i < off; i++) h += '<span></span>';
+  for (let d = 1; d <= dim; d++) {
+    const c = cnt[d] || 0, isT = td.getFullYear() === cal.y && td.getMonth() === cal.m && td.getDate() === d, lv = c >= 5 ? 'l3' : c >= 3 ? 'l2' : c >= 1 ? 'l1' : '';
+    const sc = snt[d] || 0, isS = calSel && calSel.y === cal.y && calSel.m === cal.m && calSel.d === d;
+    h += `<button type="button" class="dy ${lv}${sc ? ' out' : ''}${isT ? ' today' : ''}${isS ? ' sel' : ''}" data-d="${d}"${c || sc ? ` data-tip="${d} ${MONTHS[cal.m]} · รับเข้า ${c} · ส่งออก ${sc}"` : ''}>${d}</button>`;
+  }
+  $('cal').innerHTML = h + '</div>';
+  $('cal').querySelectorAll('.dy[data-d]').forEach(b => b.onclick = () => { calSel = { y:cal.y, m:cal.m, d:+b.dataset.d }; renderCal(); });
+  renderCalDetail();
+  const mv = n => { const d = new Date(cal.y, cal.m + n, 1); cal = { y:d.getFullYear(), m:d.getMonth() }; renderCal(); };
+  $('calPrev').onclick = () => mv(-1); $('calNext').onclick = () => mv(1);
+}
+
+function renderCalDetail() {
+  const box = $('calDetail');
+  if (!calSel) { box.innerHTML = '<div class="cd-hint">คลิกวันที่เพื่อดูรายละเอียด</div>'; return; }
+  const ds = new Date(calSel.y, calSel.m, calSel.d).getTime(), on = t => !isNaN(t) && t >= ds && t < ds + DAY;
+  const inL = records.filter(r => on(toTime(r.date))).sort((a, b) => toTime(a.date) - toTime(b.date));
+  const outL = records.filter(r => on(toTime(r.sentDate))).sort((a, b) => toTime(a.sentDate) - toTime(b.sentDate));
+  const tm = v => /[T ]\d{1,2}:\d{2}/.test(String(v)) ? (d => pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' น.')(new Date(v)) : '';
+  const row = (r, v, who) => `<div class="cd-row"><div class="cd-t"><b>${esc(r.label)}</b><span>${esc(srcName(r.src))}${who ? ' · ' + esc(who) : ''}</span></div><span class="cd-tm">${tm(v)}</span></div>`;
+  const none = '<div class="cd-hint">ไม่มีรายการ</div>';
+  box.innerHTML = `<div class="cd-h">${calSel.d} ${MONTHS[calSel.m]} ${calSel.y}</div>`
+    + `<div class="cd-sec in">รับเครื่อง (${inL.length})</div>` + (inL.length ? inL.map(r => row(r, r.date, r.receiver ? 'ผู้รับ ' + r.receiver : '')).join('') : none)
+    + `<div class="cd-sec out">ส่งเครื่อง (${outL.length})</div>` + (outL.length ? outL.map(r => row(r, r.sentDate, r.raw.sender ? 'ผู้ส่ง ' + r.raw.sender : '')).join('') : none);
+}
+
+function renderActivity() {
+  const ev = [];
+  records.forEach(r => {
+    const a = toTime(r.date); if (!isNaN(a)) ev.push({ t:a, k:'in', r, v:r.date });
+    const b = toTime(r.sentDate); if (!isNaN(b)) ev.push({ t:b, k:'out', r, v:r.sentDate });
+  });
+  ev.sort((a, b) => b.t - a.t);
+  $('activity').innerHTML = ev.length ? ev.slice(0, 6).map(e => `<div class="act"><div class="d ${e.k}">${e.k === 'in' ? '↓' : '↑'}</div><div class="t"><div><b>${e.k === 'in' ? 'รับเข้า' : 'ส่งออก'}</b> ${esc(e.r.label)}</div><span>${esc(srcName(e.r.src))} · ${fmtDT(e.v)}</span></div></div>`).join('') : '<div class="empty">ยังไม่มีกิจกรรม</div>';
+}
+
+function renderInsight(inP, outP, backlog, emp) {
+  const L = [];
+  if (!inP.length) L.push('ยังไม่มีรายการรับเข้าในช่วงเวลานี้');
+  else {
+    L.push(`ช่วงนี้รับเข้า <b>${fmt(inP.length)}</b> · ส่งออก <b>${fmt(outP.length)}</b> รายการ` + (outP.length >= inP.length ? ' (ส่งออกไม่น้อยกว่ารับเข้า)' : ' (รับเข้ามากกว่าส่งออก งานค้างอาจเพิ่ม)'));
+    const dp = splitBy(emp, r => r.dept || 'ไม่ระบุ')[0]; if (dp) L.push(`แผนกที่มีเครื่องมากที่สุด: <b>${esc(dp.label)}</b> (${dp.parts[0] + dp.parts[1]} เครื่อง)`);
+    const op = splitBy(inP.filter(r => r.operator), r => r.operator)[0]; if (op) L.push(`ผู้ดำเนินการมากที่สุด: <b>${esc(op.label)}</b> (${op.parts[0] + op.parts[1]} งาน)`);
+    const ad = avgDays(inP.filter(isSent)); if (ad !== '—') L.push(`ส่งมอบเฉลี่ยใช้เวลา <b>${ad}</b> วัน`);
+  }
+  const o14 = backlog.filter(r => waiting(r) > 14).length;
+  L.push(o14 ? `ค้างส่งเกิน 14 วัน <b>${fmt(o14)}</b> รายการ ควรติดตาม` : 'ไม่มีรายการค้างส่งเกิน 14 วัน');
+  $('insight').innerHTML = L.map(x => `<li>${x}</li>`).join('');
 }
 
 const tip = $('tip');
@@ -487,13 +743,9 @@ const COLS = {
   acc:   [['date','วัน-เวลาที่รับเครื่อง'],['sentDate','วัน-เวลาที่ส่งเครื่อง'],['type','ประเภท'],['condition','สภาพ'],['capacity','ความจุ'],['serial','Serial'],['status','สถานะ'],['receiver','ผู้รับเครื่อง'],['operator','ผู้ดำเนินการ'],['sender','ผู้ส่งเครื่อง']],
   store: [['date','วัน-เวลาที่รับเครื่อง'],['sentDate','วัน-เวลาที่ส่งเครื่อง'],['shopId','รหัสร้าน'],['withdrawType','ประเภทการเบิก'],['type','ประเภทเครื่อง'],['model','รุ่น'],['status','สถานะ'],['receiver','ผู้รับเครื่อง'],['operator','ผู้ดำเนินการ'],['sender','ผู้ส่งเครื่อง'],['note','หมายเหตุ']]
 };
-const DATE_KEYS = ['date', 'sentDate'];
-const daysTaken = r => { const a = toTime(r.date), b = toTime(r.sentDate); return isNaN(a) || isNaN(b) ? null : Math.max(0, Math.round((b - a) / DAY)); };
-const avgDays = l => { const d = l.map(daysTaken).filter(x => x !== null); return d.length ? +(d.reduce((a, b) => a + b, 0) / d.length).toFixed(1) : '—'; };
 const tally = (l, fn) => [...l.reduce((m, r) => { const k = fn(r) || 'ไม่ระบุ', a = m.get(k) || [0, 0]; a[isSent(r) ? 1 : 0]++; return m.set(k, a); }, new Map())].map(([k, [p, s]]) => [k, p + s, s, p]).sort((a, b) => b[1] - a[1]);
 
 const colsOf = key => [...COLS[key], ['_st','สถานะการส่ง'], ['_days','ใช้เวลารับ→ส่ง (วัน)']];
-// ตัวกรองแถวตามประเภทข้อมูล: เครื่องพนักงาน=แผนก · อุปกรณ์เสริม=ประเภท · เครื่องหน้าร้าน=ประเภทการเบิก
 const FILT = { emp:['แผนก', r => r.dept || 'ไม่ระบุ'], acc:['ประเภท', r => r.type || 'ไม่ระบุ'], store:['ประเภทการเบิก', r => r.wd || 'ไม่ระบุ'] };
 let xf = () => true;
 const updOk = () => { const none = id => !$(id).hidden && !$(id).querySelector('input:checked'); $('xlOk').disabled = none('xlFilt') || none('xlCols'); };
