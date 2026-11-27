@@ -129,6 +129,8 @@
     .chip { display:inline-flex; align-items:center; gap:4px; padding:3px 12px; border-radius:20px; font-size:.78rem; font-weight:700; white-space:nowrap; }
     .chip-green{background:#e8f5e9;color:var(--green)} .chip-red{background:#ffebee;color:var(--red)}
     .chip-orange{background:#fff3e0;color:var(--orange)} .chip-blue{background:var(--blue-pale);color:var(--blue)}
+    .chip-sent{background:#e3f2fd;color:#1565c0}
+    .st-wrap{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 
     /* ── 3-dot dropdown ── */
     .action-wrap { position:relative; display:inline-block; }
@@ -705,6 +707,7 @@
   ];
   const HDD_TYPE   = 'Harddisk';            // ประเภทที่ต้องกรอกความจุ
   const CONDITIONS = ['ใหม่', 'เก่า'];       // ลักษณะอุปกรณ์
+  const DONE_STATUS = 'ดำเนินการเสร็จแล้ว';   // สถานะที่ตั้งให้อัตโนมัติเมื่อส่งเครื่อง
 
   const navHomeEl = document.getElementById('navHome');
   if (navHomeEl) navHomeEl.href = HOME_URL;
@@ -736,6 +739,10 @@
     if (s === 'กำลังรอดำเนินการ')   return `<span class="chip chip-orange">⏳ ${t}</span>`;
     if (s === 'ดำเนินการเสร็จแล้ว') return `<span class="chip chip-green">✅ ${t}</span>`;
     return `<span class="chip chip-blue">${t}</span>`;
+  }
+  // สถานะ + ป้าย "ส่งแล้ว" เมื่อมีวันที่ส่ง
+  function statusCell(r) {
+    return `<span class="st-wrap">${statusChip(r.status)}${r.sentDate ? '<span class="chip chip-sent">📤 ส่งแล้ว</span>' : ''}</span>`;
   }
   function condChip(c) {
     if (c === 'ใหม่') return `<span class="chip chip-green">🆕 ใหม่</span>`;
@@ -915,7 +922,7 @@
       <td><div class="d1">${formatDate(r.date)}</div></td>
       <td>${typeBlock(r)}</td>
       <td class="sn-cell">${escHtml(r.serial) || '—'}</td>
-      <td>${statusChip(r.status)}</td>
+      <td>${statusCell(r)}</td>
       <td>${opText(r)}</td>
       <td class="cell-act" style="text-align:center">${actionMenu(r.origIdx, up)}</td>
     </tr>`;
@@ -930,7 +937,7 @@
       return `<div class="${cls}" data-idx="${r.origIdx}">
         <div class="rc-top">
           <span class="rc-date">${cb}🕐 รับ ${formatDate(r.date)}</span>
-          ${statusChip(r.status)}
+          ${statusCell(r)}
         </div>
         <div class="rc-body">
           <div>${typeBlock(r)}</div>
@@ -991,7 +998,7 @@
     document.getElementById('dtType').textContent = r.type || '—';
     const cap = document.getElementById('dtCap');
     cap.style.display = r.capacity ? '' : 'none'; cap.textContent = r.capacity || '';
-    document.getElementById('dtStatus').innerHTML = statusChip(r.status);
+    document.getElementById('dtStatus').innerHTML = statusCell(r);
     const val = v => (!v || String(v).trim() === '' || v === '—') ? '<span class="muted">—</span>' : escHtml(String(v).trim());
     const items = [
       ['📥 วันที่รับ', escHtml(formatDate(r.date))],
@@ -1118,7 +1125,7 @@
           action: 'edit', rowIndex: i,
           date: r.date, type: r.type, condition: r.condition || '', capacity: r.capacity || '',
           serial: r.serial, sentDate: sendDate,
-          status: r.status || '', operator: hasOp(r) ? r.operator : operator,   // มีชื่อเดิมอยู่แล้วไม่เขียนทับ
+          status: DONE_STATUS, operator: hasOp(r) ? r.operator : operator,   // ส่งเครื่อง = ดำเนินการเสร็จแล้ว · มีชื่อเดิมอยู่แล้วไม่เขียนทับ
           receiver: r.receiver || '', sender
         });
         sentItems.push({ idx: i, type: r.type, capacity: r.capacity || '', serial: r.serial });
@@ -1189,7 +1196,7 @@
       ? `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>ยังไม่มีอุปกรณ์ในหมวดนี้</p></div></td></tr>`
       : rows.map((r, n) => `<tr>
           <td>${n + 1}</td><td>${formatDate(r.date)}</td><td>${formatDate(r.sentDate, '')}</td>
-          <td>${escHtml(r.serial) || '—'}</td><td>${condChip(r.condition)}</td><td>${escHtml(r.capacity) || '—'}</td><td>${statusChip(r.status)}</td>
+          <td>${escHtml(r.serial) || '—'}</td><td>${condChip(r.condition)}</td><td>${escHtml(r.capacity) || '—'}</td><td>${statusCell(r)}</td>
         </tr>`).join('');
     document.getElementById('listOverlay').classList.add('active');
   }
@@ -1552,7 +1559,7 @@
     document.getElementById('sendSerial').textContent = r.serial || '—';
     document.getElementById('sendNote').innerHTML = r.sentDate
       ? `<span style="color:var(--orange);font-weight:600">⚠️ ส่งไปแล้วเมื่อ ${formatDate(r.sentDate)} · ถ้ายืนยันจะเปลี่ยนเป็นวันนี้</span>`
-      : `<span style="color:var(--gray-text)">จะบันทึกวันที่ส่งเป็นวันนี้ (${formatDate(todayStr())})</span>`;
+      : `<span style="color:var(--gray-text)">จะบันทึกวันที่ส่งเป็นวันนี้ (${formatDate(todayStr())}) และเปลี่ยนสถานะเป็น "${DONE_STATUS}"</span>`;
     document.getElementById('f-sender').value = '';     // ต้องกรอกชื่อผู้ส่งใหม่ทุกครั้ง
     document.getElementById('f-sendnote').value = '';
     document.getElementById('sendOverlay').classList.add('active');
@@ -1580,7 +1587,7 @@
         action: 'edit', rowIndex: pendingSendIdx,
         date: r.date, type: r.type, condition: r.condition || '', capacity: r.capacity || '',
         serial: r.serial, sentDate: sendDate,
-        status: r.status || '', operator: r.operator || '',
+        status: DONE_STATUS, operator: r.operator || '',   // ส่งเครื่อง = ดำเนินการเสร็จแล้ว
         receiver: r.receiver || '', sender                // เก็บคนส่งแยกคอลัมน์ ไม่ทับผู้รับ/ผู้ดำเนินการ
       });
       closeSend();
