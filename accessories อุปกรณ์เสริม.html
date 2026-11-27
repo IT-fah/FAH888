@@ -130,7 +130,7 @@
     .chip-green{background:#e8f5e9;color:var(--green)} .chip-red{background:#ffebee;color:var(--red)}
     .chip-orange{background:#fff3e0;color:var(--orange)} .chip-blue{background:var(--blue-pale);color:var(--blue)}
     .chip-sent{background:#e3f2fd;color:#1565c0}
-    .st-wrap{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .st-wrap{display:inline-flex;flex-direction:column;align-items:flex-start;gap:6px}
 
     /* ── 3-dot dropdown ── */
     .action-wrap { position:relative; display:inline-block; }
@@ -742,7 +742,7 @@
   }
   // สถานะ + ป้าย "ส่งแล้ว" เมื่อมีวันที่ส่ง
   function statusCell(r) {
-    return `<span class="st-wrap">${statusChip(r.status)}${r.sentDate ? '<span class="chip chip-sent">📤 ส่งแล้ว</span>' : ''}</span>`;
+    return r.sentDate ? '<span class="chip chip-sent">📤 ส่งเครื่องแล้ว</span>' : statusChip(r.status);
   }
   function condChip(c) {
     if (c === 'ใหม่') return `<span class="chip chip-green">🆕 ใหม่</span>`;
@@ -849,7 +849,15 @@
         <div class="ic-sub">รอดำเนินการ ${wait} · เสร็จแล้ว ${done}</div>
         <div class="ic-hint">👆 คลิกดูรายการ</div>
       </div>`;
-    }).join('');
+    }).join('') + (() => {
+      const tot = active.length, sent = active.filter(r => r.sentDate).length;
+      return `<div class="info-card" style="--c:#1e88e5" onclick="openSentList()">
+        <div class="ic-top"><div class="ic-emoji">📤</div><div class="ic-label">ส่งเครื่องแล้ว</div></div>
+        <div class="ic-value">${sent}</div>
+        <div class="ic-sub">จากทั้งหมด ${tot} รายการ · ยังไม่ส่ง ${tot - sent}</div>
+        <div class="ic-hint">👆 คลิกดูรายการ</div>
+      </div>`;
+    })();
   }
 
   // ── Table / Card ──────────────────────────────────────────────────────────
@@ -1197,6 +1205,20 @@
       : rows.map((r, n) => `<tr>
           <td>${n + 1}</td><td>${formatDate(r.date)}</td><td>${formatDate(r.sentDate, '')}</td>
           <td>${escHtml(r.serial) || '—'}</td><td>${condChip(r.condition)}</td><td>${escHtml(r.capacity) || '—'}</td><td>${statusCell(r)}</td>
+        </tr>`).join('');
+    document.getElementById('listOverlay').classList.add('active');
+  }
+  // การ์ด "ส่งเครื่องแล้ว": รวมทุกประเภทที่มีวันที่ส่ง (ใหม่สุดก่อน)
+  function openSentList() {
+    const rows = tableData.filter(r => !r.deleted && r.sentDate)
+      .sort((a, b) => (new Date(b.sentDate).getTime() || 0) - (new Date(a.sentDate).getTime() || 0));
+    document.getElementById('listTitle').textContent = '📤 ส่งเครื่องแล้ว';
+    document.getElementById('listCount').textContent = rows.length;
+    document.getElementById('listBody').innerHTML = rows.length === 0
+      ? `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>ยังไม่มีเครื่องที่ส่งแล้ว</p></div></td></tr>`
+      : rows.map((r, n) => `<tr>
+          <td>${n + 1}</td><td>${formatDate(r.date)}</td><td>${formatDate(r.sentDate, '')}</td>
+          <td><span class="type-tag">${escHtml(r.type) || '—'}</span><br>${escHtml(r.serial) || '—'}</td><td>${condChip(r.condition)}</td><td>${escHtml(r.capacity) || '—'}</td><td>${statusCell(r)}</td>
         </tr>`).join('');
     document.getElementById('listOverlay').classList.add('active');
   }
